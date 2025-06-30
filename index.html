@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>EpiCalendar</title>
+        <link type="text/css" rel="stylesheet" href="./index.css">
+        <link rel="stylesheet" href="./style.css">
+    </head>
+
+    <body>
+        <div id="root">
+            <header>
+                <div class="hide-calendar-header"><button id="hide-calendar"><img class="arrow-button left" src="./burger-icon.png" alt="Go back a month"></button></div>
+                <div class="calendar-name"><h1>EpiCalendar</h1></div>
+                <div class="week-scroll">
+                    <button id="calendar-left" class="week left"><img class="arrow-button left" src="./scroll-arrow.png" alt="Go back a month"></button>
+                    <button id="calendar-right" class="week right"><img class="arrow-button right" src="./scroll-arrow.png" alt="Go forward a month"></button>
+
+                    <div class="current-date-number">Birzelis-Liepa, 2025</div>
+                </div>
+                <div class="display-selector"><button>Sav. vaizd.</button></div>
+            </header>
+            <div class="lower-flex">
+                <div class="calendar-view">
+                    <div class="calendar-container">
+                        <div class="calendar-header">
+                            <div class="calendar-month">November, 2025</div>
+                            <div class="week-scroll">
+                                <button id="calendar-left" class="week left"><img class="arrow-button left" src="./scroll-arrow.png" alt="Go back a month"></button>
+                                <button id="calendar-right" class="week right"><img class="arrow-button right" src="./scroll-arrow.png" alt="Go forward a month"></button>
+                            </div>
+                        </div>
+                        <div class="calendar-day-row">
+                            <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+                        </div>
+                        <div class="calendar-day-row">
+                            <div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div>
+                        </div>
+                        <div class="calendar-day-row">
+                            <div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div>
+                        </div>
+                        <div class="calendar-day-row">
+                            <div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div>
+                        </div>
+                        <div class="calendar-day-row">
+                            <div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div>
+                        </div>
+                        <div class="calendar-day-row">
+                            <div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div>
+                        </div>
+                        <div class="calendar-day-row">
+                            <div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="week-view">
+                        <div class = "topline">
+                            <div><h5>Gmt +3</h5></div>
+                            <div><h3>Sun</h3></div>
+                            <div class = "day-name"><h3>Mon</h3></div>
+                            <div><h3>Tue</h3></div>
+                            <div><h3>Wed</h3></div>
+                            <div><h3>Thu</h3></div>
+                            <div><h3>Fri</h3></div>
+                            <div><h3>Sat</h3></div>
+                        </div>
+                        <div class = "timeline">
+                            <div class="time-column">
+                                <div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div><div>8</div><div>9</div><div>10</div><div>11</div><div>12</div><div>13</div><div>14</div><div>15</div><div>16</div><div>17</div><div>18</div><div>19</div><div>20</div><div>21</div><div>22</div><div>23</div>
+                            </div>
+                            <div class="time-column">
+                                <div>.</div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                            </div>
+                            <div class="time-column">
+                                <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                            </div>
+                            <div class="time-column">
+                                <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                            </div>
+                            <div class="time-column">
+                                <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                            </div>
+                            <div class="time-column">
+                                <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                            </div>
+                            <div class="time-column">
+                                <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                            </div>
+                            <div class="time-column">
+                                <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

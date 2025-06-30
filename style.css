@@ -1,0 +1,188 @@
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+h1{
+    color: red;
+}
+html{
+    max-height: 90vh;
+    min-height: 600px;
+}
+body{
+    margin:0;
+    background-color: rgb(227, 227, 227);
+}
+header{
+    display: inline-flex;
+    width:100%;
+    justify-content: space-between;
+    text-align: center; 
+}
+.hide-calendar-header, .week-scroll, .display-selector{
+    margin: auto;
+}
+.week-scroll{
+    display: inline-flex;
+    padding: 32px;
+    width: 20%;
+}
+.week, .calendar-name, .current-date-number, .calendar, .calendar-month{
+    margin: auto;
+}
+
+.lower-flex{
+    display: inline-flex;
+    width:100%;
+    max-height: 90vh;
+}
+.calendar-view{
+    width: 20%;
+    float: left;
+    box-sizing: border-box;
+    min-width: 260px;
+    font-size: 0.8rem;
+    padding: 16px;
+    height: 90vh;
+}
+.week-view{
+    display: inline;
+    overflow: auto;
+    width: 80%;
+    background-color:aqua;
+    float:right;
+    min-height: 600px;
+    border-radius: 20px;
+}
+.display-selector{
+    float:right;
+}
+.calendar-header{
+    display: inline-flex;
+    justify-content: space-between;
+    width: 100%;
+}
+.week {
+    border-radius: 50%;
+    text-align: center;
+    vertical-align: center;
+    border: none;
+    margin: auto;
+    align-items: center;
+    padding: 10px;
+    max-height: 36px;
+    aspect-ratio : 1 / 1; 
+}
+.week:hover{
+    background-color:red;
+}
+.arrow-button{
+    text-align: center;
+    margin: auto;
+    max-height: 16px;
+}
+.arrow-button.right{
+    transform: rotate(180deg)
+}
+.arrow-button.left img{
+    display: flex;
+    width: 32px;
+    height: 32px;
+}
+.calendar-day-row{
+    display: inline-flex;
+    justify-content: space-between;
+    box-sizing: border-box;
+    padding: 8px;
+    width: 100%;
+}
+#hide-calendar{
+    width: 36px;
+    height: 36px;
+}
+.hide-calendar-header{
+    margin-right: 16px;
+}
+.calendar-name{
+    float:left;
+    margin-left: 16px;
+}
+.topline {
+            display: flex;
+            justify-content: space-between;
+            background-color: #ffffff;
+            padding: 24px;
+            
+            border-bottom: 1px solid #ccc;
+}
+.topline div{
+    min-width: 4rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+.timeline{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: auto;
+    box-sizing: border-box;
+    padding-left: 24px;
+    padding-right: 24px;
+    width: 100%;
+    max-height: 100%;
+}
+.time-column{
+
+}
+.time-column{
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: auto;
+}
+.time-column div{
+    flex: 1;
+    text-align: center;
+    margin: auto;
+    border: 1px solid black;
+    min-height: 64px;
+}
