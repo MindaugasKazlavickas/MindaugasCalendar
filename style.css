@@ -42,7 +42,8 @@ table {
 	border-spacing: 0;
 }
 h1{
-    color: red;
+    color:#7e4949;
+    font-size: 2rem;
 }
 html{
     max-height: 90vh;
@@ -51,6 +52,7 @@ html{
 body{
     margin:0;
     background-color: rgb(227, 227, 227);
+    font-family: Helvetica, "Trebuchet MS", Verdana, sans-serif;
 }
 header{
     display: inline-flex;
@@ -63,7 +65,7 @@ header{
 }
 .week-scroll{
     display: inline-flex;
-    padding: 32px;
+    padding: 1.5rem;
     width: 20%;
 }
 .week, .calendar-name, .current-date-number, .calendar, .calendar-month{
@@ -88,7 +90,7 @@ header{
     display: inline;
     overflow: auto;
     width: 80%;
-    background-color:aqua;
+    background-color:rgb(244, 244, 244);
     float:right;
     min-height: 600px;
     border-radius: 20px;
@@ -111,9 +113,10 @@ header{
     padding: 10px;
     max-height: 36px;
     aspect-ratio : 1 / 1; 
+    background-color: inherit;
 }
 .week:hover{
-    background-color:red;
+    background-color:#7e494977;
 }
 .arrow-button{
     text-align: center;
@@ -136,8 +139,13 @@ header{
     width: 100%;
 }
 #hide-calendar{
-    width: 36px;
-    height: 36px;
+    background-color: inherit;
+    border: none;
+}
+img.burger{
+    max-height: 2rem;
+    height: 2rem;
+    width:2rem;
 }
 .hide-calendar-header{
     margin-right: 16px;
@@ -146,43 +154,258 @@ header{
     float:left;
     margin-left: 16px;
 }
-.topline {
-            display: flex;
-            justify-content: space-between;
-            background-color: #ffffff;
-            padding: 24px;
-            
-            border-bottom: 1px solid #ccc;
+.timeline-container {
+    display: flex;
+    height: 138vh;
+    overflow-y: scroll;
+    margin-top:64px;
 }
-.topline div{
-    min-width: 4rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
-}
-.timeline{
+.timeline-grid{
+    flex: 1;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
-    margin: auto;
-    box-sizing: border-box;
-    padding-left: 24px;
-    padding-right: 24px;
-    width: 100%;
-    max-height: 100%;
+    overflow: hidden;
 }
-.time-column{
-
-}
-.time-column{
-    display: inline-flex;
-    flex-direction: column;
-    justify-content: space-between;
-    margin: auto;
-}
-.time-column div{
+.time-column {
     flex: 1;
+}
+.time-column div {
+    height: 6vh;
+    border-bottom: 1px solid #7e4949;
+    border-left: 1px solid #7e4949;
+    position: relative;
+    cursor: pointer;
     text-align: center;
+    box-sizing: border-box;
+    padding: 1rem;
+}
+.topline {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    background: #7e4949;
+    color: white;
+    z-index:1;
+    width:inherit;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    font-weight: bold;
+    border-bottom: 1px solid #7e4949;
+    position: absolute;
+    padding-top: 12px;
+    padding-bottom:12px;
+    border-top-left-radius: 1rem;
+}
+
+.event-top-column, .event-mid-column, .event-bot-column{
+    display: flex;
+    flex-direction: row;
+    padding: 2rem;
+}
+.event-container{
+    width: 600px;
+    min-height:400px;
+    max-height: 90vh;
+    background-color: rgb(227, 227, 227);
+    position: fixed;
+    top: 30%;
+    left: 5%;
+    right: 5%;
+    bottom: 10%;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0.1rem -0.1rem 0.5rem rgba(126,73,73, 0.5),
+                -0.1rem 0.1rem 0.5rem rgba(126,73,73, 0.5),
+                -0.1rem -0.1rem 0.5rem rgba(126,73,73, 0.5),
+                0.1rem 0.1rem 0.5rem rgba(126,73,73, 0.5);
+}
+#event{
+    display:none;
+}
+.event-icon-column{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+.event-content-column{
+    flex: 10;
+    display: flex;
+    flex-direction: column;
+}
+.event-name-input{
+    line-height: 2.5rem;
+    font-size: 1.5rem;
+    width: inherit;
+    background-color: rgb(244, 244, 244);
+    color:#7e4949;
+    padding-left: 1rem;
+    background-color: inherit;
+    border: none;
+    border-bottom:1px solid #7e4949;
+    outline: none;
+    margin-bottom: 1rem;
+}
+.event-name-input::placeholder{
+    color: #7e4949;
+}
+.event-name-input:focus{
+    border-bottom:3px solid #7e4949;
+}
+.event-header{
+    width: 100%;
+    height: 1.5rem;
+    padding-bottom: 1rem;
+    font-size: 1.5rem;
+    color: rgba(100,100,100, 1);
+}
+.event-close-button{
+    background-color: inherit;
+    border: none;
+    float: right;
+}
+.event-close-button img{
+    width: 2rem;
+    height: 2rem;
+}
+.event-close-button:hover{
+    background-color: #7e494977;
+    cursor: pointer;
+}
+.event-type-line, .event-time-picker, .event-extra-date-selectors{
+    width: 100%;
+    height: 2rem;
+    font-size: 1rem;
+    color: #7e4949;
+    display: inline-flex;
+    justify-content: flex-start;
+    margin-bottom: 1rem;
+}
+.event-type-line div{
+    padding: 0.5rem;
+    background-color: rgb(232, 213, 213);
+    border-radius: 10px;
+    height:1rem;
+    text-align: center;
+    margin-right: 1rem;
+    padding-top: 0.5rem;
+}
+.event-type-line div:hover{
+    background-color: rgb(203, 176, 176);
+}
+.event-time-picker div{
+    padding: 0.5rem;
+    background-color: rgba(127, 127, 127, 0.5);
+    height:1rem;
+    text-align: center;
+    padding-top: 0.5rem;
+}
+.event-date-box{
+    margin-right: 1rem;
+}
+.event-date-box:hover{
+    background-color: rgba(62, 62, 62, 0.5);
+}
+.event-checkbox{
+    color: #7e4949;
+    height: 1rem;
+    width: 1rem;
+}
+.event-extra-date-selectors .event-date-box{
+    padding:0.5rem;
+    border-radius: 10px;  
+    height: 1rem;
+    text-align: center;
+    padding-top: 0.5rem;
+    background-color: rgba(127, 127, 127, 0.5);
+}
+.event-extra-date-selectors .event-date-box:hover{
+    background-color: rgba(62, 62, 62, 0.5);
+}
+.event-extra-date-selectors{
+    align-items: center;
+}
+.checkbox-holder{
+    padding: 0.25rem;
+    margin-right: 1rem;
+    border-radius: 24px;
+    height: 1.5rem;
+    width: 1.5rem;
+    text-align: center;
+}
+.checkbox-holder:hover{
+    background-color: rgba(62, 62, 62, 0.5);
+}
+
+.event-name-input.mini{
+    height: 1.5rem;
+    line-height: 1.5rem;
+    font-size: 1rem;
+    margin: 0;
+}
+.separator{
+    height: 1px;
+    width:100%;
+    background-color:#7e4949;
+    margin-bottom: 1rem;
+}
+#event-location, #event-description{
+    margin-bottom: 1rem;
+}
+img.location{
     margin: auto;
+    margin-top: 0;
+    width: 24px;
+    max-height: 24px;
+}
+
+.description{
+    margin-top: 0;
+    margin:auto;
+}
+
+.dropdown, .event-button{
+    position: relative;
+    display: inline-block;
     border: 1px solid black;
-    min-height: 64px;
+    padding: 1rem;
+    font-size: 1rem;
+    border-radius: 2rem;
+    background-color: #f9f9f9;
+}
+.dropdown:hover{
+    background-color: #c9c9c9;
+}
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: rgb(227, 227, 227);
+    min-width: 200px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    text-align: left;
+    padding-top: 0.5rem;
+    flex-direction: column;
+    right: 0;
+    top: 3.1rem;
+}
+.dropdown-item{
+    display: inline-flex;
+    justify-content: space-between;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+.dropdown-item:hover, .event-button:hover{
+    background-color: #c9c9c9;
+}
+.dropdown:hover .dropdown-content, .event-button:hover .dropdown-content {
+    display: flex;
+    z-index:2;
+}
+.event-button-button{
+    background-color: none;
+    border: none;
+}
+.event-button .dropdown-content{
+    left: 0;
 }

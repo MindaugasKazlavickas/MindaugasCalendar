@@ -1,29 +1,72 @@
 <!DOCTYPE html>
 <html>
     <head>
-        
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>EpiCalendar</title>
-        <link type="text/css" rel="stylesheet" href="./index.css">
         <link rel="stylesheet" href="./style.css">
+
     </head>
 
     <body>
         <div id="root">
             <header>
-                <div class="hide-calendar-header"><button id="hide-calendar"><img class="arrow-button left" src="./burger-icon.png" alt="Go back a month"></button></div>
+                        <script>
+            function collapseFunction(){
+                if(getElementById('calendar-side-view').style.display != 'none'){
+                    getElementById('calendar-side-view').style.display = 'none';
+                    getElementById('week-view').style.width= '100%';
+                } else{
+                    getElementById('calendar-side-view').style.display = 'block';
+                    getElementById('week-view').style.width= '80%';
+                }
+            }
+                
+        </script>
+                <div class="hide-calendar-header"><button id="hide-calendar" onclick="collapseFunction()"><img class="arrow-button burger" src="./burger-icon.png" alt="Go back a month"></button></div>
                 <div class="calendar-name"><h1>EpiCalendar</h1></div>
                 <div class="week-scroll">
-                    <button id="calendar-left" class="week left"><img class="arrow-button left" src="./scroll-arrow.png" alt="Go back a month"></button>
-                    <button id="calendar-right" class="week right"><img class="arrow-button right" src="./scroll-arrow.png" alt="Go forward a month"></button>
-
-                    <div class="current-date-number">Birzelis-Liepa, 2025</div>
+                    <div>
+                        <button id="calendar-left" class="week left"><img class="arrow-button left" src="./scroll-arrow.png" alt="Go back a month"></button>
+                        <button id="calendar-right" class="week right"><img class="arrow-button right" src="./scroll-arrow.png" alt="Go forward a month"></button>
+                    </div>                    
+                    <div class="current-date-number">Jun-Jul, 2025</div>
                 </div>
-                <div class="display-selector"><button>Sav. vaizd.</button></div>
+                <div class="display-selector">
+                    <div class="dropdown"><div>Week \/</div>
+                        <div class="dropdown-content">
+                            <div class="dropdown-item">
+                                <p>text</p>
+                                <p>AB</p>
+                            </div>
+                            <div class="dropdown-item">
+                                <p>Moar Text</p>
+                                <p>B2</p>
+                            </div>
+                            <div class="dropdown-item">
+                                <p>Even Moar text_here</p>
+                                <p>CA</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </header>
             <div class="lower-flex">
-                <div class="calendar-view">
+                <div id="calendar-side-view" class="calendar-view">
+                    <div class="event-button">
+                        <button class="event-button-button" onclick="getElementById('event').style.display = 'flex';">Create Event</button>
+                        <div class="dropdown-content">
+                            <div class="dropdown-item">
+                                <p>Event</p>
+                            </div>
+                            <div class="dropdown-item">
+                                <p>Task</p>
+                            </div>
+                            <div class="dropdown-item">
+                                <p>Schedule</p>
+                            </div>
+                        </div>
+                    </div>
                     <div class="calendar-container">
                         <div class="calendar-header">
                             <div class="calendar-month">November, 2025</div>
@@ -66,32 +109,95 @@
                             <div><h3>Fri</h3></div>
                             <div><h3>Sat</h3></div>
                         </div>
-                        <div class = "timeline">
+                        <div class="timeline-container">
+                        <div class = "timeline-grid">
                             <div class="time-column">
-                                <div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div><div>8</div><div>9</div><div>10</div><div>11</div><div>12</div><div>13</div><div>14</div><div>15</div><div>16</div><div>17</div><div>18</div><div>19</div><div>20</div><div>21</div><div>22</div><div>23</div>
-                            </div>
-                            <div class="time-column">
-                                <div>.</div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                            </div>
-                            <div class="time-column">
-                                <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                            </div>
-                            <div class="time-column">
-                                <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                            </div>
-                            <div class="time-column">
-                                <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                            </div>
-                            <div class="time-column">
-                                <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                            </div>
-                            <div class="time-column">
-                                <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                            </div>
-                            <div class="time-column">
-                                <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-                            </div>
+                                <div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div><div>8</div><div>9</div><div>10</div><div>11</div><div>12</div><div>13</div><div>14</div><div>15</div><div>16</div><div>17</div><div>18</div><div>19</div><div>20</div><div>21</div><div>22</div><div>23</div></div>
+                                <div class="time-column">
+                                    <div>.</div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                                <div class="time-column">
+                                    <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                                <div class="time-column">
+                                    <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                                <div class="time-column">
+                                    <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                                <div class="time-column">
+                                    <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                                <div class="time-column">
+                                    <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                                <div class="time-column">
+                                    <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
                         </div>
+                    </div>
+                </div>
+            </div>
+            <div id="event" class="event-container">
+                <div class="event-top-column">
+                <div class="event-icon-column">
+                    <div class="event-creation-header">Event Creation</div>
+                </div>
+                <div class="event-content-column">
+                    <div class="event-header">
+                        <img class="event-close-button arrow-button close" onclick="getElementById('event').style.display = 'none';" src="./cross.png" alt="Close the event creation menu"></button>
+                    </div>
+                    <input id="event-name" class="event-name-input" placeholder="Add title"/>
+                    <div class="event-type-line">
+                        <div class="event-type-box">
+                            Event
+                        </div>
+                        <div class="event-type-box">
+                            Task
+                        </div>
+                        <div class="event-type-box">
+                            Schedule
+                        </div>
+                    </div>
+                    <div class="event-time-picker">
+                        <div class="event-date-box">
+                            Datepicker
+                        </div>
+                        <div class="event-date-box">
+                            From: xx:xx
+                        </div>
+                        <div class="event-date-box">
+                            To: yy:yy
+                        </div>
+                    </div>
+                    <div class="event-extra-date-selectors">
+                        <div class="checkbox-holder">
+                            <input id="is-event-all-day" type="checkbox" class="event-checkbox">
+                        </div>
+                        <div class="event-date-box">Time Zone</div>
+                        <div class="event-date-box">Repeat \/</div>
+                    </div>
+                    <input id="event-guests" class="event-name-input mini" placeholder="Add guests"/>
+                </div>
+                </div>
+                
+                <div class="separator"></div>
+                <div class="event-mid-column">
+                    <div class="event-icon-column">
+                        <img class="arrow-button location" src="./location.png" alt="Add a location">
+                        <img class="arrow-button location" src="./Document.png" alt="Add a description">
+                    </div>
+                    <div class="event-content-column">
+                        <input id="event-location" class="event-name-input mini" placeholder="Add location"/>
+                        <input id="event-description" class="event-name-input mini" placeholder="Add description"/>
+                    </div>
+                </div>
+
+                <div class="separator"></div>
+
+                <div class="event-bot-column">
+                    <div class="event-icon-column">
+                        <img class="arrow-button location" src="./Calendar.png" alt="Schedule a reminder">
+                    </div>
+
+                    <div class="event-content-column">
+                        <div class="event-extra-date-selectors">
+                            <div class="event-date-box">Set Reminder</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
