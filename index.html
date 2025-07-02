@@ -5,24 +5,29 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>EpiCalendar</title>
         <link rel="stylesheet" href="./style.css">
-
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Zain:ital,wght@0,200;0,300;0,400;0,700;0,800;0,900;1,300;1,400&display=swap" rel="stylesheet">
     </head>
 
     <body>
         <div id="root">
             <header>
-                        <script>
-            function collapseFunction(){
-                if(getElementById('calendar-side-view').style.display != 'none'){
-                    getElementById('calendar-side-view').style.display = 'none';
-                    getElementById('week-view').style.width= '100%';
-                } else{
-                    getElementById('calendar-side-view').style.display = 'block';
-                    getElementById('week-view').style.width= '80%';
-                }
-            }
-                
-        </script>
+                <script>
+                    let header_button = "calendar active";
+                    function collapseFunction(){
+                        console.log("button clicked");
+                        if(header_button=== "calendar active"){
+                            document.getElementById('calendar-side-view').style.display = 'none';
+                            document.getElementById('week-view').style.width= '100%';
+                            header_button = null;
+                        } else {
+                            document.getElementById('calendar-side-view').style.display = 'inline';
+                            document.getElementById('week-view').style.width= '80%';
+                            header_button = "calendar active";
+                        }
+                    }
+                </script>
                 <div class="hide-calendar-header"><button id="hide-calendar" onclick="collapseFunction()"><img class="arrow-button burger" src="./burger-icon.png" alt="Go back a month"></button></div>
                 <div class="calendar-name"><h1>EpiCalendar</h1></div>
                 <div class="week-scroll">
@@ -98,16 +103,16 @@
                         </div>
                     </div>
                 </div>
-                <div class="week-view">
+                <div id="week-view" class="week-view">
                         <div class = "topline">
                             <div><h5>Gmt +3</h5></div>
-                            <div><h3>Sun</h3></div>
-                            <div class = "day-name"><h3>Mon</h3></div>
-                            <div><h3>Tue</h3></div>
-                            <div><h3>Wed</h3></div>
-                            <div><h3>Thu</h3></div>
-                            <div><h3>Fri</h3></div>
-                            <div><h3>Sat</h3></div>
+                            <div><h3>Sun</h3><h3 class = "topline-number">30</h3></div>
+                            <div><h3>Mon</h3><h3 class = "topline-number">1</h3></div>
+                            <div><h3>Tue</h3><h3 class = "topline-number">2</h3></div>
+                            <div><h3>Wed</h3><h3 class = "topline-number">3</h3></div>
+                            <div><h3>Thu</h3><h3 class = "topline-number">4</h3></div>
+                            <div><h3>Fri</h3><h3 class = "topline-number">5</h3></div>
+                            <div><h3>Sat</h3><h3 class = "topline-number">6</h3></div>
                         </div>
                         <div class="timeline-container">
                         <div class = "timeline-grid">
@@ -118,7 +123,11 @@
                                 <div class="time-column">
                                     <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
                                 <div class="time-column">
-                                    <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                                    <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div class = "sample">
+                                        <div class="meeting-example">
+                                            Team GG daily, 10am, Vilnius Sky Office.
+                                        </div>
+                                    </div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
                                 <div class="time-column">
                                     <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
                                 <div class="time-column">
@@ -196,6 +205,9 @@
                     <div class="event-content-column">
                         <div class="event-extra-date-selectors">
                             <div class="event-date-box">Set Reminder</div>
+                        </div>
+                        <div class="event-type-line">
+                            <button id="event-save-button" class="event-save-button">Save</button>
                         </div>
                     </div>
                 </div>
