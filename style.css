@@ -81,7 +81,7 @@ header{
 }
 .calendar-view{
     width: 20%;
-    float: left;
+    justify-content: flex-start;
     box-sizing: border-box;
     min-width: 260px;
     font-size: 0.8rem;
@@ -93,12 +93,12 @@ header{
     overflow: auto;
     width: 80%;
     background-color:rgb(244, 244, 244);
-    float:right;
+    justify-content: flex-end;
     min-height: 600px;
     border-radius: 20px;
 }
 .display-selector{
-    float:right;
+    justify-content: flex-end;
 }
 .calendar-header{
     display: inline-flex;
@@ -153,7 +153,7 @@ img.burger{
     margin-right: 16px;
 }
 .calendar-name{
-    float:left;
+    justify-content: flex-start;
     margin-left: 16px;
 }
 .timeline-container {
@@ -223,18 +223,16 @@ div.sample{
 .event-top-column, .event-mid-column, .event-bot-column{
     display: flex;
     flex-direction: row;
-    padding: 32px;
+    padding: 16px 32px;
 }
 .event-container{
     width: 600px;
-    min-height:400px;
-    max-height: 90vh;
     background-color: rgb(227, 227, 227);
+    z-index: 3;
     position: fixed;
-    top: 30%;
+    top: 10%;
     left: 5%;
     right: 5%;
-    bottom: 10%;
     display: flex;
     flex-direction: column;
     box-shadow: 0.1rem -0.1rem 0.5rem rgba(126,73,73, 0.5),
@@ -257,12 +255,11 @@ div.sample{
 }
 .event-name-input{
     line-height: 40px;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     width: inherit;
-    background-color: rgb(244, 244, 244);
+    background-color: inherit;
     color:#7e4949;
     padding-left: 16px;
-    background-color: inherit;
     border: none;
     border-bottom:1px solid #7e4949;
     outline: none;
@@ -276,15 +273,15 @@ div.sample{
 }
 .event-header{
     width: 100%;
-    height: 24px;
-    padding-bottom: 16px;
-    font-size: 1.5rem;
+    height: 40px;
+    font-size: 1.2rem;
     color: rgba(100,100,100, 1);
 }
 .event-close-button{
     background-color: inherit;
     border: none;
     float: right;
+    margin: 12px 0;
 }
 .event-close-button img{
     width: 32px;
@@ -297,7 +294,7 @@ div.sample{
 .event-type-line, .event-time-picker, .event-extra-date-selectors{
     width: 100%;
     height: 32px;
-    font-size: 1rem;
+    font-size: 0.8rem;
     color: #7e4949;
     display: inline-flex;
     justify-content: flex-start;
@@ -358,18 +355,27 @@ div.sample{
 .checkbox-holder:hover{
     background-color: rgba(62, 62, 62, 0.5);
 }
-
+.checkbox-holder:hover .event-checkbox-label{
+    display: block;
+}
+.event-checkbox-label{
+    color: white;
+    font-size: 0.8rem;
+    background-color:inherit;
+    padding: 8px;
+    min-width: 40px;
+    display: none;
+}
 .event-name-input.mini{
-    height: 24px;
-    line-height: 24px;
-    font-size: 1rem;
+    height: 20px;
+    line-height: 1rem;
+    font-size: 0.8rem;
     margin: 0;
 }
 .separator{
-    height: 1px;
+    height: 2px;
     width:100%;
     background-color:#7e4949;
-    margin-bottom: 16px;
 }
 #event-location, #event-description{
     margin-bottom: 16px;
@@ -434,9 +440,9 @@ img.location{
 }
 
 .event-save-button{
-    font-size: 1rem;
-    height: 40px;
-    float: right;
+    font-size: 0.8rem;
+    height: 32px;
+    justify-content: flex-end;
     border: none;
     background-color:#7e4949;
     color: white;
@@ -444,4 +450,8 @@ img.location{
 }
 .event-bot-column .event-content-column .event-type-line{
     justify-content: flex-end;
+}
+#view-selection{
+    background-color: inherit;
+    border: none;
 }
