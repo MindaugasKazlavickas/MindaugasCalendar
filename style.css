@@ -26,45 +26,45 @@ h1{
     color:#7e4949;
     font-size: 2rem;
 }
-.hide-calendar-header, .week-scroll, .display-selector{
+.hideCalendarHeader, .weekScroll, .displaySelector{
     margin: auto;
 }
-.week-scroll{
+.weekScroll{
     display: inline-flex;
     padding: 24px;
     width: 20%;
 }
-.week, .calendar-name, .current-date-number, .calendar, .calendar-month{
+.week, .calendarName, .currentDateNumber, .calendar, .calendarMonth{
     margin: auto;
 }
 
-.lower-flex{
+.lowerFlex{
     display: inline-flex;
     width:100%;
     max-height: 90vh;
 }
-.calendar-view{
+.calendarView{
     width: 20%;
-    float: left;
+    justify-content: flex-start;
     box-sizing: border-box;
     min-width: 260px;
     font-size: 0.8rem;
     padding: 16px;
     height: 90vh;
 }
-.week-view{
+.weekView{
     display: inline;
     overflow: auto;
     width: 80%;
     background-color:rgb(244, 244, 244);
-    float:right;
+    justify-content: flex-end;
     min-height: 600px;
     border-radius: 20px;
 }
-.display-selector{
-    float:right;
+.displaySelector{
+    justify-content: flex-end;
 }
-.calendar-header{
+.calendarHeader{
     display: inline-flex;
     justify-content: space-between;
     width: 100%;
@@ -84,27 +84,27 @@ h1{
 .week:hover{
     background-color:#7e494977;
 }
-.arrow-button{
+.arrowButton{
     text-align: center;
     margin: auto;
     max-height: 16px;
 }
-.arrow-button.right{
+.arrowButton.right{
     transform: rotate(180deg)
 }
-.arrow-button.left img{
+.arrowButton.left img{
     display: flex;
     width: 32px;
     height: 32px;
 }
-.calendar-day-row{
+.calendarDayRow{
     display: inline-flex;
     justify-content: space-between;
     box-sizing: border-box;
     padding: 8px;
     width: 100%;
 }
-#hide-calendar{
+#collapseButton{
     background-color: inherit;
     border: none;
 }
@@ -113,29 +113,29 @@ img.burger{
     height: 32px;
     width:32px;
 }
-.hide-calendar-header{
+.hideCalendarHeader{
     margin-right: 16px;
 }
-.calendar-name{
-    float:left;
+.calendarName{
+    justify-content: flex-start;
     margin-left: 16px;
 }
-.timeline-container {
+.timelineContainer {
     display: flex;
     height: 138vh;
     overflow-y: scroll;
     margin-top:104px;
 }
-.timeline-grid{
+.timelineGrid{
     flex: 1;
     display: flex;
     flex-direction: row;
     overflow: hidden;
 }
-.time-column {
+.timeColumn {
     flex: 1;
 }
-.time-column div {
+.timeColumn div {
     height: 6vh;
     border-bottom: 1px solid #7e4949;
     border-left: 1px solid #7e4949;
@@ -162,14 +162,14 @@ img.burger{
     padding-bottom:12px;
     border-top-left-radius: 16px;
 }
-.topline-number{
+.toplineNumber{
     border-radius: 50%;
     background-color: white;
     color:#7e4949;
     width: 40px;
     margin: auto;
 }
-div.meeting-example{
+div.meetingExample{
     width: 95%;
     max-height: 24px;
     border: none;
@@ -184,21 +184,19 @@ div.meeting-example{
 div.sample{
     padding: 0;
 }
-.event-top-column, .event-mid-column, .event-bot-column{
+.eventTopColumn, .eventMidColumn, .eventBotColumn{
     display: flex;
     flex-direction: row;
-    padding: 32px;
+    padding: 16px 32px;
 }
-.event-container{
+.eventContainer{
     width: 600px;
-    min-height:400px;
-    max-height: 90vh;
     background-color: rgb(227, 227, 227);
+    z-index: 3;
     position: fixed;
-    top: 30%;
+    top: 10%;
     left: 5%;
     right: 5%;
-    bottom: 10%;
     display: flex;
     flex-direction: column;
     box-shadow: 0.1rem -0.1rem 0.5rem rgba(126,73,73, 0.5),
@@ -209,65 +207,64 @@ div.sample{
 #event{
     display:none;
 }
-.event-icon-column{
+.eventIconColumn{
     flex: 1;
     display: flex;
     flex-direction: column;
 }
-.event-content-column{
+.eventContentColumn{
     flex: 10;
     display: flex;
     flex-direction: column;
 }
-.event-name-input{
+.eventNameInput{
     line-height: 40px;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     width: inherit;
-    background-color: rgb(244, 244, 244);
+    background-color: inherit;
     color:#7e4949;
     padding-left: 16px;
-    background-color: inherit;
     border: none;
     border-bottom:1px solid #7e4949;
     outline: none;
     margin-bottom: 16px;
 }
-.event-name-input::placeholder{
+.eventNameInput::placeholder{
     color: #7e4949;
 }
-.event-name-input:focus{
+.eventNameInput:focus{
     border-bottom:3px solid #7e4949;
 }
 .event-header{
     width: 100%;
-    height: 24px;
-    padding-bottom: 16px;
-    font-size: 1.5rem;
+    height: 40px;
+    font-size: 1.2rem;
     color: rgba(100,100,100, 1);
 }
-.event-close-button{
+.eventCloseButton{
     background-color: inherit;
     border: none;
     float: right;
+    margin: 12px 0;
 }
-.event-close-button img{
+.eventCloseButton img{
     width: 32px;
     height: 32px;
 }
-.event-close-button:hover{
+.eventCloseButton:hover{
     background-color: #7e494977;
     cursor: pointer;
 }
-.event-type-line, .event-time-picker, .event-extra-date-selectors{
+.eventTypeLine, .eventTimePicker, .eventExtraDateSelectors{
     width: 100%;
     height: 32px;
-    font-size: 1rem;
+    font-size: 0.8rem;
     color: #7e4949;
     display: inline-flex;
     justify-content: flex-start;
     margin-bottom: 16px;
 }
-.event-type-line div{
+.eventTtypeLine div{
     padding: 8px;
     background-color: rgb(232, 213, 213);
     border-radius: 10px;
@@ -276,28 +273,28 @@ div.sample{
     margin-right: 16px;
     padding-top: 8px;
 }
-.event-type-line div:hover{
+.eventTypeLine div:hover{
     background-color: rgb(203, 176, 176);
 }
-.event-time-picker div{
+.eventTimePicker div{
     padding: 8px;
     background-color: rgba(127, 127, 127, 0.5);
     height:16px;
     text-align: center;
     padding-top: 8px;
 }
-.event-date-box{
+.eventDateBox{
     margin-right: 16px;
 }
-.event-date-box:hover{
+.eventDateBox:hover{
     background-color: rgba(62, 62, 62, 0.5);
 }
-.event-checkbox{
+.eventCheckbox{
     color: #7e4949;
     height: 16px;
     width: 16px;
 }
-.event-extra-date-selectors .event-date-box{
+.eventExtraDateSelectors .eventDateBox{
     padding:8px;
     border-radius: 10px;  
     height: 16px;
@@ -305,13 +302,13 @@ div.sample{
     padding-top: 8px;
     background-color: rgba(127, 127, 127, 0.5);
 }
-.event-extra-date-selectors .event-date-box:hover{
+.eventExtraDateSelectors .eventDateBox:hover{
     background-color: rgba(62, 62, 62, 0.5);
 }
-.event-extra-date-selectors{
+.eventExtraDateSelectors{
     align-items: center;
 }
-.checkbox-holder{
+.checkboxHolder{
     padding: 4px;
     margin-right: 16px;
     border-radius: 24px;
@@ -319,23 +316,35 @@ div.sample{
     width: 24px;
     text-align: center;
 }
-.checkbox-holder:hover{
+.checkboxHolder:hover{
     background-color: rgba(62, 62, 62, 0.5);
 }
-
-.event-name-input.mini{
-    height: 24px;
-    line-height: 24px;
-    font-size: 1rem;
+.checkboxHolder:hover .eventCheckboxLabel{
+    display: block;
+    background-color: rgba(62, 62, 62, 1);
+    color: white;
+    z-index: 5;
+}
+.eventCheckboxLabel{
+    color: white;
+    font-size: 0.8rem;
+    background-color:inherit;
+    padding: 8px;
+    min-width: 40px;
+    display: none;
+}
+.eventNameInput.mini{
+    height: 20px;
+    line-height: 1rem;
+    font-size: 0.8rem;
     margin: 0;
 }
 .separator{
-    height: 1px;
+    height: 2px;
     width:100%;
     background-color:#7e4949;
-    margin-bottom: 16px;
 }
-#event-location, #event-description{
+#eventLocation, #eventDescription{
     margin-bottom: 16px;
 }
 img.location{
@@ -350,7 +359,7 @@ img.location{
     margin:auto;
 }
 
-.dropdown, .event-button, .event-save-button{
+.dropdown, .eventButton, .eventSaveButton{
     position: relative;
     display: inline-block;
     border: 1px solid black;
@@ -362,7 +371,7 @@ img.location{
 .dropdown:hover{
     background-color: #c9c9c9;
 }
-.dropdown-content {
+.dropdownContent {
     display: none;
     position: absolute;
     background-color: rgb(227, 227, 227);
@@ -374,7 +383,7 @@ img.location{
     right: 0;
     top: 50px;
 }
-.dropdown-item{
+.dropdownItem{
     display: inline-flex;
     justify-content: space-between;
     padding-top: 16px;
@@ -382,30 +391,34 @@ img.location{
     padding-left: 8px;
     padding-right: 8px;
 }
-.dropdown-item:hover, .event-button:hover{
+.dropdownItem:hover, .eventButton:hover{
     background-color: #c9c9c9;
 }
-.dropdown:hover .dropdown-content, .event-button:hover .dropdown-content {
+.dropdown:hover .dropdownContent, .eventButton:hover .dropdownContent {
     display: flex;
     z-index:2;
 }
-.event-button-button{
+.eventButtonButton{
     background-color: inherit;
     border: none;
 }
-.event-button .dropdown-content{
+.eventButton .dropdownContent{
     left: 0;
 }
 
-.event-save-button{
-    font-size: 1rem;
-    height: 40px;
-    float: right;
+.eventSaveButton{
+    font-size: 0.8rem;
+    height: 32px;
+    justify-content: flex-end;
     border: none;
     background-color:#7e4949;
     color: white;
     padding: 8px 16px;
 }
-.event-bot-column .event-content-column .event-type-line{
+.eventBotColumn .eventContentColumn .eventTypeLine{
     justify-content: flex-end;
+}
+#viewSelection{
+    background-color: inherit;
+    border: none;
 }
