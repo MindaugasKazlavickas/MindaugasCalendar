@@ -1,6 +1,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     let headerButton = "calendar active";
+    let currentDay = new Date().getDate();
 
     const calendarSideView = document.getElementById('calendarSideView');
     const weekView = document.getElementById('weekView');
@@ -17,5 +18,8 @@ document.addEventListener('DOMContentLoaded', () => {
             headerButton = "calendar active";
         }
     })
+    const logoDate = document.getElementById('logoDate');
+    
+    logoDate.innerText = currentDay;
 
 })
