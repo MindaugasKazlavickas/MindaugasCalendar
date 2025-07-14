@@ -1,4 +1,3 @@
-/* reserved */
 :root {
     --primary-highlight: #C3E7FE;
     --primary-blue: #1255CD;
@@ -6,11 +5,13 @@
     --primary-logo: #4583F1;
     --primary-background: #F8FAFD;
     --secondary-highlight: #EBECEF;
-    font-size: 16px;
+    --primary-black: black;
+    font-size: default;
     background-color: var(--primary-background);
     color: black;
     font-family: "Roboto", sans-serif;
 }
+
 .header {
     display: grid;
     width: 100%;
@@ -20,49 +21,97 @@
     text-align: center;
     height: 64px;
 }
-.button{
+
+.button {
     text-align: center;
     margin: auto;
     background-color: inherit;
     border: none;
 }
-.button:hover{
+
+.button:hover {
     background-color: var(--secondary-highlight);
-    border-radius: 30px;
+    border-radius: 50%;
 }
-#collapseButton{
+
+.headerLeft {
+    display: grid;
+    grid-template-columns: 48px 44px 1fr;
+    height: 48px;
+}
+
+.headerLeftCollapse {
     height: 40px;
     width: 40px;
     margin: auto 8px auto 0;
 }
 
-.headerLogo {
+.headerLeftLogo {
     position: relative;
     width: 44px;
     height: 44px;
     margin: auto 0;
 }
 
-.mainHeading {
+.headerLeftLogoImg {
+    width: inherit;
+    height: inherit;
+}
+
+.headerLeftLogoText {
+    color: var(--primary-logo);
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.round {
+    margin: 4px 20px 4px 0;
+    border: 1px solid var(--primary-black);
+    border-radius: 30px;
+    padding: 0 24px;
+}
+
+.round:hover {
+    border-radius: 30px;
+}
+
+.headerLeftHeading {
     font-size: 1.2rem;
     margin: auto auto auto 8px;
 }
 
-.headerLeft {
-    display: grid;
-    grid-template-columns: 48px 44px 1fr;
-    height:inherit;
+.headerCenter,
+.headerCenterLeft,
+.headerCenterRight,
+.headerRight {
+    display: inline-flex;
+    height: 48px;
 }
 
-.logo {
-    width: inherit;
-    height: inherit;
+.headerCenter {
+    justify-content: space-between;
 }
-.main {
+
+.medium {
+    width: 32px;
+    height: 32px;
+    padding: 4px;
+}
+
+.headerCenterLeftHeading {
+    padding: 0 8px;
+}
+
+.content {
     display: grid;
     grid-template-columns: 256px 1fr 56px;
 }
+
 .hideCalendarHeader,
+.headerCenterLeftHeading,
 .weekScroll,
 .displaySelector {
     margin: auto;
@@ -74,26 +123,16 @@
 
 .week,
 .calendarName,
-.currentDateNumber,
 .calendar,
 .calendarMonth {
     margin: auto;
 }
+
 #calendarSideView {
     justify-content: flex-start;
     font-size: 0.8rem;
     padding: 16px;
     height: 90vh;
-}
-
-#logoDate {
-    color: var(--primary-logo);
-    text-align: center;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-
 }
 
 .weekView {
@@ -155,6 +194,7 @@
     padding: 8px;
     width: 100%;
 }
+
 .hideCalendarHeader {
     margin-right: 16px;
 }
@@ -450,7 +490,7 @@ img.location {
     position: relative;
     display: inline-block;
     border: 1px solid black;
-    padding: 16px;
+    padding: 0 24px;
     font-size: 1rem;
     border-radius: 32px;
     background-color: #f9f9f9;
@@ -514,9 +554,4 @@ img.location {
 
 .eventBotColumn .eventContentColumn .eventTypeLine {
     justify-content: flex-end;
-}
-
-#viewSelection {
-    background-color: inherit;
-    border: none;
 }

@@ -16,47 +16,54 @@
 </head>
 
 <body>
-    <header class = "header">
+    <header class="header">
         <div class="headerLeft">
-            <button id="collapseButton" class = "button">
-                <img src="./media/burger.svg" alt="Close calendar view">
+            <button id="collapseButton" class="button headerLeftCollapse">
+                <img src="./media/burger.svg" alt="Closes and opens calendar view">
             </button>
-            <span class="headerLogo">
-                <img class="logo" src="./media/logo.png">
-                <p id="logoDate">31</p>
+            <span class="headerLeftLogo">
+                <img class="headerLeftLogoImg" src="./media/logo.png">
+                <p id="logoText" class="headerLeftLogoText">31</p>
             </span>
-            <p class="mainHeading">Calendar</p>
+            <p class="headerLeftHeading">Calendar</p>
         </div>
 
         <div class="headerCenter">
-            <button id="headerToday">Today</button>
-            <button id="calendarLeft" class="week left"><img class="arrowButton" src="./media/chevron_left.svg"
-                    alt="Go back a month"></button>
-            <button id="calendarRight" class="week right"><img class="arrowButton" src="./media/chevron_right.svg"
-                    alt="Go forward a month"></button>
-            <p class="currentDateNumber">Jun-Jul, 2025</p>
-            <button class="button" id="search"><img src="./media/search.svg"></button>
-            <button class="button" id="support"><img src="./media/help.svg"></button>
-            <button class="button" id="settings"><img src="./media/settings.svg"></button>
-            <div class="dropdown"><button id="viewSelection">Week <span class="chevron bottom"></span></button>
-                <div class="dropdownContent">
-                    <div class="dropdownItem">
-                        <p>text</p>
-                        <p>AB</p>
-                    </div>
-                    <div class="dropdownItem">
-                        <p>Moar Text</p>
-                        <p>B2</p>
-                    </div>
-                    <div class="dropdownItem">
-                        <p>Even Moar text_here</p>
-                        <p>CA</p>
+            <div class="headerCenterLeft">
+                <button id="headerToday" class="button round">Today</button>
+                <button id="calendarLeft" class="button medium">
+                    <img class="" src="./media/chevron_left.svg" alt="Go back a month"></button>
+                <button id="calendarRight" class="button medium">
+                    <img class="" src="./media/chevron_right.svg" alt="Go forward a month"></button>
+                <p class="headerCenterLeftHeading" id="monthDisplay">2025</p>
+            </div>
+
+
+
+            <div class="headerCenterRight">
+                <button class="button medium" id="search"><img src="./media/search.svg"></button>
+                <button class="button medium" id="support"><img src="./media/help.svg"></button>
+                <button class="button medium" id="settings"><img src="./media/settings.svg"></button>
+                <div class="dropdown">
+                    <button id="viewSelection" class="button round">Week <span class="chevron bottom"></span></button>
+                    <div class="dropdownContent">
+                        <div class="dropdownItem">
+                            <p>text</p>
+                            <p>AB</p>
+                        </div>
+                        <div class="dropdownItem">
+                            <p>More Text</p>
+                            <p>B2</p>
+                        </div>
+                        <div class="dropdownItem">
+                            <p>Even More text_here</p>
+                            <p>CA</p>
+                        </div>
                     </div>
                 </div>
+                <div>Cal / Tasks</div>
             </div>
-            <div>Cal / Tasks</div>
         </div>
-
 
         <div class="headerRight">
             <button>square</button>
@@ -64,7 +71,7 @@
         </div>
     </header>
 
-    <div class="main">
+    <div class="content">
 
 
         <aside id="calendarSideView">
