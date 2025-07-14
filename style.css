@@ -5,7 +5,7 @@
     --primary-logo: #4583F1;
     --primary-background: #F8FAFD;
     --secondary-highlight: #EBECEF;
-    --primary-black: black;
+    --primary-black: #4d4d4d;
     font-size: default;
     background-color: var(--primary-background);
     color: black;
@@ -21,15 +21,16 @@
     text-align: center;
     height: 64px;
 }
-
-.button {
+.iconButton{
     text-align: center;
     margin: auto;
     background-color: inherit;
     border: none;
+    width: 32px;
+    height: 32px;
+    padding: 4px;
 }
-
-.button:hover {
+.iconButton:hover{
     background-color: var(--secondary-highlight);
     border-radius: 50%;
 }
@@ -67,15 +68,18 @@
     transform: translate(-50%, -50%);
 }
 
-.round {
+.roundedCornerButton {
     margin: 4px 20px 4px 0;
     border: 1px solid var(--primary-black);
     border-radius: 30px;
     padding: 0 24px;
+    text-align: center;
+    background-color: inherit;
 }
 
-.round:hover {
+.roundedCornerButton:hover {
     border-radius: 30px;
+    background-color: var(--secondary-highlight);
 }
 
 .headerLeftHeading {
@@ -95,13 +99,8 @@
     justify-content: space-between;
 }
 
-.medium {
-    width: 32px;
-    height: 32px;
-    padding: 4px;
-}
-
 .headerCenterLeftHeading {
+    font-size: 1.4rem;
     padding: 0 8px;
 }
 
@@ -109,6 +108,28 @@
     display: grid;
     grid-template-columns: 256px 1fr 56px;
 }
+
+.rightSideMenu{
+    display: inline-flex;
+    flex-flow: column nowrap;
+    justify-items: flex-start;
+}
+
+.asideIconButton{
+    text-align: center;
+    margin: auto;
+    background-color: inherit;
+    border: none;
+    width: 40px;
+    height: 40px;
+    padding: 8px;
+    margin: 8px;
+}
+.asideIconButton:hover{
+    background-color: var(--secondary-highlight);
+    border-radius: 50%;
+}
+
 
 .hideCalendarHeader,
 .headerCenterLeftHeading,
@@ -136,15 +157,36 @@
 }
 
 .weekView {
-    display: inline;
-    overflow: auto;
-    width: 80%;
-    background-color: rgb(244, 244, 244);
-    justify-content: flex-end;
-    min-height: 600px;
-    border-radius: 20px;
+    overflow:scroll;
+    background-color: white;
+    border-radius: 30px;
+}
+.weekViewGrid{
+    border-radius: 30px;
+    table-layout : fixed;
+    width: 100%;
+    min-width: 650px;
 }
 
+.weekViewGrid:last-child tr{
+    border-right: 0;
+}
+.weekViewGrid:last-child tr{
+    border-bottom: 0;
+}
+.timeColumn{
+    width: 80px;
+}
+.weekViewGridHeader{
+    border-bottom: 1px solid var(--primary-black);
+    border-right: 1px solid var(--primary-black);
+    min-height: 40px;
+}
+.weekViewGridBox{
+    border-bottom: 1px solid var(--primary-black);
+    border-right: 1px solid var(--primary-black);
+    min-height: 40px;
+}
 .displaySelector {
     justify-content: flex-end;
 }
@@ -170,22 +212,6 @@
 
 .week:hover {
     background-color: #7e494977;
-}
-
-.arrowButton {
-    text-align: center;
-    margin: auto;
-    max-height: 16px;
-}
-
-.arrowButton.right {
-    transform: rotate(180deg)
-}
-
-.arrowButton.left img {
-    display: flex;
-    width: 32px;
-    height: 32px;
 }
 
 .calendarDayRow {
@@ -462,9 +488,9 @@ div.sample {
 }
 
 .separator {
-    height: 2px;
-    width: 100%;
-    background-color: #7e4949;
+    height: 1px;
+    margin: 0 8px;
+    background-color: var(--primary-black);
 }
 
 #eventLocation,

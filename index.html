@@ -18,7 +18,7 @@
 <body>
     <header class="header">
         <div class="headerLeft">
-            <button id="collapseButton" class="button headerLeftCollapse">
+            <button id="collapseButton" class="iconButton headerLeftCollapse">
                 <img src="./media/burger.svg" alt="Closes and opens calendar view">
             </button>
             <span class="headerLeftLogo">
@@ -30,10 +30,10 @@
 
         <div class="headerCenter">
             <div class="headerCenterLeft">
-                <button id="headerToday" class="button round">Today</button>
-                <button id="calendarLeft" class="button medium">
+                <button id="headerToday" class="roundedCornerButton">Today</button>
+                <button id="calendarLeft" class="iconButton">
                     <img class="" src="./media/chevron_left.svg" alt="Go back a month"></button>
-                <button id="calendarRight" class="button medium">
+                <button id="calendarRight" class="iconButton">
                     <img class="" src="./media/chevron_right.svg" alt="Go forward a month"></button>
                 <p class="headerCenterLeftHeading" id="monthDisplay">2025</p>
             </div>
@@ -41,11 +41,12 @@
 
 
             <div class="headerCenterRight">
-                <button class="button medium" id="search"><img src="./media/search.svg"></button>
-                <button class="button medium" id="support"><img src="./media/help.svg"></button>
-                <button class="button medium" id="settings"><img src="./media/settings.svg"></button>
+                <button class="iconButton" id="search"><img src="./media/search.svg"></button>
+                <button class="iconButton" id="support"><img src="./media/help.svg"></button>
+                <button class="iconButton" id="settings"><img src="./media/settings.svg"></button>
                 <div class="dropdown">
-                    <button id="viewSelection" class="button round">Week <span class="chevron bottom"></span></button>
+                    <button id="viewSelection" class="roundedCornerButton">Week <span
+                            class="chevron bottom"></span></button>
                     <div class="dropdownContent">
                         <div class="dropdownItem">
                             <p>text</p>
@@ -61,7 +62,6 @@
                         </div>
                     </div>
                 </div>
-                <div>Cal / Tasks</div>
             </div>
         </div>
 
@@ -170,24 +170,17 @@
         <main class="weekView">
             <table class="weekViewGrid">
                 <tr>
-                    <th class="weekViewGridHeader"></th>
-                    <th class="weekViewGridHeader"></th>
-                    <th class="weekViewGridHeader"></th>
-                    <th class="weekViewGridHeader"></th>
-                    <th class="weekViewGridHeader"></th>
-                    <th class="weekViewGridHeader"></th>
-                    <th class="weekViewGridHeader"></th>
+                    <th class="weekViewGridHeader timeColumn">LAIKAS</th>
+                    <th class="weekViewGridHeader">a</th>
+                    <th class="weekViewGridHeader">b</th>
+                    <th class="weekViewGridHeader">c</th>
+                    <th class="weekViewGridHeader">d</th>
+                    <th class="weekViewGridHeader">e</th>
+                    <th class="weekViewGridHeader">f</th>
+                    <th class="weekViewGridHeader">g</th>
                 </tr>
                 <tr>
-                    <td class="weekViewGridBox"></td>
-                    <td class="weekViewGridBox"></td>
-                    <td class="weekViewGridBox"></td>
-                    <td class="weekViewGridBox"></td>
-                    <td class="weekViewGridBox"></td>
-                    <td class="weekViewGridBox"></td>
-                    <td class="weekViewGridBox"></td>
-                </tr>
-                <tr>
+                    <td class="weekViewGridBox timeColumn"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
@@ -197,6 +190,7 @@
                     <td class="weekViewGridBox"></td>
                 </tr>
                 <tr>
+                    <td class="weekViewGridBox timeColumn"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
@@ -206,6 +200,7 @@
                     <td class="weekViewGridBox"></td>
                 </tr>
                 <tr>
+                    <td class="weekViewGridBox timeColumn"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
@@ -215,6 +210,7 @@
                     <td class="weekViewGridBox"></td>
                 </tr>
                 <tr>
+                    <td class="weekViewGridBox timeColumn"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
@@ -224,6 +220,7 @@
                     <td class="weekViewGridBox"></td>
                 </tr>
                 <tr>
+                    <td class="weekViewGridBox timeColumn"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
@@ -233,6 +230,7 @@
                     <td class="weekViewGridBox"></td>
                 </tr>
                 <tr>
+                    <td class="weekViewGridBox timeColumn"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
@@ -242,6 +240,7 @@
                     <td class="weekViewGridBox"></td>
                 </tr>
                 <tr>
+                    <td class="weekViewGridBox timeColumn"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
@@ -251,6 +250,7 @@
                     <td class="weekViewGridBox"></td>
                 </tr>
                 <tr>
+                    <td class="weekViewGridBox timeColumn"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
@@ -260,6 +260,7 @@
                     <td class="weekViewGridBox"></td>
                 </tr>
                 <tr>
+                    <td class="weekViewGridBox timeColumn"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
@@ -269,6 +270,7 @@
                     <td class="weekViewGridBox"></td>
                 </tr>
                 <tr>
+                    <td class="weekViewGridBox timeColumn"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
@@ -278,6 +280,7 @@
                     <td class="weekViewGridBox"></td>
                 </tr>
                 <tr>
+                    <td class="weekViewGridBox timeColumn"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
@@ -287,6 +290,7 @@
                     <td class="weekViewGridBox"></td>
                 </tr>
                 <tr>
+                    <td class="weekViewGridBox timeColumn"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
@@ -296,6 +300,7 @@
                     <td class="weekViewGridBox"></td>
                 </tr>
                 <tr>
+                    <td class="weekViewGridBox timeColumn"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
@@ -305,6 +310,7 @@
                     <td class="weekViewGridBox"></td>
                 </tr>
                 <tr>
+                    <td class="weekViewGridBox timeColumn"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
@@ -314,6 +320,7 @@
                     <td class="weekViewGridBox"></td>
                 </tr>
                 <tr>
+                    <td class="weekViewGridBox timeColumn"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
@@ -323,6 +330,7 @@
                     <td class="weekViewGridBox"></td>
                 </tr>
                 <tr>
+                    <td class="weekViewGridBox timeColumn"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
@@ -332,6 +340,7 @@
                     <td class="weekViewGridBox"></td>
                 </tr>
                 <tr>
+                    <td class="weekViewGridBox timeColumn"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
@@ -341,6 +350,7 @@
                     <td class="weekViewGridBox"></td>
                 </tr>
                 <tr>
+                    <td class="weekViewGridBox timeColumn"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
@@ -350,6 +360,7 @@
                     <td class="weekViewGridBox"></td>
                 </tr>
                 <tr>
+                    <td class="weekViewGridBox timeColumn"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
@@ -359,6 +370,7 @@
                     <td class="weekViewGridBox"></td>
                 </tr>
                 <tr>
+                    <td class="weekViewGridBox timeColumn"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
@@ -368,6 +380,7 @@
                     <td class="weekViewGridBox"></td>
                 </tr>
                 <tr>
+                    <td class="weekViewGridBox timeColumn"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
@@ -377,6 +390,7 @@
                     <td class="weekViewGridBox"></td>
                 </tr>
                 <tr>
+                    <td class="weekViewGridBox timeColumn"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
@@ -386,6 +400,17 @@
                     <td class="weekViewGridBox"></td>
                 </tr>
                 <tr>
+                    <td class="weekViewGridBox timeColumn"></td>
+                    <td class="weekViewGridBox"></td>
+                    <td class="weekViewGridBox"></td>
+                    <td class="weekViewGridBox"></td>
+                    <td class="weekViewGridBox"></td>
+                    <td class="weekViewGridBox"></td>
+                    <td class="weekViewGridBox"></td>
+                    <td class="weekViewGridBox"></td>
+                </tr>
+                <tr>
+                    <td class="weekViewGridBox timeColumn"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
                     <td class="weekViewGridBox"></td>
@@ -395,6 +420,7 @@
                     <td class="weekViewGridBox"></td>
                 </tr>
             </table>
+            <!--
             <div class="topline">
                 <div>
                     <h5>Gmt +3</h5>
@@ -439,19 +465,20 @@
                         </div>
                     </div>
                 </div>
+                -->
         </main>
 
-        <aside id="rightSideMenu">
-            <button>Keep</button>
-            <button>Tasks</button>
-            <button>Contacts</button>
-            <button>Maps</button>
-            <hr>
-            <button>Meet</button>
-            <button>Addons</button>
+        <aside id="rightSideView" class="rightSideMenu">
+            <button class="asideIconButton"><img src="./media/keep_colored.png"></button>
+            <button class="asideIconButton"><img src="./media/tasks_colored.png"></button>
+            <button class="asideIconButton"><img src="./media/contacts_colored.png"></button>
+            <button class="asideIconButton"><img src="./media/maps_colored.png"></button>
+            <hr class="separator">
+            <button class="asideIconButton"><img src="./media/zoom_colored.png"></button>
+            <button class="asideIconButton"><img src="./media/add.svg"></button>
         </aside>
     </div>
-
+    <!-- <div class="rightSideMenuButton"></div> -->
     <div id="event" class="eventContainer">
         <div class="eventTopColumn">
             <div class="eventIconColumn">
