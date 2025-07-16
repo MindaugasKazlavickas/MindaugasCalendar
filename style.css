@@ -12,7 +12,7 @@
     background-color: var(--primary-background);
     color: black;
     font-family: "Roboto", sans-serif;
-    --box-shadow: 
+    --box-shadow:
 }
 
 .header {
@@ -36,12 +36,13 @@
     padding-inline: 0;
 }
 
-.iconButton:hover, .calendarDayRowElement:hover{
+.iconButton:hover,
+.calendarDayRowElement:hover {
     background-color: var(--secondary-highlight);
     border-radius: 50%;
 }
 
-.icon{
+.icon {
     text-align: center;
     margin: auto;
     background-color: inherit;
@@ -50,6 +51,7 @@
     height: 32px;
     padding: 4px;
 }
+
 .headerLeft {
     display: grid;
     grid-template-columns: 48px 44px 1fr;
@@ -104,7 +106,7 @@
     margin: auto auto auto 8px;
 }
 
-.separator{
+.separator {
     width: 100%;
     border-bottom: 1px solid var(--primary-gray);
 }
@@ -117,15 +119,17 @@
     height: 48px;
 }
 
-.calendarDayRowElementSelected{
+.calendarDayRowElementSelected {
     background-color: var(--primary-blue);
     border-radius: 50%;
     color: white;
 }
-.calendarDayRowElementSelected:hover{
+
+.calendarDayRowElementSelected:hover {
     cursor: pointer;
     background-color: var(--primary-highlight);
 }
+
 .headerCenter {
     justify-content: space-between;
 }
@@ -161,14 +165,16 @@
     background-color: var(--secondary-highlight);
     border-radius: 50%;
 }
-.smallIconButton{
+
+.smallIconButton {
     background-color: inherit;
     border: none;
     width: 24px;
     height: 24px;
     padding-inline: 0;
 }
-.calendarSideViewButtons{
+
+.calendarSideViewButtons {
     margin-left: auto;
 }
 
@@ -176,7 +182,8 @@
     background-color: var(--secondary-highlight);
     border-radius: 50%;
 }
-.weekViewGridHeader{
+
+.weekViewGridHeader {
     color: var(--primary-black);
     width: inherit;
     height: 102px;
@@ -187,12 +194,14 @@
     padding-bottom: 26px;
     font-weight: 300;
 }
-.weekViewGridHeaderWeekday{
+
+.weekViewGridHeaderWeekday {
     height: 24px;
     font-size: 0.8rem;
     padding: 6px 0;
 }
-.weekViewGridHeaderDate{
+
+.weekViewGridHeaderDate {
     height: 46px;
     font-size: 1.6rem;
     border-radius: 23px;
@@ -200,14 +209,17 @@
     width: 46px;
     padding: 10px 0;
 }
-.weekViewGridHeaderMarked .weekViewGridHeaderWeekday{
+
+.weekViewGridHeaderMarked .weekViewGridHeaderWeekday {
     color: var(--primary-blue);
 }
-.weekViewGridHeaderMarked .weekViewGridHeaderDate{
+
+.weekViewGridHeaderMarked .weekViewGridHeaderDate {
     color: white;
     background-color: var(--primary-blue);
 }
-td.timeColumn{
+
+td.timeColumn {
     text-align: right;
     font-size: 0.8rem;
     font-weight: bold;
@@ -219,17 +231,23 @@ td.timeColumn{
     border: none;
     width: 80px;
 }
+
 .timeColumn {
     width: 80px;
 }
-.weekViewGridBoxDivider.timeColumn{
+
+.weekViewGridBoxDivider.timeColumn {
     transform: translateY(20px);
 }
-.weekViewGridBoxLeftMost, .weekViewGridBoxDividerLeftMost, .weekViewGridHeaderLeftMost{
+
+.weekViewGridBoxLeftMost,
+.weekViewGridBoxDividerLeftMost,
+.weekViewGridHeaderLeftMost {
     width: 8px;
     max-width: 8px;
 }
-.weekViewGridHeaderLeftMost{
+
+.weekViewGridHeaderLeftMost {
     background: white;
     color: var(--primary-black);
     width: 8px;
@@ -241,15 +259,21 @@ td.timeColumn{
     padding-bottom: 26px;
     font-weight: 300;
 }
-.weekViewGridRow td.weekViewGridBox:last-child, .weekViewGridRow td.weekViewGridBoxDivider:last-child{
+
+.weekViewGridRow td.weekViewGridBox:last-child,
+.weekViewGridRow td.weekViewGridBoxDivider:last-child {
     border-right: none;
 }
-.weekViewGridRow:last-child .weekViewGridBox, .weekViewGridRow:last-child .weekViewGridBoxLeftMost{
+
+.weekViewGridRow:last-child .weekViewGridBox,
+.weekViewGridRow:last-child .weekViewGridBoxLeftMost {
     border-bottom: none;
 }
-.weekViewGridRow{
+
+.weekViewGridRow {
     margin-top: 128px;
 }
+
 .headerCenterLeftHeading,
 .weekScroll,
 .displaySelector {
@@ -262,13 +286,15 @@ td.timeColumn{
 
 .week,
 .calendarName,
-.calendar{
+.calendar {
     margin: auto;
 }
-.calendarMonth{
+
+.calendarMonth {
     margin: auto auto auto 0;
     font-size: 1rem;
 }
+
 #calendarSideView {
     justify-content: flex-start;
     font-size: 0.8rem;
@@ -284,22 +310,26 @@ td.timeColumn{
     padding-right: 8px;
 }
 
-.weekViewGrid, .topWeekViewGrid {
+.weekViewGrid,
+.topWeekViewGrid {
     table-layout: fixed;
     width: 100%;
     min-width: 650px;
     background-color: inherit;
 }
-.topWeekViewGrid{
+
+.topWeekViewGrid {
     position: sticky;
     top: 0;
     border-radius: 30px 30px 0 0;
     z-index: 1;
 }
-.weekViewGrid{
+
+.weekViewGrid {
     border-radius: 0 0 30px 30px;
     z-index: -1;
 }
+
 #timezone {
     text-align: right;
     font-size: 0.8rem;
@@ -310,51 +340,65 @@ td.timeColumn{
     transform: translateY(60px);
 }
 
-.gapRow{
+.gapRow {
     display: none;
 }
+
 .weekViewGrid:last-child tr {
     border-right: 0;
 }
+
 .weekViewGrid:last-child tr {
     border-bottom: 0;
 }
-.weekViewGridBoxDivider, .weekViewGridBox, .weekViewGridBoxLeftMost, .weekViewGridBoxDividerLeftMost{
+
+.weekViewGridBoxDivider,
+.weekViewGridBox,
+.weekViewGridBoxLeftMost,
+.weekViewGridBoxDividerLeftMost {
     border-bottom: 1px solid var(--primary-light-gray);
     border-right: 1px solid var(--primary-light-gray);
 }
-.weekViewGridBox, .weekViewGridBoxLeftMost{
+
+.weekViewGridBox,
+.weekViewGridBoxLeftMost {
     max-height: 48px;
     padding: 23.5px 0;
 }
 
-.weekViewGridBoxDivider, .weekViewGridBoxDividerLeftMost{
+.weekViewGridBoxDivider,
+.weekViewGridBoxDividerLeftMost {
     padding: 13px 0;
 }
+
 .displaySelector {
     justify-content: flex-end;
 }
+
 .calendarHeader {
     display: grid;
     grid-template-columns: 1fr 1fr;
     margin: 12px 4px;
 }
 
-.eventTypeLine{
+.eventTypeLine {
     display: inline-flex;
     flex-direction: row;
     justify-content: space-between;
     font-size: 0.9rem;
     margin-bottom: 12px;
 }
-.eventTypeBox{
+
+.eventTypeBox {
     padding: 12px 6px;
 }
+
 .eventTypeBox:hover {
     background-color: var(--primary-light-gray);
     border-radius: 8px;
 }
-.eventTypeBoxSelected{
+
+.eventTypeBoxSelected {
     padding: 12px 6px;
     background-color: var(--primary-highlight);
     border-radius: 8px;
@@ -368,7 +412,8 @@ td.timeColumn{
     font-size: 0.6rem;
     text-align: center;
 }
-.calendarDayRowElement{
+
+.calendarDayRowElement {
     width: 20px;
     height: 20px;
     padding: 4px;
@@ -400,13 +445,15 @@ td.timeColumn{
     left: 15%;
     right: 5%;
     box-shadow:
-    3px 3px 3px var(--primary-gray),
-    -3px -3px 3px var(--primary-gray);
+        3px 3px 3px var(--primary-gray),
+        -3px -3px 3px var(--primary-gray);
 }
-.iconButton.alignedRight{
+
+.iconButton.alignedRight {
     margin-left: auto;
     margin-right: 0;
 }
+
 #event {
     display: none;
 }
@@ -499,7 +546,8 @@ td.timeColumn{
     display: flex;
     z-index: 2;
 }
-.calendarSideViewEventCreate{
+
+.calendarSideViewEventCreate {
     background-color: white;
 
 }
