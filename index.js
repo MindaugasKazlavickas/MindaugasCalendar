@@ -39,14 +39,18 @@ document.addEventListener('DOMContentLoaded', () => {
     monthDisplay.innerText = monthsLong[currentDay.getMonth()] + ", " + currentDay.getFullYear();
     calendarMonthDisplay.innerText = monthDisplay.innerText;
 
+    displayTable();
+
     /* CURRENTLY ONLY FOR CURRENT WEEK */
     fillOutWeekDays(currentDay);
     fillOutMonthDays(currentDay);
 
-    displayEvents();
-    
+    document.getElementById('timezone').innerText = setTimezone();
+
     const eventSaveToStorage = document.getElementById('eventSaveButton');
     eventSaveToStorage.addEventListener('click', () => saveEvent());
+
+    displayEvents();
 });
 
 
@@ -87,7 +91,7 @@ function fillOutMonthDays(currentDay) {
     let parentContainer = document.getElementById('calendarContainer');
     let saveDate = new Date(currentDay);
     let workingDate = new Date(currentDay.setDate(1));
-    let valueDiff = -currentDay.getDay() +1;
+    let valueDiff = -currentDay.getDay() + 1;
     workingDate.setDate(valueDiff);
     let turnoverStartingMonth = true;
     let workingMonth = workingDate.getMonth();
@@ -95,19 +99,19 @@ function fillOutMonthDays(currentDay) {
     for (let i = 0; i < 6; i++) {
         let calendarRow = document.createElement("div");
         calendarRow.classList.add('calendarDayRow');
-        for(let j = 0; j < 7; j++){
+        for (let j = 0; j < 7; j++) {
             let dayElement = document.createElement("p");
             dayElement.innerText = workingDate.getDate();
             dayElement.classList.add('calendarDayRowElement');
 
-            if(workingDate.getDate() == saveDate.getDate()){
+            if (workingDate.getDate() == saveDate.getDate()) {
                 dayElement.classList.add('calendarDayRowElementSelected');
             }
 
-            if(turnoverStartingMonth){
+            if (turnoverStartingMonth) {
                 valueDiff = workingDate.getDate();
                 turnoverStartingMonth = false;
-            } else if (workingDate.getMonth() > workingMonth){
+            } else if (workingDate.getMonth() > workingMonth) {
                 valueDiff = 1;
                 workingMonth++;
             }
@@ -121,14 +125,13 @@ function fillOutMonthDays(currentDay) {
 }
 
 function saveEvent() {
-    let eventIdentifier = "event" + Date.now();
+    let eventIdentifier = "event";
     let eventTitle = document.getElementById('eventName').value;
     let startTime = document.getElementById('startTime').value;
     let startDate = document.getElementById('startDate').value;
     let endTime = document.getElementById('endTime').value;
     let endDate = document.getElementById('endDate').value;
 
-    //console.log({startTime: document.getElementById("startTime").value});
     if (eventTitle == null || eventTitle == '') {
         alert("Title is mandatory.");
         return;
@@ -167,4 +170,60 @@ function eventWindowClear() {
     document.getElementById('eventGuests').value = '';
     document.getElementById('eventLocation').value = '';
     document.getElementById('eventDescription').value = '';
+}
+
+function displayTable() {
+    let tableContainer = document.getElementById('weekGrid');
+    let parentElement = tableContainer.getElementsByTagName('tbody')[0];
+
+    for (let i = 0; i < 24; i++) {
+        let tableRow = document.createElement("tr");
+        tableRow.classList.add('weekViewGridRow');
+        let dayTime = document.createElement("td");
+        dayTime.classList.add("weekViewGridBox", "timeColumn");
+        dayTime.innerText = 
+        (i == 11) ? i + 1 + " PM" :  
+        (i == 23) ? "" :
+        (i < 12) ? i + 1 + " AM" : i + 1 - 12 + " PM";
+
+        tableRow.appendChild(dayTime);
+        let gap = document.createElement("td");
+        gap.classList.add("weekViewGridBoxLeftMost");
+        tableRow.appendChild(gap);
+        for (let j = 0; j < 7; j++) {
+            let tableElement = document.createElement("td");
+            tableElement.classList.add("weekViewGridBox");
+            tableElement.setAttribute("id", j + "_" + i);
+            tableRow.appendChild(tableElement);
+        }
+        parentElement.appendChild(tableRow);
+    }
+}
+
+function setTimezone() {
+
+    return timezone = (new Date().getTimezoneOffset() === 0) ?
+        "GMT" : (new Date().getTimezoneOffset() < 0) ?
+            "GMT + " + (new Date().getTimezoneOffset()) / (-60) :
+            "GMT - " + (new Date().getTimezoneOffset()) / (60);
+}
+
+function displayEvents(){
+    let testItem = JSON.parse(localStorage.getItem('event'));
+    //alert ("GOT IT" + testItem);
+    let startTime = testItem.startTime;
+    let endTime = testItem.endTime;
+    let startDate = new Date(testItem.startDate);
+    let item = document.createElement("div");
+    item.classList.add("meetingExample");
+    item.setAttribute("id", "eventas");
+    let height = ( 
+        (+endTime.substr(0, 2) - +startTime.substr(0, 2)) * 60 + 
+        (+endTime.substr(3, 2) - +startTime.substr(3, 2))
+    )/1.25;
+    item.innerText = startTime + "-" + endTime + " " + testItem.title;
+    item.style.height = (height + "px");
+    let target = document.getElementById(startDate.getDay() + "_" + startTime.substr(0, 2));
+    item.style.x, item.style.y = target.style.x, target.style. y;
+    target.append(item);
 }

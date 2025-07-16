@@ -245,6 +245,9 @@ td.timeColumn{
 .weekViewGridRow:last-child .weekViewGridBox, .weekViewGridRow:last-child .weekViewGridBoxLeftMost{
     border-bottom: none;
 }
+.weekViewGridRow{
+    margin-top: 128px;
+}
 .headerCenterLeftHeading,
 .weekScroll,
 .displaySelector {
@@ -299,7 +302,9 @@ td.timeColumn{
 }
 .weekViewGridBox, .weekViewGridBoxLeftMost{
     max-height: 48px;
+    position: relative;
     padding: 24px 0;
+    overflow: hidden;
 }
 .weekViewGridBoxDivider, .weekViewGridBoxDividerLeftMost{
     padding: 13px 0;
@@ -307,12 +312,10 @@ td.timeColumn{
 .displaySelector {
     justify-content: flex-end;
 }
-
 .calendarHeader {
     display: grid;
     grid-template-columns: 1fr 1fr;
     margin: 12px 4px;
-
 }
 
 .eventTypeLine{
@@ -349,21 +352,18 @@ td.timeColumn{
     padding: 4px;
 }
 
-div.meetingExample {
-    width: 95%;
-    max-height: 24px;
+.meetingExample {
+    width: 100%;
     border: none;
-    background-color: #7e4949;
+    background-color: var(--primary-event);
     color: white;
     margin-top: 0;
     margin-right: 0;
     font-size: 0.6rem;
     border-radius: 20px;
     padding: 4px;
-}
-
-div.sample {
-    padding: 0;
+    position: sticky;
+    overflow: hidden;
 }
 
 .eventContainer {
@@ -389,7 +389,6 @@ div.sample {
 #event {
     display: none;
 }
-
 
 .eventNameInput {
     line-height: 40px;
