@@ -36,7 +36,7 @@
     padding-inline: 0;
 }
 
-.iconButton:hover {
+.iconButton:hover, .calendarDayRowElement:hover{
     background-color: var(--secondary-highlight);
     border-radius: 50%;
 }
@@ -106,7 +106,6 @@
 
 .separator{
     width: 100%;
-
     border-bottom: 1px solid var(--primary-gray);
 }
 
@@ -118,6 +117,15 @@
     height: 48px;
 }
 
+.calendarDayRowElementSelected{
+    background-color: var(--primary-blue);
+    border-radius: 50%;
+    color: white;
+}
+.calendarDayRowElementSelected:hover{
+    cursor: pointer;
+    background-color: var(--primary-highlight);
+}
 .headerCenter {
     justify-content: space-between;
 }
@@ -162,7 +170,6 @@
 }
 .calendarSideViewButtons{
     margin-left: auto;
-
 }
 
 .smallIconButton:hover {
@@ -335,7 +342,10 @@ td.timeColumn{
     text-align: center;
 }
 .calendarDayRowElement{
-    width: 16px;
+    width: 20px;
+    height: 20px;
+    font-size: 0.6rem;
+    padding: 4px;
 }
 
 div.meetingExample {

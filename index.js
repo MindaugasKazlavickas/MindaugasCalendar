@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const calendarMonthDisplay = document.getElementById('calendarMonthDisplay');
     monthDisplay.innerText = monthsLong[currentDay.getMonth()] + ", " + currentDay.getFullYear();
     calendarMonthDisplay.innerText = monthDisplay.innerText;
-    
+
     /* CURRENTLY ONLY FOR CURRENT WEEK */
     fillOutWeekDays(currentDay);
     fillOutMonthDays(currentDay);
@@ -83,28 +83,40 @@ function fillOutWeekDays(currentDay) {
 
 function fillOutMonthDays(currentDay) {
     let parentContainer = document.getElementById('calendarContainer');
-    let monthStartingDate = new Date(currentDay.setDate(1));
-    let dayOfWeek = currentDay.getDay();
-    let valueDiff = 0;
+    let saveDate = new Date(currentDay);
+    let workingDate = new Date(currentDay.setDate(1));
+    let valueDiff = -currentDay.getDay() +1;
+    workingDate.setDate(valueDiff);
+    let turnoverStartingMonth = true;
+    let workingMonth = workingDate.getMonth();
 
     for (let i = 0; i < 6; i++) {
         let calendarRow = document.createElement("div");
         calendarRow.classList.add('calendarDayRow');
-
         for(let j = 0; j < 7; j++){
             let dayElement = document.createElement("p");
-            let date = new Date(currentDay.setDate(valueDiff + 1 + j - dayOfWeek));
-            dayElement.innerText = date.getDate();
+            dayElement.innerText = workingDate.getDate();
             dayElement.classList.add('calendarDayRowElement');
+
+            if(workingDate.getDate() == saveDate.getDate()){
+                dayElement.classList.add('calendarDayRowElementSelected');
+            }
+
+            if(turnoverStartingMonth){
+                valueDiff = workingDate.getDate();
+                turnoverStartingMonth = false;
+            } else if (workingDate.getMonth() > workingMonth){
+                valueDiff = 1;
+                workingMonth++;
+            }
+
+            valueDiff++;
+            workingDate.setDate(valueDiff);
             calendarRow.appendChild(dayElement);
         }
-
         parentContainer.appendChild(calendarRow);
-        valueDiff = valueDiff + monthStartingDate.getDate() + 6;
-        currentDay.setDate(valueDiff);
     }
 }
-
 function saveEvent() {
     let eventIdentifier = "event" + new Date();
     let eventTitle = document.getElementById('eventName').value;
