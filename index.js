@@ -6,6 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const calendarSideView = document.getElementById('calendarSideView');
     const weekView = document.getElementById('weekView');
     const collapseButton = document.getElementById('collapseButton');
+    const openEventWindow = document.getElementById('openEventWindow');
+    const eventClose = document.getElementById('eventClose');
 
     collapseButton.addEventListener('click', () => {
         if (headerButton === "calendar active") {
@@ -18,20 +20,136 @@ document.addEventListener('DOMContentLoaded', () => {
             headerButton = "calendar active";
         }
     })
+
+    openEventWindow.addEventListener('click', () => {
+        document.getElementById('event').style.display = 'grid';
+        document.getElementById('event').style.gridTemplateColumns = '1fr 9fr';
+    })
+
+    eventClose.addEventListener('click', () => {
+        eventWindowClear();
+        document.getElementById('event').style.display = 'none';
+    });
+
     const logoDate = document.getElementById('logoText');
-    
+
     logoDate.innerText = currentDay.getDate();
     const monthDisplay = document.getElementById('monthDisplay');
+    const calendarMonthDisplay = document.getElementById('calendarMonthDisplay');
     monthDisplay.innerText = monthsLong[currentDay.getMonth()] + ", " + currentDay.getFullYear();
-})
+    calendarMonthDisplay.innerText = monthDisplay.innerText;
+    
+    /* CURRENTLY ONLY FOR CURRENT WEEK */
+    fillOutWeekDays(currentDay);
+    fillOutMonthDays(currentDay);
+
+    const eventSaveToStorage = document.getElementById('eventSaveButton');
+    eventSaveToStorage.addEventListener('click', () => saveEvent());
+});
+
 
 const monthsShort = [
-    "Jan", "Feb", "Mar", 
+    "Jan", "Feb", "Mar",
     "Apr", "May", "Jun",
-    "Jul", "Aug", "Sep", 
+    "Jul", "Aug", "Sep",
     "Oct", "Nov", "Dec"];
 const monthsLong = [
-    "January", "February", "March", 
+    "January", "February", "March",
     "April", "May", "June",
-    "July", "August", "September", 
+    "July", "August", "September",
     "October", "November", "December"];
+const weekViewDisplayDates = [
+    "weekDisplayDate1",
+    "weekDisplayDate2",
+    "weekDisplayDate3",
+    "weekDisplayDate4",
+    "weekDisplayDate5",
+    "weekDisplayDate6",
+    "weekDisplayDate7"
+];
+
+function fillOutWeekDays(currentDay) {
+    for (let i = 0; i < 7; i++) {
+        let weekDay = document.getElementById(weekViewDisplayDates[i]);
+        weekDay.innerText =
+            (i === 0 && i < currentDay.getDay()) ? currentDay.getDate() - currentDay.getDay() :
+                (i < currentDay.getDay()) ? currentDay.getDate() - i :
+                    (i === currentDay.getDay()) ? currentDay.getDate() :
+                        currentDay.getDate() + (i - currentDay.getDay());
+    }
+    document.getElementById(weekViewDisplayDates[currentDay.getDay()])
+        .parentElement.classList.add("weekViewGridHeaderMarked");
+}
+
+function fillOutMonthDays(currentDay) {
+    let parentContainer = document.getElementById('calendarContainer');
+    let monthStartingDate = new Date(currentDay.setDate(1));
+    let dayOfWeek = currentDay.getDay();
+    let valueDiff = 0;
+
+    for (let i = 0; i < 6; i++) {
+        let calendarRow = document.createElement("div");
+        calendarRow.classList.add('calendarDayRow');
+
+        for(let j = 0; j < 7; j++){
+            let dayElement = document.createElement("p");
+            let date = new Date(currentDay.setDate(valueDiff + 1 + j - dayOfWeek));
+            dayElement.innerText = date.getDate();
+            dayElement.classList.add('calendarDayRowElement');
+            calendarRow.appendChild(dayElement);
+        }
+
+        parentContainer.appendChild(calendarRow);
+        valueDiff = valueDiff + monthStartingDate.getDate() + 6;
+        currentDay.setDate(valueDiff);
+    }
+}
+
+function saveEvent() {
+    let eventIdentifier = "event" + new Date();
+    let eventTitle = document.getElementById('eventName').value;
+    let startTime = document.getElementById('startTime').value;
+    let startDate = document.getElementById('startDate').value;
+    let endTime = document.getElementById('endTime').value;
+    let endDate = document.getElementById('endDate').value;
+
+    //console.log({startTime: document.getElementById("startTime").value});
+    if (eventTitle == null || eventTitle == '') {
+        alert("Title is mandatory.");
+        return;
+
+    } else if (
+        startDate == '' || endDate == '' || startTime == '' || endTime == '') {
+        alert("Make sure to enter start and end time and date.");
+        return;
+    } else if (
+        startDate > endDate || startTime == endDate && startTime > endTime) {
+        alert("End time of event can not be before the start time.");
+        return;
+    }
+    let newEvent = {
+        identifier: eventIdentifier,
+        title: eventTitle,
+        startDate: startDate,
+        startTime: startTime,
+        endDate: endDate,
+        endTime: endTime,
+        guests: document.getElementById('eventGuests').value,
+        location: document.getElementById('eventLocation').value,
+        description: document.getElementById('eventDescription').value,
+    }
+
+    localStorage.setItem(eventIdentifier, JSON.stringify(newEvent));
+    alert(localStorage.getItem(eventIdentifier, newEvent.location));
+}
+
+function eventWindowClear() {
+    document.getElementById('eventName').value = '';
+    document.getElementById('startTime').value = '';
+    document.getElementById('startDate').value = '';
+    document.getElementById('endTime').value = '';
+    document.getElementById('endDate').value = '';
+    document.getElementById('eventGuests').value = '';
+    document.getElementById('eventLocation').value = '';
+    document.getElementById('eventDescription').value = '';
+}
