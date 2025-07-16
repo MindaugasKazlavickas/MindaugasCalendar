@@ -75,7 +75,7 @@
 
 
         <aside id="calendarSideView">
-            <button class="eventButtonButton" id="openEventWindow">Create Event</button>
+            <button class="roundedCornerButton" id="openEventWindow">Create Event</button>
 
             <div class="calendarHeader">
                 <p id="calendarMonthDisplay" class="calendarMonth">November, 2025</p>
@@ -103,9 +103,9 @@
 
 
         <main class="weekView">
-            <table class="weekViewGrid" id="weekGrid">
-                <tr class="weekViewGridTop">
-                    <th class="weekViewGridHeader timeColumn"></th>
+            <table class="topWeekViewGrid" id="weekGridHeader">
+                <tr>
+                    <th class="weekViewGridHeader timeColumn" id ="timezone">GMT +03</th>
                     <th class="weekViewGridHeaderLeftMost"></th>
                     <th class="weekViewGridHeader">
                         <p class="weekViewGridHeaderWeekday">SUN</p>
@@ -136,7 +136,20 @@
                         <p class="weekViewGridHeaderDate" id="weekDisplayDate7">24</p>
                     </th>
                 </tr>
-                <tr class="weekViewGridRow weekViewGridTop">
+                <tr class="weekViewGridRow">
+                    <td class="weekViewGridBoxDivider timeColumn"></td>
+                    <td class="weekViewGridBoxDividerLeftMost"></td>
+                    <td class="weekViewGridBoxDivider"></td>
+                    <td class="weekViewGridBoxDivider"></td>
+                    <td class="weekViewGridBoxDivider"></td>
+                    <td class="weekViewGridBoxDivider"></td>
+                    <td class="weekViewGridBoxDivider"></td>
+                    <td class="weekViewGridBoxDivider"></td>
+                    <td class="weekViewGridBoxDivider"></td>
+                </tr>
+            </table>
+            <table class="weekViewGrid" id="weekGrid">
+                <tr class="gapRow">
                     <td class="weekViewGridBoxDivider timeColumn" id ="timezone">GMT +03</td>
                     <td class="weekViewGridBoxDividerLeftMost"></td>
                     <td class="weekViewGridBoxDivider"></td>

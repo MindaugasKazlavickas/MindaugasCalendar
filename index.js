@@ -38,14 +38,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const calendarMonthDisplay = document.getElementById('calendarMonthDisplay');
     monthDisplay.innerText = monthsLong[currentDay.getMonth()] + ", " + currentDay.getFullYear();
     calendarMonthDisplay.innerText = monthDisplay.innerText;
-
+    fillOutWeekDays(currentDay);
+    document.getElementById('timezone').innerText = setTimezone();
     displayTable();
 
     /* CURRENTLY ONLY FOR CURRENT WEEK */
-    fillOutWeekDays(currentDay);
+    
     fillOutMonthDays(currentDay);
 
-    document.getElementById('timezone').innerText = setTimezone();
+    
 
     const eventSaveToStorage = document.getElementById('eventSaveButton');
     eventSaveToStorage.addEventListener('click', () => saveEvent());
@@ -210,7 +211,6 @@ function setTimezone() {
 
 function displayEvents(){
     let testItem = JSON.parse(localStorage.getItem('event'));
-    //alert ("GOT IT" + testItem);
     let startTime = testItem.startTime;
     let endTime = testItem.endTime;
     let startDate = new Date(testItem.startDate);
@@ -223,7 +223,8 @@ function displayEvents(){
     )/1.25;
     item.innerText = startTime + "-" + endTime + " " + testItem.title;
     item.style.height = (height + "px");
-    let target = document.getElementById(startDate.getDay() + "_" + startTime.substr(0, 2));
-    item.style.x, item.style.y = target.style.x, target.style. y;
-    target.append(item);
+    let target = document.getElementById(startDate.getDay()+ "_" + startTime.substr(0, 2));
+    target.style.overflow = "visible";
+    target.style.position = "relative";
+    target.appendChild(item);
 }
