@@ -43,6 +43,8 @@ document.addEventListener('DOMContentLoaded', () => {
     fillOutWeekDays(currentDay);
     fillOutMonthDays(currentDay);
 
+    displayEvents();
+    
     const eventSaveToStorage = document.getElementById('eventSaveButton');
     eventSaveToStorage.addEventListener('click', () => saveEvent());
 });
@@ -117,8 +119,9 @@ function fillOutMonthDays(currentDay) {
         parentContainer.appendChild(calendarRow);
     }
 }
+
 function saveEvent() {
-    let eventIdentifier = "event" + new Date();
+    let eventIdentifier = "event" + Date.now();
     let eventTitle = document.getElementById('eventName').value;
     let startTime = document.getElementById('startTime').value;
     let startDate = document.getElementById('startDate').value;
@@ -140,7 +143,7 @@ function saveEvent() {
         return;
     }
     let newEvent = {
-        identifier: eventIdentifier,
+        identifier: Date.now(),
         title: eventTitle,
         startDate: startDate,
         startTime: startTime,
