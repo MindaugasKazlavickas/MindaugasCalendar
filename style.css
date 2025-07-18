@@ -12,8 +12,7 @@
   background-color: var(--primary-background);
   color: black;
   font-family: "Roboto", sans-serif;
-  --box-shadow: 3px 3px 3px var(--primary-gray),
-    -3px -3px 3px var(--primary-gray);
+  --box-shadow: 3px 3px 3px var(--primary-gray);
 }
 
 .header {
@@ -573,21 +572,18 @@ td.timeColumn {
 .rightSideMenuButtonContainer {
   background-color: var(--primary-background);
   border-radius: 24px 0 0 24px;
-  box-shadow: var(--box-shadow);
   text-align: left;
   padding: 8px;
-  width: 80px;
+  width: 56px;
   height: 56px;
   position: absolute;
   right: 0;
   bottom: 5%;
-  animation-name: rightSideButtonMove;
-  animation-duration: 4s;
 }
 
-@keyframes rightSideButtonMove {
+.rightSideMenuClosed {
+  box-shadow: var(--box-shadow);
 }
-
 .displayedBlock {
   display: block;
 }

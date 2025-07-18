@@ -5,17 +5,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const weekView = document.getElementById("content");
   const closeCalendarButton = document.getElementById("closeCalendarButton");
 
-  /*
-  adjustDisplay("rightSideView");
-
-  if (calendarSideView.style.display === "none") {
-      weekView.style.gridTemplateColumns = "256px 1fr 56px";
-      calendarSideView.style.display = "block";
-    } else {
-      weekView.style.gridTemplateColumns = "1fr 56px";
-      calendarSideView.style.display = "none";
-    }
-  */
   const eventWindowButton = document.getElementById("eventWindowButton");
   eventWindowButton.addEventListener("click", () => {
     document.getElementById("event").style.display = "grid";
@@ -42,8 +31,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const dialogCloseButton = document.getElementById("dialogCloseButton");
   dialogCloseButton.addEventListener("click", () => resetEventCreationForm());
 
-  let righSideMenuButton = document.getElementById("rightSideButtonChevron");
-
+  const righSideMenuButton = document.getElementById("rightSideButtonChevron");
+  const rightSideMenuButtonContainer = document.getElementById(
+    "rightSideMenuButtonContainer"
+  );
   righSideMenuButton.addEventListener("click", () => {
     let y = document
       .getElementById("rightSideView")
@@ -56,15 +47,17 @@ document.addEventListener("DOMContentLoaded", () => {
       ? ""
       : "256px ";
     adjustDisplay("rightSideView", x, y);
-    console.log(
-      righSideMenuButton.src.substr(righSideMenuButton.src.lastIndexOf("/"))
-    );
-    righSideMenuButton.src =
+
+    if (
       righSideMenuButton.src.substr(righSideMenuButton.src.lastIndexOf("/")) ==
       "/chevron_right.svg"
-        ? "./media/chevron_left.svg"
-        : "./media/chevron_right.svg";
-    console.log(righSideMenuButton.src);
+    ) {
+      righSideMenuButton.src = "./media/chevron_left.svg";
+      rightSideMenuButtonContainer.classList.add("rightSideMenuClosed");
+    } else {
+      righSideMenuButton.src = "./media/chevron_right.svg";
+      rightSideMenuButtonContainer.classList.remove("rightSideMenuClosed");
+    }
   });
 
   closeCalendarButton.addEventListener("click", () => {
@@ -81,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
     adjustDisplay("calendarSideView", x, y);
   });
 
-  //displayEvents();
+  displayEvents();
 });
 
 function adjustDisplay(elementToHide, x, y) {
@@ -214,20 +207,15 @@ function fillOutMonthDays(currentDay) {
 
 function saveEvent() {
   const eventIdentifier = "event " + Date.now();
-
-  formInputFieldList.forEach((elem) => {
-    elem = document.getElementById(elem).value;
-    console.log(elem.value);
-  });
-  if (formInputFieldList.title) {
+  const startDate = new Date(document.getElementById("startDate").value);
+  const endDate = new Date(document.getElementById("endDate").value);
+  const startTime = document.getElementById("startTime").value;
+  const endTime = document.getElementById("endTime").value;
+  const title = document.getElementById("title").value;
+  if (title) {
     alert("Title is mandatory.");
     return;
-  } else if (
-    formInputFieldList.startDate ||
-    formInputFieldList.endDate ||
-    formInputFieldList.startTime ||
-    formInputFieldList.endTime
-  ) {
+  } else if (startDate || endDate || startTime || endTime) {
     alert("Make sure to enter start and end time and date.");
     return;
   } else if (
