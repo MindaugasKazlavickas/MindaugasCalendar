@@ -308,35 +308,61 @@ function setTimezone() {
     Atidaryti "event viewer" ir atnaujinti info
 */
 function displayEvents() {
-  let testItem = JSON.parse(localStorage.getItem("event"));
-  let keys = Object.keys(localStorage);
+  const keys = Object.keys(localStorage);
 
   for (let i = 0; i < keys.length; i++) {
-    console.log(keys[i]);
     let event = JSON.parse(localStorage.getItem(keys[i]));
     let startDate = new Date(event.startDate);
     let endDate = new Date(event.endDate);
     let startTime = event.startTime;
     let endTime = event.endTime;
-    let diff =
-      (+endTime.substr(0, 2) - +startTime.substr(0, 2)) * 60 +
-      (+endTime.substr(3, 2) - +startTime.substr(3, 2));
-    if (endDate.getDate() - startDate.getDate() == 0 && diff < 3600) {
+    let diff;
+    if (startDate == endDate) {
+      diff =
+        (+endTime.substr(0, 2) - +startTime.substr(0, 2)) * 60 +
+        (+endTime.substr(3, 2) - +startTime.substr(3, 2));
+    } else if (endDate.getDate() > startDate.getDate()) {
+      let dateDiff = endDate.getDate() - startDate.getDate();
+      console.log(startDate, endDate);
+      console.log("Date difference is: " + dateDiff);
+      diff =
+        (+endTime.substr(0, 2) + -+startTime.substr(0, 2) + 24 * dateDiff) *
+          60 +
+        (+endTime.substr(3, 2) - +startTime.substr(3, 2));
+      console.log(diff);
+    } else {
+      let dateDiff = startDate.getDate() - endDate.getDate();
+      console.log(startDate, endDate);
+      console.log("Date difference is: " + dateDiff);
+      diff =
+        (+endTime.substr(0, 2) + -+startTime.substr(0, 2) + 24 * dateDiff) *
+          60 +
+        (+endTime.substr(3, 2) - +startTime.substr(3, 2));
+      console.log(diff);
+    }
+
+    if (endDate.getDate() - startDate.getDate() == 0 && diff < 1440) {
       console.log("Same day event: " + keys[i] + " " + diff);
+      sameDayEventRender(keys[i], diff / 1.25);
+    } else if (endDate.getDate() - startDate.getDate() < 2 && diff < 1440) {
+      console.log("Less than 24h event: " + keys[i] + " " + diff);
+    } else {
+      console.log("Multi-day event: " + keys[i] + " " + diff);
     }
   }
-  let startTime = testItem.startTime;
-  let endTime = testItem.endTime;
-  let startDate = new Date(testItem.startDate);
-  let endDate = new Date(testItem.endDate);
-  let item = document.createElement("div");
-  item.classList.add("meetingExample");
-  item.setAttribute("id", "eventas");
-  let height =
-    ((+endTime.substr(0, 2) - +startTime.substr(0, 2)) * 60 +
-      (+endTime.substr(3, 2) - +startTime.substr(3, 2))) /
-    1.25;
-  item.innerText = startTime + "-" + endTime + " " + testItem.title;
+  checkOverlappingEvents();
+}
+
+function sameDayEventRender(identifier, eventDuration) {
+  const event = JSON.parse(localStorage.getItem(identifier));
+  const startTime = event.startTime;
+  const endTime = event.endTime;
+  const startDate = new Date(event.startDate);
+  const endDate = new Date(event.endDate);
+  const item = createDOMElement("div", ["meeting"], "");
+  item.setAttribute("id", identifier);
+  let height = eventDuration;
+  item.innerText = startTime + "-" + endTime + " " + event.title;
   item.style.height = height + "px";
   let target = document.getElementById(
     startDate.getDay() + "_" + startTime.substr(0, 2)
@@ -344,4 +370,54 @@ function displayEvents() {
   target.style.overflow = "visible";
   target.style.position = "relative";
   target.appendChild(item);
+}
+
+function checkOverlappingEvents() {
+  const keys = Object.keys(localStorage);
+  for (let i = 0; i < keys.length; i++) {
+    if (document.getElementById(keys[i])) {
+      let elementToCheck = document
+        .getElementById(keys[i])
+        .getBoundingClientRect();
+      console.log(keys[i], " tarpas ", elementToCheck);
+      for (let j = 0; j < keys.length - 1; j++) {
+        console.log(keys[i], keys[j]);
+        if (keys[i] != keys[j] && document.getElementById(keys[j])) {
+          let checkElement = document
+            .getElementById(keys[j])
+            .getBoundingClientRect();
+          if (
+            elementToCheck.top < checkElement.bottom &&
+            elementToCheck.bottom > checkElement.top &&
+            elementToCheck.left < checkElement.right &&
+            elementToCheck.right > checkElement.left
+          ) {
+            if (
+              !document
+                .getElementById(keys[j])
+                .classList.contains("overlappingEvent") &&
+              !document
+                .getElementById(keys[j])
+                .classList.contains("overlapped") &&
+              elementToCheck.bottom - elementToCheck.top >
+                checkElement.bottom - checkElement.top
+            ) {
+              document
+                .getElementById(keys[j])
+                .classList.add("overlappingEvent");
+              document.getElementById([keys[i]]).classList.add("overlapped");
+            } else if (
+              elementToCheck.bottom - elementToCheck.top <
+              checkElement.bottom - checkElement.top
+            ) {
+              document
+                .getElementById(keys[i])
+                .classList.add("overlappingEvent");
+              document.getElementById([keys[j]]).classList.add("overlapped");
+            }
+          }
+        }
+      }
+    }
+  }
 }
