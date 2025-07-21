@@ -185,6 +185,23 @@
 .calendarSideViewButtons {
   margin-left: auto;
 }
+.eventWindowOpeningButton {
+  display: flex;
+  flex-direction: row;
+  margin: 4px 20px 4px 0;
+  border: none;
+  box-shadow: var(--box-shadow);
+  border-radius: 16px;
+  padding: 12px 12px;
+  text-align: center;
+  background-color: white;
+  align-items: center;
+  font-size: 0.9rem;
+}
+.eventWindowOpeningButton:hover {
+  background-color: var(--primary-highlight);
+  cursor: pointer;
+}
 
 .smallIconButton:hover {
   background-color: var(--secondary-highlight);
@@ -548,7 +565,7 @@ td.timeColumn {
   padding-top: 12px;
   padding-bottom: 12px;
   line-height: 24px;
-  font-size: 1rem;
+  font-size: 0.9rem;
 }
 
 .dropdownIcon {
