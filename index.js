@@ -12,19 +12,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.getElementById("logoText").innerText = currentDay.getDate();
 
-  const headerDateDisplay =
-    monthsLong[currentDay.getMonth()] + ", " + currentDay.getFullYear();
-  document.getElementById("monthDisplay").innerText = headerDateDisplay;
-  document.getElementById("calendarMonthDisplay").innerText = headerDateDisplay;
+  displayMonthName(currentDay);
 
   document.getElementById("timezone").innerText = setTimezone();
 
+  const weekViewSelectorButton = document.getElementById("viewSelectionButton");
+  weekDropdown.addEventListener("click", () => {
+    displayDropdown();
+  });
   displayTable();
 
-  /* CURRENTLY ONLY FOR CURRENT WEEK */
-  fillOutWeekDays(currentDay);
-  fillOutMonthDays(currentDay);
+  createCalendar();
+  fillOutWeekDays(currentDay, "initial");
 
+  const calendarLeftButton = document.getElementById("calendarLeftButton");
+  const calendarRightButton = document.getElementById("calendarRightButton");
+  let workingDate = new Date(currentDay);
+
+  calendarLeftButton.addEventListener("click", () => {
+    workingDate.setMonth(workingDate.getMonth() - 1);
+    fillOutMonthDays(workingDate);
+  });
+  calendarRightButton.addEventListener("click", () => {
+    workingDate.setMonth(workingDate.getMonth() + 1);
+    fillOutMonthDays(workingDate);
+  });
+
+  calendarLeftButton;
   const eventSaveToStorage = document.getElementById("eventSaveButton");
   eventSaveToStorage.addEventListener("click", () => saveEvent());
 
@@ -73,9 +87,107 @@ document.addEventListener("DOMContentLoaded", () => {
       : "";
     adjustDisplay("calendarSideView", x, y);
   });
+  //let workingDate = new Date();
+  const weekRightButton = document.getElementById("weekRightButton");
+  const weekLeftButton = document.getElementById("weekLeftButton");
+  weekRightButton.addEventListener("click", () => {
+    fillOutWeekDays(currentDay, "right");
+  });
+  weekLeftButton.addEventListener("click", () => {
+    fillOutWeekDays(currentDay, "left");
+  });
 
-  displayEvents();
+  const headerTodayButton = document.getElementById("headerTodayButton");
+  headerTodayButton.addEventListener("click", () => {
+    fillOutWeekDays(currentDay, "");
+  });
+
+  const calendarContainer = document
+    .getElementById("calendarContainer")
+    .getElementsByTagName("tbody")[0];
+  calendarContainer.addEventListener("click", (cell) => {
+    let setWeek = new Date(
+      cell.target.closest(".calendarDayRowElement").getAttribute("id")
+    );
+    fillOutWeekDays(setWeek);
+  });
 });
+
+function displayMonthName(currentDay) {
+  let headerDateDisplay;
+  let checkDate = new Date(currentDay);
+  if (
+    checkDate.getDate(
+      checkDate.setDate(currentDay.getDate() - currentDay.getDay())
+    ) >
+    checkDate.getDate(
+      checkDate.setDate(currentDay.getDate() - currentDay.getDay() + 6)
+    )
+  ) {
+    headerDateDisplay =
+      monthsShort[currentDay.getMonth()] +
+      " - " +
+      monthsShort[currentDay.getMonth() + 1] +
+      ", " +
+      currentDay.getFullYear();
+    document.getElementById("monthDisplay").innerText = headerDateDisplay;
+    document.getElementById("calendarMonthDisplay").innerText =
+      monthsLong[currentDay.getMonth()] + ", " + currentDay.getFullYear();
+  } else {
+    headerDateDisplay =
+      monthsLong[currentDay.getMonth()] + ", " + currentDay.getFullYear();
+    document.getElementById("monthDisplay").innerText = headerDateDisplay;
+    document.getElementById("calendarMonthDisplay").innerText =
+      headerDateDisplay;
+  }
+}
+
+function displayDropdown() {
+  let element = document.getElementById("dropdownContent");
+  if (element.classList.contains("displayedFlex")) {
+    element.classList.remove("displayedFlex");
+  } else {
+    element.classList.add("displayedFlex");
+  }
+}
+
+function fillOutWeekDays(workingDate, direction) {
+  let date;
+  if (direction === "") {
+    workingDate = new Date();
+  }
+  if (direction === "right") {
+    workingDate.setDate(workingDate.getDate() + 7);
+  } else if (direction === "left") {
+    workingDate.setDate(workingDate.getDate() - 7);
+  }
+
+  displayMonthName(workingDate);
+  fillOutMonthDays(workingDate);
+
+  date = new Date(workingDate);
+  date.setDate(date.getDate() - date.getDay());
+  for (let i = 0; i < 7; i++) {
+    document.getElementById(weekViewDisplayDates[i]).innerText = date.getDate();
+
+    date.setDate(date.getDate() + 1);
+  }
+
+  clearEvents();
+  displayEvents(workingDate);
+
+  let todayDate = new Date();
+  if (direction === "" || direction === "initial") {
+    workingDate = new Date(todayDate);
+    document
+      .getElementById(weekViewDisplayDates[todayDate.getDay()])
+      .parentElement.classList.add("weekViewGridHeaderMarked");
+  } else {
+    document
+      .getElementById(weekViewDisplayDates[todayDate.getDay()])
+      .parentElement.classList.remove("weekViewGridHeaderMarked");
+  }
+}
 
 function adjustDisplay(elementToHide, x, y) {
   let element = document.getElementById(elementToHide);
@@ -143,7 +255,7 @@ const formInputFieldList = [
   "eventLocation",
   "eventDescription",
 ];
-
+const shortWeekdayNames = ["S", "M", "T", "W", "T", "F", "S"];
 function createDOMElement(type, classes, text) {
   const newElement = document.createElement(type);
   if (classes != "") {
@@ -157,51 +269,59 @@ function createDOMElement(type, classes, text) {
   return newElement;
 }
 
-function fillOutWeekDays(currentDay) {
-  let startOfWeek = currentDay.getDate() - currentDay.getDay();
-
-  for (let i = 0; i < 7; i++) {
-    document.getElementById(weekViewDisplayDates[i]).innerText =
-      startOfWeek + i;
-  }
-
-  document
-    .getElementById(weekViewDisplayDates[currentDay.getDay()])
-    .parentElement.classList.add("weekViewGridHeaderMarked");
-}
-
-function fillOutMonthDays(currentDay) {
-  const parentContainer = document.getElementById("calendarContainer");
-  const saveDate = new Date(currentDay);
-  let workingDate = new Date(currentDay.setDate(1));
-  let valueDiff = -currentDay.getDay() + 1;
-  workingDate.setDate(valueDiff);
-  valueDiff = workingDate.getDate();
-  let workingMonth = workingDate.getMonth();
+function createCalendar() {
+  const tableContainer = document.getElementById("calendarContainer");
+  const parentContainer = tableContainer.createTBody();
 
   for (let i = 0; i < 6; i++) {
-    const calendarRow = createDOMElement("div", ["calendarDayRow"]);
+    const calendarRow = createDOMElement("tr", ["calendarDayRow"]);
     for (let j = 0; j < 7; j++) {
-      let dayElement = createDOMElement(
-        "span",
-        ["calendarDayRowElement"],
-        workingDate.getDate()
-      );
+      let dayElement = createDOMElement("td", ["calendarDayRowElement"]);
+      dayElement.setAttribute("id", "calendar" + i + j);
 
-      if (workingDate.getDate() == saveDate.getDate()) {
-        dayElement.classList.add("calendarDayRowElementSelected");
-      }
-
-      if (workingDate.getMonth() > workingMonth) {
-        valueDiff = 1;
-        workingMonth++;
-      }
-
-      valueDiff++;
-      workingDate.setDate(valueDiff);
       calendarRow.appendChild(dayElement);
     }
     parentContainer.appendChild(calendarRow);
+  }
+}
+
+function fillOutMonthDays(currentDay) {
+  const date = new Date(currentDay);
+  date.setDate(1);
+  let startDate = date.getDate() - date.getDay();
+  date.setDate(startDate);
+  let parentContainer = document
+    .getElementById("calendarContainer")
+    .getElementsByTagName("tbody")[0];
+  for (let i = 0; i < 6; i++) {
+    let row = parentContainer.getElementsByClassName("calendarDayRow")[i];
+    for (let j = 0; j < 7; j++) {
+      let dayElement = row.getElementsByClassName("calendarDayRowElement")[j];
+      dayElement.innerText = date.getDate();
+      dayElement.removeAttribute("id");
+      dayElement.setAttribute("id", date);
+      if (
+        date.getDate() == new Date().getDate() &&
+        date.getMonth() == new Date().getMonth()
+      ) {
+        dayElement.classList.add("calendarDayRowElementSelected");
+      } else if (date.getMonth() != new Date().getMonth()) {
+        dayElement.classList.remove("calendarDayRowElementSelected");
+      }
+      if (
+        date.getDay() == new Date().getDay() &&
+        date.getDate() >= currentDay.getDate() &&
+        date.getDate() <= currentDay.getDate() + 6 &&
+        date.getDate() != currentDay.getDate() &&
+        date.getDate() == currentDay.getDate() + date.getDay() &&
+        date.getMonth() == currentDay.getMonth()
+      ) {
+        dayElement.classList.add("calendarDayRowElementHighlighted");
+      } else {
+        dayElement.classList.remove("calendarDayRowElementHighlighted");
+      }
+      date.setDate(date.getDate() + 1);
+    }
   }
 }
 
@@ -212,10 +332,15 @@ function saveEvent() {
   const startTime = document.getElementById("startTime").value;
   const endTime = document.getElementById("endTime").value;
   const title = document.getElementById("title").value;
-  if (title) {
+  if (title == "") {
     alert("Title is mandatory.");
     return;
-  } else if (startDate || endDate || startTime || endTime) {
+  } else if (
+    startDate == "" ||
+    endDate == "" ||
+    startTime == "" ||
+    endTime == ""
+  ) {
     alert("Make sure to enter start and end time and date.");
     return;
   } else if (
@@ -307,8 +432,16 @@ function setTimezone() {
     Get all events in storage
     Atidaryti "event viewer" ir atnaujinti info
 */
-function displayEvents() {
+function displayEvents(currentDay) {
   const keys = Object.keys(localStorage);
+  let startOfWeekTime = new Date(
+    currentDay.setDate(currentDay.getDate() - currentDay.getDay())
+  );
+  startOfWeekTime.setHours(0);
+  startOfWeekTime.setMinutes(0);
+  startOfWeekTime.setSeconds(0);
+  let endOfWeekTime = new Date(startOfWeekTime);
+  endOfWeekTime.setDate(startOfWeekTime.getDate() + 7);
 
   for (let i = 0; i < keys.length; i++) {
     let event = JSON.parse(localStorage.getItem(keys[i]));
@@ -317,40 +450,52 @@ function displayEvents() {
     let startTime = event.startTime;
     let endTime = event.endTime;
     let diff;
-    if (startDate == endDate) {
-      diff =
-        (+endTime.substr(0, 2) - +startTime.substr(0, 2)) * 60 +
-        (+endTime.substr(3, 2) - +startTime.substr(3, 2));
-    } else if (endDate.getDate() > startDate.getDate()) {
-      let dateDiff = endDate.getDate() - startDate.getDate();
-      console.log(startDate, endDate);
-      console.log("Date difference is: " + dateDiff);
-      diff =
-        (+endTime.substr(0, 2) + -+startTime.substr(0, 2) + 24 * dateDiff) *
-          60 +
-        (+endTime.substr(3, 2) - +startTime.substr(3, 2));
-      console.log(diff);
-    } else {
-      let dateDiff = startDate.getDate() - endDate.getDate();
-      console.log(startDate, endDate);
-      console.log("Date difference is: " + dateDiff);
-      diff =
-        (+endTime.substr(0, 2) + -+startTime.substr(0, 2) + 24 * dateDiff) *
-          60 +
-        (+endTime.substr(3, 2) - +startTime.substr(3, 2));
-      console.log(diff);
-    }
+    if (startDate > startOfWeekTime && endDate < endOfWeekTime) {
+      if (startDate == endDate) {
+        diff =
+          (+endTime.substr(0, 2) - +startTime.substr(0, 2)) * 60 +
+          (+endTime.substr(3, 2) - +startTime.substr(3, 2));
+      } else if (endDate.getDate() > startDate.getDate()) {
+        let dateDiff = endDate.getDate() - startDate.getDate();
+        //console.log(startDate, endDate);
+        //console.log("Date difference is: " + dateDiff);
+        diff =
+          (+endTime.substr(0, 2) + -+startTime.substr(0, 2) + 24 * dateDiff) *
+            60 +
+          (+endTime.substr(3, 2) - +startTime.substr(3, 2));
+        //console.log(diff);
+      } else {
+        let dateDiff = startDate.getDate() - endDate.getDate();
+        //console.log(startDate, endDate);
+        //console.log("Date difference is: " + dateDiff);
+        diff =
+          (+endTime.substr(0, 2) + -+startTime.substr(0, 2) + 24 * dateDiff) *
+            60 +
+          (+endTime.substr(3, 2) - +startTime.substr(3, 2));
+        //console.log(diff);
+      }
 
-    if (endDate.getDate() - startDate.getDate() == 0 && diff < 1440) {
-      console.log("Same day event: " + keys[i] + " " + diff);
-      sameDayEventRender(keys[i], diff / 1.25);
-    } else if (endDate.getDate() - startDate.getDate() < 2 && diff < 1440) {
-      console.log("Less than 24h event: " + keys[i] + " " + diff);
-    } else {
-      console.log("Multi-day event: " + keys[i] + " " + diff);
+      if (endDate.getDate() - startDate.getDate() == 0 && diff < 1440) {
+        console.log("Same day event: " + keys[i] + " " + diff);
+        sameDayEventRender(keys[i], diff / 1.25);
+      } else if (endDate.getDate() - startDate.getDate() < 2 && diff < 1440) {
+        //console.log("Less than 24h event: " + keys[i] + " " + diff);
+      } else {
+        //console.log("Multi-day event: " + keys[i] + " " + diff);
+      }
+    }
+    checkOverlappingEvents();
+  }
+}
+
+function clearEvents() {
+  const keys = Object.keys(localStorage);
+  for (let i = 0; i < keys.length; i++) {
+    let element = document.getElementById(keys[i]);
+    if (element != null) {
+      element.remove();
     }
   }
-  checkOverlappingEvents();
 }
 
 function sameDayEventRender(identifier, eventDuration) {
@@ -364,9 +509,11 @@ function sameDayEventRender(identifier, eventDuration) {
   let height = eventDuration;
   item.innerText = startTime + "-" + endTime + " " + event.title;
   item.style.height = height + "px";
-  let target = document.getElementById(
-    startDate.getDay() + "_" + startTime.substr(0, 2)
-  );
+  let timeCheck =
+    +startTime.substr(0, 2) > 9
+      ? startTime.substr(0, 2)
+      : startTime.substr(1, 1);
+  let target = document.getElementById(startDate.getDay() + "_" + timeCheck);
   target.style.overflow = "visible";
   target.style.position = "relative";
   target.appendChild(item);
@@ -379,9 +526,9 @@ function checkOverlappingEvents() {
       let elementToCheck = document
         .getElementById(keys[i])
         .getBoundingClientRect();
-      console.log(keys[i], " tarpas ", elementToCheck);
+      //console.log(keys[i], " tarpas ", elementToCheck);
       for (let j = 0; j < keys.length - 1; j++) {
-        console.log(keys[i], keys[j]);
+        //console.log(keys[i], keys[j]);
         if (keys[i] != keys[j] && document.getElementById(keys[j])) {
           let checkElement = document
             .getElementById(keys[j])

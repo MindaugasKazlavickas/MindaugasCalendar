@@ -30,15 +30,17 @@
 
       <div class="headerCenter">
         <div class="headerCenterLeft">
-          <button id="headerToday" class="roundedCornerButton">Today</button>
-          <button id="calendarLeft" class="iconButton">
+          <button id="headerTodayButton" class="roundedCornerButton">
+            Today
+          </button>
+          <button id="weekLeftButton" class="iconButton">
             <img
               class=""
               src="./media/chevron_left.svg"
               alt="Go back a month"
             />
           </button>
-          <button id="calendarRight" class="iconButton">
+          <button id="weekRightButton" class="iconButton">
             <img
               class=""
               src="./media/chevron_right.svg"
@@ -58,11 +60,15 @@
           <button class="iconButton" id="settings">
             <img src="./media/settings.svg" />
           </button>
-          <div class="dropdown">
-            <button id="viewSelection" class="roundedCornerButton">
-              Week <span class="chevron bottom"></span>
+          <div id="weekDropdown">
+            <button
+              id="viewSelectionButton"
+              class="roundedCornerButton dropdownButton"
+            >
+              <span>Week</span>
+              <img class="dropdownIcon" src="./media/arrow_down.svg" />
             </button>
-            <div class="dropdownContent">
+            <div id="dropdownContent" class="dropdownContent">
               <div class="dropdownItem">
                 <p>text</p>
                 <p>AB</p>
@@ -97,10 +103,10 @@
         <div class="calendarHeader">
           <p id="calendarMonthDisplay" class="calendarMonth">November, 2025</p>
           <div class="calendarSideViewButtons">
-            <button id="calendarLeft" class="smallIconButton">
+            <button id="calendarLeftButton" class="smallIconButton">
               <img src="./media/chevron_left.svg" alt="Go back a month" />
             </button>
-            <button id="calendarRight" class="smallIconButton">
+            <button id="calendarRightButton" class="smallIconButton">
               <img src="./media/chevron_right.svg" alt="Go forward a month" />
             </button>
           </div>
@@ -114,7 +120,7 @@
           <p class="calendarDayRowElement">F</p>
           <p class="calendarDayRowElement">S</p>
         </div>
-        <div id="calendarContainer" class="calendarContainer"></div>
+        <table id="calendarContainer" class="calendarContainer"></table>
       </aside>
 
       <main class="weekView">
@@ -255,12 +261,14 @@
 
       <!-- Title row -->
       <div class="gap"></div>
-      <input
-        id="title"
-        type="text"
-        class="eventNameInput"
-        placeholder="Add title"
-      />
+      <div class="inputFieldDiv">
+        <input
+          id="title"
+          type="text"
+          class="eventNameInput"
+          placeholder="Add title"
+        />
+      </div>
 
       <!-- Event type row -->
       <div class="gap"></div>
