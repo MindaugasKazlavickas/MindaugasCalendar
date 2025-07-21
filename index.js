@@ -1,8 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
   const currentDay = new Date();
 
-  const calendarSideView = document.getElementById("calendarSideView");
-  const weekView = document.getElementById("content");
   const closeCalendarButton = document.getElementById("closeCalendarButton");
 
   const eventWindowButton = document.getElementById("eventWindowButton");
@@ -16,26 +14,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.getElementById("timezone").innerText = setTimezone();
 
-  const weekViewSelectorButton = document.getElementById("viewSelectionButton");
+  const weekDropdown = document.getElementById("viewSelectionButton");
   weekDropdown.addEventListener("click", () => {
     displayDropdown();
   });
   displayTable();
 
   createCalendar();
-  fillOutWeekDays(currentDay, "initial");
+
+  let workingDate = new Date(currentDay);
+  fillOutWeekDays(workingDate, "initial");
 
   const calendarLeftButton = document.getElementById("calendarLeftButton");
   const calendarRightButton = document.getElementById("calendarRightButton");
-  let workingDate = new Date(currentDay);
 
   calendarLeftButton.addEventListener("click", () => {
     workingDate.setMonth(workingDate.getMonth() - 1);
     fillOutMonthDays(workingDate);
+    displayMonthNameCalendar(workingDate);
   });
   calendarRightButton.addEventListener("click", () => {
     workingDate.setMonth(workingDate.getMonth() + 1);
     fillOutMonthDays(workingDate);
+    displayMonthNameCalendar(workingDate);
   });
 
   calendarLeftButton;
@@ -87,7 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
       : "";
     adjustDisplay("calendarSideView", x, y);
   });
-  //let workingDate = new Date();
+
   const weekRightButton = document.getElementById("weekRightButton");
   const weekLeftButton = document.getElementById("weekLeftButton");
   weekRightButton.addEventListener("click", () => {
@@ -110,6 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
       cell.target.closest(".calendarDayRowElement").getAttribute("id")
     );
     fillOutWeekDays(setWeek);
+    cell.target.classList.add("calendarDayRowElementHighlighted");
   });
 });
 
@@ -141,7 +143,12 @@ function displayMonthName(currentDay) {
       headerDateDisplay;
   }
 }
-
+function displayMonthNameCalendar(currentDay) {
+  let headerDateDisplay;
+  headerDateDisplay =
+    monthsLong[currentDay.getMonth()] + ", " + currentDay.getFullYear();
+  document.getElementById("calendarMonthDisplay").innerText = headerDateDisplay;
+}
 function displayDropdown() {
   let element = document.getElementById("dropdownContent");
   if (element.classList.contains("displayedFlex")) {
@@ -189,6 +196,45 @@ function fillOutWeekDays(workingDate, direction) {
   }
 }
 
+function fillOutMonthDays(currentDay) {
+  const date = new Date(currentDay);
+  date.setDate(1);
+  let startDate = date.getDate() - date.getDay();
+  date.setDate(startDate);
+  let parentContainer = document
+    .getElementById("calendarContainer")
+    .getElementsByTagName("tbody")[0];
+  for (let i = 0; i < 6; i++) {
+    let row = parentContainer.getElementsByClassName("calendarDayRow")[i];
+    for (let j = 0; j < 7; j++) {
+      let dayElement = row.getElementsByClassName("calendarDayRowElement")[j];
+      dayElement.innerText = date.getDate();
+      dayElement.removeAttribute("id");
+      dayElement.setAttribute("id", date);
+      if (
+        date.getDate() == new Date().getDate() &&
+        date.getMonth() == new Date().getMonth()
+      ) {
+        dayElement.classList.add("calendarDayRowElementSelected");
+      } else if (date.getMonth() != new Date().getMonth()) {
+        dayElement.classList.remove("calendarDayRowElementSelected");
+      }
+      if (
+        date.getDay() == new Date().getDay() &&
+        date.getDate() >= currentDay.getDate() &&
+        date.getDate() <= currentDay.getDate() + 6 &&
+        date.getDate() != currentDay.getDate() &&
+        date.getDate() == currentDay.getDate() + date.getDay() &&
+        date.getMonth() == currentDay.getMonth()
+      ) {
+        dayElement.classList.add("calendarDayRowElementHighlighted");
+      } else {
+        dayElement.classList.remove("calendarDayRowElementHighlighted");
+      }
+      date.setDate(date.getDate() + 1);
+    }
+  }
+}
 function adjustDisplay(elementToHide, x, y) {
   let element = document.getElementById(elementToHide);
 
@@ -255,7 +301,7 @@ const formInputFieldList = [
   "eventLocation",
   "eventDescription",
 ];
-const shortWeekdayNames = ["S", "M", "T", "W", "T", "F", "S"];
+
 function createDOMElement(type, classes, text) {
   const newElement = document.createElement(type);
   if (classes != "") {
@@ -282,46 +328,6 @@ function createCalendar() {
       calendarRow.appendChild(dayElement);
     }
     parentContainer.appendChild(calendarRow);
-  }
-}
-
-function fillOutMonthDays(currentDay) {
-  const date = new Date(currentDay);
-  date.setDate(1);
-  let startDate = date.getDate() - date.getDay();
-  date.setDate(startDate);
-  let parentContainer = document
-    .getElementById("calendarContainer")
-    .getElementsByTagName("tbody")[0];
-  for (let i = 0; i < 6; i++) {
-    let row = parentContainer.getElementsByClassName("calendarDayRow")[i];
-    for (let j = 0; j < 7; j++) {
-      let dayElement = row.getElementsByClassName("calendarDayRowElement")[j];
-      dayElement.innerText = date.getDate();
-      dayElement.removeAttribute("id");
-      dayElement.setAttribute("id", date);
-      if (
-        date.getDate() == new Date().getDate() &&
-        date.getMonth() == new Date().getMonth()
-      ) {
-        dayElement.classList.add("calendarDayRowElementSelected");
-      } else if (date.getMonth() != new Date().getMonth()) {
-        dayElement.classList.remove("calendarDayRowElementSelected");
-      }
-      if (
-        date.getDay() == new Date().getDay() &&
-        date.getDate() >= currentDay.getDate() &&
-        date.getDate() <= currentDay.getDate() + 6 &&
-        date.getDate() != currentDay.getDate() &&
-        date.getDate() == currentDay.getDate() + date.getDay() &&
-        date.getMonth() == currentDay.getMonth()
-      ) {
-        dayElement.classList.add("calendarDayRowElementHighlighted");
-      } else {
-        dayElement.classList.remove("calendarDayRowElementHighlighted");
-      }
-      date.setDate(date.getDate() + 1);
-    }
   }
 }
 
@@ -424,12 +430,8 @@ function setTimezone() {
 }
 
 /* TODO
-
     Event starts on day n and end on day n+1 but event time is <24h
     Event lasts longer than 2 days
-    Events overlap
-    Event is very short -> adjust displayed long text
-    Get all events in storage
     Atidaryti "event viewer" ir atnaujinti info
 */
 function displayEvents(currentDay) {

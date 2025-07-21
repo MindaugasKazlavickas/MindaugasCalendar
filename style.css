@@ -464,9 +464,6 @@ td.timeColumn {
   margin-right: 0;
   margin-left: auto;
 }
-.overlapped {
-  /* prevents adding overlap class to elements*/
-}
 
 .eventContainer {
   width: 700px;
