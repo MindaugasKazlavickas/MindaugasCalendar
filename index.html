@@ -68,7 +68,7 @@
               <span>Week</span>
               <img class="dropdownIcon" src="./media/arrow_down.svg" />
             </button>
-            <div id="dropdownContent" class="dropdownContent">
+            <div id="dropdownContent" tabindex="-1" class="dropdownContent">
               <div class="dropdownItem">
                 <p>text</p>
                 <p>AB</p>
@@ -250,7 +250,7 @@
       </button>
     </div>
 
-    <div id="event" class="eventContainer">
+    <div id="event" tabindex="-1" class="eventContainer notDisplayed">
       <!-- Header row -->
       <img
         class="iconButton"
@@ -295,7 +295,7 @@
       <!-- Guests row -->
       <img class="icon" src="./media/contacts.svg" alt="Add guests" />
       <input
-        id="eventGuests"
+        id="guests"
         type="text"
         class="eventOtherInput"
         placeholder="Add guests"
@@ -304,7 +304,7 @@
       <!-- Location row -->
       <img class="icon" src="./media/location.svg" alt="Add a location" />
       <input
-        id="eventLocation"
+        id="location"
         type="text"
         class="eventOtherInput"
         placeholder="Add location"
@@ -313,7 +313,7 @@
       <!-- Description row -->
       <img class="icon" src="./media/notes.svg" alt="Add a description" />
       <input
-        id="eventDescription"
+        id="description"
         type="text"
         class="eventOtherInput"
         placeholder="Add description"

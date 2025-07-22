@@ -348,9 +348,10 @@ td.timeColumn {
   position: sticky;
   top: 0;
   border-radius: 30px 30px 0 0;
+}
+#weekGridHeader {
   z-index: 1;
 }
-
 .weekViewGrid {
   border-radius: 0 0 30px 30px;
   overflow: hidden;
@@ -467,7 +468,6 @@ td.timeColumn {
 
 .eventContainer {
   width: 700px;
-  display: grid;
   grid-template-columns: 1fr 9fr;
   gap: 12px 0;
   background-color: var(--primary-background);
@@ -483,10 +483,6 @@ td.timeColumn {
 .iconButton.alignedRight {
   margin-left: auto;
   margin-right: 0;
-}
-
-#event {
-  display: none;
 }
 
 .eventNameInput {
@@ -505,15 +501,6 @@ td.timeColumn {
   max-height: 42px;
 }
 
-.eventNameInput:after {
-  position: absolute;
-  z-index: 3;
-  top: 5px;
-  left: 5px;
-  right: 5px;
-  bottom: 5px;
-  border: 5px solid #ffea00;
-}
 .eventNameInput::placeholder {
   color: var(--primary-black);
 }
@@ -647,4 +634,7 @@ td.timeColumn {
 }
 .displayedFlex {
   display: flex;
+}
+.displayedGrid {
+  display: grid;
 }

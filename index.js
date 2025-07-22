@@ -4,8 +4,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const closeCalendarButton = document.getElementById("closeCalendarButton");
 
   const eventWindowButton = document.getElementById("eventWindowButton");
+
   eventWindowButton.addEventListener("click", () => {
-    document.getElementById("event").style.display = "grid";
+    openEventWindow();
   });
 
   document.getElementById("logoText").innerText = currentDay.getDate();
@@ -17,6 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const weekDropdown = document.getElementById("viewSelectionButton");
   weekDropdown.addEventListener("click", () => {
     displayDropdown();
+    document.getElementById("dropdownContent").focus();
   });
   displayTable();
 
@@ -44,7 +46,10 @@ document.addEventListener("DOMContentLoaded", () => {
   eventSaveToStorage.addEventListener("click", () => saveEvent());
 
   const dialogCloseButton = document.getElementById("dialogCloseButton");
-  dialogCloseButton.addEventListener("click", () => resetEventCreationForm());
+  dialogCloseButton.addEventListener("click", () => {
+    resetEventCreationForm();
+    openEventWindow();
+  });
 
   const righSideMenuButton = document.getElementById("rightSideButtonChevron");
   const rightSideMenuButtonContainer = document.getElementById(
@@ -92,20 +97,22 @@ document.addEventListener("DOMContentLoaded", () => {
   const weekRightButton = document.getElementById("weekRightButton");
   const weekLeftButton = document.getElementById("weekLeftButton");
   weekRightButton.addEventListener("click", () => {
-    fillOutWeekDays(currentDay, "right");
+    fillOutWeekDays(workingDate, "right");
   });
   weekLeftButton.addEventListener("click", () => {
-    fillOutWeekDays(currentDay, "left");
+    fillOutWeekDays(workingDate, "left");
   });
 
   const headerTodayButton = document.getElementById("headerTodayButton");
   headerTodayButton.addEventListener("click", () => {
-    fillOutWeekDays(currentDay, "");
+    fillOutWeekDays(new Date(), "");
+    workingDate = new Date();
   });
 
   const calendarContainer = document
     .getElementById("calendarContainer")
     .getElementsByTagName("tbody")[0];
+
   calendarContainer.addEventListener("click", (cell) => {
     let setWeek = new Date(
       cell.target.closest(".calendarDayRowElement").getAttribute("id")
@@ -115,6 +122,17 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+function openEventWindow() {
+  let window = document.getElementById("event");
+  if (window.classList.contains("notDisplayed")) {
+    window.classList.remove("notDisplayed");
+    window.classList.add("displayedGrid");
+    window.focus();
+  } else {
+    window.classList.add("notDisplayed");
+    window.classList.remove("displayedGrid");
+  }
+}
 function displayMonthName(currentDay) {
   let headerDateDisplay;
   let checkDate = new Date(currentDay);
@@ -160,15 +178,11 @@ function displayDropdown() {
 
 function fillOutWeekDays(workingDate, direction) {
   let date;
-  if (direction === "") {
-    workingDate = new Date();
-  }
   if (direction === "right") {
     workingDate.setDate(workingDate.getDate() + 7);
   } else if (direction === "left") {
     workingDate.setDate(workingDate.getDate() - 7);
   }
-
   displayMonthName(workingDate);
   fillOutMonthDays(workingDate);
 
@@ -297,9 +311,9 @@ const formInputFieldList = [
   "startDate",
   "endTime",
   "endDate",
-  "eventGuests",
-  "eventLocation",
-  "eventDescription",
+  "guests",
+  "location",
+  "description",
 ];
 
 function createDOMElement(type, classes, text) {
@@ -371,14 +385,15 @@ function saveEvent() {
   };
 
   localStorage.setItem(eventIdentifier, JSON.stringify(newEvent));
-  alert(localStorage.getItem(eventIdentifier, newEvent.location));
+
+  clearEvents();
+  displayEvents();
 }
 
 function resetEventCreationForm() {
   formInputFieldList.forEach((elem) => {
     document.getElementById(elem).value = "";
   });
-  document.getElementById("event").style.display = "none";
 }
 
 function displayTable() {
@@ -478,7 +493,7 @@ function displayEvents(currentDay) {
       }
 
       if (endDate.getDate() - startDate.getDate() == 0 && diff < 1440) {
-        console.log("Same day event: " + keys[i] + " " + diff);
+        //console.log("Same day event: " + keys[i] + " " + diff);
         sameDayEventRender(keys[i], diff / 1.25);
       } else if (endDate.getDate() - startDate.getDate() < 2 && diff < 1440) {
         //console.log("Less than 24h event: " + keys[i] + " " + diff);
@@ -505,7 +520,6 @@ function sameDayEventRender(identifier, eventDuration) {
   const startTime = event.startTime;
   const endTime = event.endTime;
   const startDate = new Date(event.startDate);
-  const endDate = new Date(event.endDate);
   const item = createDOMElement("div", ["meeting"], "");
   item.setAttribute("id", identifier);
   let height = eventDuration;
@@ -519,6 +533,34 @@ function sameDayEventRender(identifier, eventDuration) {
   target.style.overflow = "visible";
   target.style.position = "relative";
   target.appendChild(item);
+
+  item.addEventListener("click", () => {
+    openEditEventWindow(event);
+  });
+}
+
+function openEditEventWindow(event) {
+  openEventWindow();
+  for (let i = 0; i < formInputFieldList.length; i++) {
+    if (event[formInputFieldList[i]]) {
+      if (
+        formInputFieldList[i] == "startDate" ||
+        formInputFieldList[i] == "endDate"
+      ) {
+        document.getElementById(formInputFieldList[i]).value = event[
+          formInputFieldList[i]
+        ].substr(0, 10);
+      } else {
+        console.log();
+        document.getElementById(formInputFieldList[i]).value =
+          event[formInputFieldList[i]];
+      }
+    }
+  }
+  document
+    .getElementById("event")
+    .getElementsByTagName("img")[0]
+    .setAttribute("id", event.identifier);
 }
 
 function checkOverlappingEvents() {
