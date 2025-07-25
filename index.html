@@ -18,7 +18,7 @@
   <body>
     <header class="header">
       <div class="headerLeft">
-        <button id="closeCalendarButton" class="iconButton headerLeftCollapse">
+        <button id="closeSidePanel" class="iconButton headerLeftCollapse">
           <img src="./media/burger.svg" alt="Closes and opens calendar view" />
         </button>
         <span class="headerLeftLogo">
@@ -33,14 +33,14 @@
           <button id="headerTodayButton" class="roundedCornerButton">
             Today
           </button>
-          <button id="weekLeftButton" class="iconButton">
+          <button id="previousTimeframe" class="iconButton">
             <img
               class=""
               src="./media/chevron_left.svg"
               alt="Go back a month"
             />
           </button>
-          <button id="weekRightButton" class="iconButton">
+          <button id="nextTimeframe" class="iconButton">
             <img
               class=""
               src="./media/chevron_right.svg"
@@ -61,20 +61,28 @@
             <button class="iconButton" id="settings">
               <img src="./media/settings.svg" />
             </button>
-            <div id="dropdownSettings" tabindex="-1" class="dropdownSettings">
+            <div
+              id="dropdownSettings"
+              tabindex="-1"
+              class="dropdownSettings notDisplayed"
+            >
               <button id="settingsButton" class="basicButton">Settings</button>
             </div>
           </div>
 
-          <div id="weekDropdown">
+          <div id="timeframeSelect">
             <button
-              id="viewSelectionButton"
+              id="timeframeSelectButton"
               class="roundedCornerButton dropdownButton"
             >
               <span>Week</span>
               <img class="dropdownIcon" src="./media/arrow_down.svg" />
             </button>
-            <div id="dropdownContent" tabindex="-1" class="dropdownContent">
+            <div
+              id="dropdownContent"
+              tabindex="-1"
+              class="dropdownContent notDisplayed"
+            >
               <div class="dropdownItem">
                 <p>text</p>
                 <p>AB</p>
@@ -101,8 +109,8 @@
     </header>
 
     <div class="content" id="content">
-      <aside id="calendarSideView">
-        <button class="eventWindowOpeningButton" id="eventWindowButton">
+      <aside id="calendarSideView" class="calendarSidePanel">
+        <button class="eventTrigger" id="eventWindowButton">
           <img class="icon" src="./media/add.svg" />
           <span>Create</span>
           <img class="icon" src="./media/arrow_down.svg" />
@@ -111,22 +119,22 @@
         <div class="calendarHeader">
           <p id="calendarMonthDisplay" class="calendarMonth">November, 2025</p>
           <div class="calendarSideViewButtons">
-            <button id="calendarLeftButton" class="smallIconButton">
+            <button id="previousMonth" class="smallIconButton">
               <img src="./media/chevron_left.svg" alt="Go back a month" />
             </button>
-            <button id="calendarRightButton" class="smallIconButton">
+            <button id="nextMonth" class="smallIconButton">
               <img src="./media/chevron_right.svg" alt="Go forward a month" />
             </button>
           </div>
         </div>
-        <div class="calendarDayRow">
-          <p class="calendarDayRowElement">S</p>
-          <p class="calendarDayRowElement">M</p>
-          <p class="calendarDayRowElement">T</p>
-          <p class="calendarDayRowElement">W</p>
-          <p class="calendarDayRowElement">T</p>
-          <p class="calendarDayRowElement">F</p>
-          <p class="calendarDayRowElement">S</p>
+        <div class="calendarRow">
+          <p class="calendarCell">S</p>
+          <p class="calendarCell">M</p>
+          <p class="calendarCell">T</p>
+          <p class="calendarCell">W</p>
+          <p class="calendarCell">T</p>
+          <p class="calendarCell">F</p>
+          <p class="calendarCell">S</p>
         </div>
         <table id="calendarContainer" class="calendarContainer"></table>
       </aside>
@@ -138,31 +146,31 @@
             <th class="weekViewGridHeaderLeftMost"></th>
             <th class="weekViewGridHeader">
               <p class="weekViewGridHeaderWeekday">SUN</p>
-              <p class="weekViewGridHeaderDate" id="weekDisplayDate1">1</p>
+              <p class="weekViewGridHeaderDate" id="weekDisplayDate0">1</p>
             </th>
             <th class="weekViewGridHeader">
               <p class="weekViewGridHeaderWeekday">MON</p>
-              <p class="weekViewGridHeaderDate" id="weekDisplayDate2">2</p>
+              <p class="weekViewGridHeaderDate" id="weekDisplayDate1">2</p>
             </th>
             <th class="weekViewGridHeader">
               <p class="weekViewGridHeaderWeekday">TUE</p>
-              <p class="weekViewGridHeaderDate" id="weekDisplayDate3">3</p>
+              <p class="weekViewGridHeaderDate" id="weekDisplayDate2">3</p>
             </th>
             <th class="weekViewGridHeader">
               <p class="weekViewGridHeaderWeekday">WED</p>
-              <p class="weekViewGridHeaderDate" id="weekDisplayDate4">4</p>
+              <p class="weekViewGridHeaderDate" id="weekDisplayDate3">4</p>
             </th>
             <th class="weekViewGridHeader">
               <p class="weekViewGridHeaderWeekday">THU</p>
-              <p class="weekViewGridHeaderDate" id="weekDisplayDate5">31</p>
+              <p class="weekViewGridHeaderDate" id="weekDisplayDate4">31</p>
             </th>
             <th class="weekViewGridHeader">
               <p class="weekViewGridHeaderWeekday">FRI</p>
-              <p class="weekViewGridHeaderDate" id="weekDisplayDate6">19</p>
+              <p class="weekViewGridHeaderDate" id="weekDisplayDate5">19</p>
             </th>
             <th class="weekViewGridHeader">
               <p class="weekViewGridHeaderWeekday">SAT</p>
-              <p class="weekViewGridHeaderDate" id="weekDisplayDate7">24</p>
+              <p class="weekViewGridHeaderDate" id="weekDisplayDate6">24</p>
             </th>
           </tr>
           <tr class="weekViewGridRow">
@@ -194,7 +202,7 @@
         </table>
       </main>
 
-      <aside id="rightSideView" class="rightSideMenu">
+      <aside id="rightSidePanel" class="rightSideMenu">
         <a
           target="_blank"
           rel="noopener noreferrer"
@@ -250,9 +258,10 @@
         </a>
       </aside>
     </div>
-    <div class="rightSideMenuButtonContainer" id="rightSideMenuButtonContainer">
-      <button class="rightSideMenuButton iconButton">
-        <img id="rightSideButtonChevron" src="./media/chevron_right.svg" />
+
+    <div class="rightPanelTriggerContainer" id="rightPanelTriggerContainer">
+      <button class="rightPanelTrigger iconButton">
+        <img id="rightPanelChevron" src="./media/chevron_right.svg" />
       </button>
     </div>
 
@@ -330,10 +339,11 @@
         Save
       </button>
     </div>
+
     <div class="settingsView notDisplayed" tabindex="-1" id="settingsView">
-      <div class="settingsHeaderColumn">
+      <div class="settingsMenuColumn">
         <div class="settingsHeader">
-          <button class="iconButton" id="goBack">
+          <button class="iconButton" id="closeSettings">
             <img src="./media/chevron_left.svg" />
           </button>
           <span class="settingsHeading">Settings</span>
@@ -348,7 +358,7 @@
           <div class="settingText">
             <label class="settingLabel" for="weekStart">Start Week On</label>
             <button
-              class="dropdownWeekStart"
+              class="buttonFirstWeekday"
               id="selectStartOfWeek"
               value="weekStart"
             >
@@ -359,7 +369,7 @@
           <div
             id="dropdownWeekDays"
             tabindex="-1"
-            class="dropdownContent dropdownWeekDays"
+            class="dropdownContent dropdownFirstWeekday notDisplayed"
           >
             <div id="selectSaturday" class="dropdownItem">
               <p>Saturday</p>

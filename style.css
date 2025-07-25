@@ -13,6 +13,10 @@
   color: black;
   font-family: "Roboto", sans-serif;
   --box-shadow: 3px 3px 3px var(--primary-gray);
+  /*z-index*/
+  --tableTop: 1;
+  --dropdown: 2;
+  --above-all: 3;
 }
 
 .header {
@@ -37,7 +41,7 @@
 }
 
 .iconButton:hover,
-.calendarDayRowElement:hover {
+.calendarCell:hover {
   background-color: var(--secondary-highlight);
   border-radius: 50%;
   cursor: pointer;
@@ -127,7 +131,7 @@
 .settingsView {
   display: grid;
   grid-template-columns: 1fr 4fr;
-  z-index: 3;
+  z-index: var(--above-all);
   position: absolute;
   width: 100vw;
   height: 100vh;
@@ -138,14 +142,13 @@
 .settingsGap {
   height: 48px;
 }
-.settingsHeaderColumn {
+.settingsMenuColumn {
   display: flex;
   flex-direction: column;
 }
 .settingsHeader {
   height: 48px;
   display: flex;
-  flex-direction: row;
   justify-content: space-between;
 }
 .settingLabel {
@@ -165,18 +168,16 @@
   grid-template-columns: 1fr 1fr;
   position: relative;
 }
-#dropdownWeekDays {
+.dropdownFirstWeekday {
   top: 64px;
   left: 0;
   background-color: var(--primary-background);
 }
-.dropdownWeekDays:hover {
-  background-color: var(--primary-light-gray);
-}
+
 .settingField:hover {
   background-color: var(--primary-light-gray);
 }
-.dropdownWeekStart {
+.buttonFirstWeekday {
   border: none;
   background-color: inherit;
   padding-left: 0;
@@ -195,18 +196,18 @@
   height: 48px;
 }
 
-.calendarDayRowElementSelected {
+.calendarCellSelected {
   background-color: var(--primary-blue);
   border-radius: 50%;
   color: white;
 }
-.calendarDayRowElementHighlighted {
+.calendarCellHighlighted {
   background-color: var(--primary-highlight);
   border-radius: 50%;
   color: black;
 }
 
-.calendarDayRowElementSelected:hover {
+.calendarCellSelected:hover {
   cursor: pointer;
   background-color: var(--primary-highlight);
 }
@@ -259,20 +260,19 @@
 .calendarSideViewButtons {
   margin-left: auto;
 }
-.eventWindowOpeningButton {
+.eventTrigger {
   display: flex;
-  flex-direction: row;
   margin: 4px 20px 4px 0;
   border: none;
   box-shadow: var(--box-shadow);
   border-radius: 16px;
-  padding: 12px 12px;
+  padding: 12px;
   text-align: center;
   background-color: white;
   align-items: center;
   font-size: 0.9rem;
 }
-.eventWindowOpeningButton:hover {
+.eventTrigger:hover {
   background-color: var(--primary-highlight);
   cursor: pointer;
 }
@@ -394,8 +394,9 @@ td.timeColumn {
   font-size: 0.8rem;
 }
 
-#calendarSideView {
-  justify-content: flex-start;
+.calendarSidePanel {
+  display: block;
+
   font-size: 0.8rem;
   padding: 16px;
   height: 90vh;
@@ -422,10 +423,9 @@ td.timeColumn {
   position: sticky;
   top: 0;
   border-radius: 30px 30px 0 0;
+  z-index: var(--tableTop);
 }
-#weekGridHeader {
-  z-index: 1;
-}
+
 .weekViewGrid {
   border-radius: 0 0 30px 30px;
   overflow: hidden;
@@ -484,7 +484,6 @@ td.timeColumn {
 
 .eventTypeLine {
   display: inline-flex;
-  flex-direction: row;
   justify-content: space-between;
   font-size: 0.9rem;
   margin-bottom: 12px;
@@ -505,7 +504,7 @@ td.timeColumn {
   border-radius: 8px;
 }
 
-.calendarDayRow {
+.calendarRow {
   display: inline-flex;
   justify-content: space-between;
   padding: 4px;
@@ -514,7 +513,7 @@ td.timeColumn {
   text-align: center;
 }
 
-.calendarDayRowElement {
+.calendarCell {
   width: 20px;
   height: 20px;
   padding: 4px;
@@ -542,6 +541,7 @@ td.timeColumn {
 
 .eventContainer {
   width: 700px;
+  display: grid;
   grid-template-columns: 1fr 9fr;
   gap: 12px 0;
   background-color: var(--primary-background);
@@ -552,7 +552,7 @@ td.timeColumn {
   left: 15%;
   right: 5%;
   box-shadow: var(--box-shadow);
-  z-index: 2;
+  z-index: var(--above-all);
 }
 
 .iconButton.alignedRight {
@@ -618,11 +618,9 @@ td.timeColumn {
 .dropdownButton {
   height: 100%;
   display: flex;
-  flex-direction: row;
   text-align: center;
   margin: auto;
-  padding-top: 12px;
-  padding-bottom: 12px;
+  padding-block: 12px;
   line-height: 24px;
   font-size: 0.9rem;
 }
@@ -631,7 +629,7 @@ td.timeColumn {
   margin: auto;
 }
 .dropdownContent {
-  display: none;
+  display: flex;
   position: absolute;
   background-color: var(--primary-background);
   min-width: 200px;
@@ -639,18 +637,18 @@ td.timeColumn {
   text-align: left;
   flex-direction: column;
   right: 120px;
-  z-index: 2;
+  z-index: var(--dropdown);
 }
 
 .dropdownSettings {
-  display: none;
+  display: flex;
   position: absolute;
   background-color: var(--primary-background);
   min-width: 200px;
   box-shadow: var(--box-shadow);
   text-align: left;
   flex-direction: column;
-  z-index: 2;
+  z-index: var(--dropdown);
   padding: 0;
 }
 .settingsDropdown {
@@ -662,19 +660,13 @@ td.timeColumn {
   width: 100%;
   height: 100%;
   text-align: left;
-  padding-top: 16px;
-  padding-bottom: 16px;
-  padding-left: 8px;
-  padding-right: 8px;
+  padding: 16px 8px;
   font-size: 1rem;
 }
 .dropdownItem {
   display: inline-flex;
   justify-content: space-between;
-  padding-top: 16px;
-  padding-bottom: 16px;
-  padding-left: 8px;
-  padding-right: 8px;
+  padding: 16px 8px;
 }
 
 .dropdownItem:hover,
@@ -685,7 +677,7 @@ td.timeColumn {
 
 .eventButton:hover .dropdownContent {
   display: flex;
-  z-index: 2;
+  z-index: var(--dropdown);
 }
 
 .calendarSideViewEventCreate {
@@ -707,11 +699,11 @@ td.timeColumn {
   padding: 12px 24px;
 }
 
-.rightSideMenuButton {
+.rightPanelTrigger {
   width: 40px;
   height: 40px;
 }
-.rightSideMenuButtonContainer {
+.rightPanelTriggerContainer {
   background-color: var(--primary-background);
   border-radius: 24px 0 0 24px;
   text-align: left;
@@ -726,18 +718,6 @@ td.timeColumn {
 .rightSideMenuClosed {
   box-shadow: var(--box-shadow);
 }
-.displayedBlock {
-  display: block;
-}
 .notDisplayed {
   display: none;
-}
-.displayedInlineFlex {
-  display: inline-flex;
-}
-.displayedFlex {
-  display: flex;
-}
-.displayedGrid {
-  display: grid;
 }
