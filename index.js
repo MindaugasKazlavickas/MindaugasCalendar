@@ -1,6 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
   const currentDay = new Date();
 
+  const firstDayOfWeek = document.getElementById("selectStartOfWeek");
+  console.log(firstDayOfWeek.innerText);
+
   const closeCalendarButton = document.getElementById("closeCalendarButton");
 
   const eventWindowButton = document.getElementById("eventWindowButton");
@@ -8,7 +11,6 @@ document.addEventListener("DOMContentLoaded", () => {
   eventWindowButton.addEventListener("click", () => {
     openEventWindow();
   });
-
   document.getElementById("logoText").innerText = currentDay.getDate();
 
   displayMonthName(currentDay);
@@ -17,9 +19,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const weekDropdown = document.getElementById("viewSelectionButton");
   weekDropdown.addEventListener("click", () => {
-    displayDropdown();
-    document.getElementById("dropdownContent").focus();
+    displayDropdown("dropdownContent");
   });
+  const settingsDropdown = document.getElementById("settings");
+  settingsDropdown.addEventListener("click", () => {
+    displayDropdown("dropdownSettings");
+  });
+
+  const settingsButton = document.getElementById("settingsButton");
+
+  settingsButton.addEventListener("click", () => {
+    console.log("changing starting date from basic to " + selection());
+  });
+
   displayTable();
 
   createCalendar();
@@ -43,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   calendarLeftButton;
   const eventSaveToStorage = document.getElementById("eventSaveButton");
-  eventSaveToStorage.addEventListener("click", () => saveEvent());
+  eventSaveToStorage.addEventListener("click", () => saveEvent(currentDay));
 
   const dialogCloseButton = document.getElementById("dialogCloseButton");
   dialogCloseButton.addEventListener("click", () => {
@@ -122,6 +134,23 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+function selection() {
+  const settingsParent = document.getElementById("settingsView");
+  settingsParent.classList.remove("notDisplayed");
+  settingsParent.focus();
+  document.getElementById("settingField").addEventListener("click", () => {
+    displayDropdown("dropdownWeekDays");
+  });
+  document
+    .getElementById("dropdownWeekDays")
+    .addEventListener("click", (weekDay) => {});
+  document.getElementById("goBack").addEventListener("click", () => {
+    settingsParent.classList.add("notDisplayed");
+    document
+      .getElementById("dropdownSettings")
+      .classList.remove("displayedFlex");
+  });
+}
 function openEventWindow() {
   let window = document.getElementById("event");
   if (window.classList.contains("notDisplayed")) {
@@ -167,12 +196,13 @@ function displayMonthNameCalendar(currentDay) {
     monthsLong[currentDay.getMonth()] + ", " + currentDay.getFullYear();
   document.getElementById("calendarMonthDisplay").innerText = headerDateDisplay;
 }
-function displayDropdown() {
-  let element = document.getElementById("dropdownContent");
+function displayDropdown(dropdown) {
+  let element = document.getElementById(dropdown);
   if (element.classList.contains("displayedFlex")) {
     element.classList.remove("displayedFlex");
   } else {
     element.classList.add("displayedFlex");
+    element.focus();
   }
 }
 
@@ -345,7 +375,7 @@ function createCalendar() {
   }
 }
 
-function saveEvent() {
+function saveEvent(currentDay) {
   const eventIdentifier = "event " + Date.now();
   const startDate = new Date(document.getElementById("startDate").value);
   const endDate = new Date(document.getElementById("endDate").value);
@@ -379,21 +409,35 @@ function saveEvent() {
     endDate,
     endTime,
 
-    guests: document.getElementById("eventGuests").value,
-    location: document.getElementById("eventLocation").value,
-    description: document.getElementById("eventDescription").value,
+    guests: document.getElementById("guests").value,
+    location: document.getElementById("location").value,
+    description: document.getElementById("description").value,
   };
 
-  localStorage.setItem(eventIdentifier, JSON.stringify(newEvent));
+  const oldEventIdElement = document
+    .getElementById("event")
+    .getElementsByTagName("img")[0];
+  if (!oldEventIdElement.getAttribute("id")) {
+    localStorage.setItem(eventIdentifier, JSON.stringify(newEvent));
+  } else {
+    localStorage.removeItem(oldEventIdElement.getAttribute("id"));
+    localStorage.setItem(eventIdentifier, JSON.stringify(newEvent));
+  }
 
   clearEvents();
-  displayEvents();
+  displayEvents(currentDay);
+  openEventWindow();
+  resetEventCreationForm();
 }
 
 function resetEventCreationForm() {
   formInputFieldList.forEach((elem) => {
     document.getElementById(elem).value = "";
   });
+  document
+    .getElementById("event")
+    .getElementsByTagName("img")[0]
+    .removeAttribute("id");
 }
 
 function displayTable() {
@@ -448,9 +492,11 @@ function setTimezone() {
     Event starts on day n and end on day n+1 but event time is <24h
     Event lasts longer than 2 days
     Atidaryti "event viewer" ir atnaujinti info
+    On click on table -> open event window with pre-selected time
 */
 function displayEvents(currentDay) {
   const keys = Object.keys(localStorage);
+  console.log();
   let startOfWeekTime = new Date(
     currentDay.setDate(currentDay.getDate() - currentDay.getDay())
   );
@@ -535,11 +581,11 @@ function sameDayEventRender(identifier, eventDuration) {
   target.appendChild(item);
 
   item.addEventListener("click", () => {
-    openEditEventWindow(event);
+    openEditEventWindow(event, identifier);
   });
 }
 
-function openEditEventWindow(event) {
+function openEditEventWindow(event, identifier) {
   openEventWindow();
   for (let i = 0; i < formInputFieldList.length; i++) {
     if (event[formInputFieldList[i]]) {
@@ -560,7 +606,7 @@ function openEditEventWindow(event) {
   document
     .getElementById("event")
     .getElementsByTagName("img")[0]
-    .setAttribute("id", event.identifier);
+    .setAttribute("id", identifier);
 }
 
 function checkOverlappingEvents() {

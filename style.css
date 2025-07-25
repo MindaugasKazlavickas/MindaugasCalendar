@@ -52,7 +52,15 @@
   height: 32px;
   padding: 4px;
 }
-
+.iconAlignedRight {
+  text-align: center;
+  margin: auto 0 auto auto;
+  background-color: inherit;
+  border: none;
+  width: 32px;
+  height: 32px;
+  padding: 4px;
+}
 .headerLeft {
   display: grid;
   grid-template-columns: 48px 44px 1fr;
@@ -112,7 +120,73 @@
   width: 100%;
   border-bottom: 1px solid var(--primary-gray);
 }
-
+.settingsMainColumn {
+  display: flex;
+  flex-direction: column;
+}
+.settingsView {
+  display: grid;
+  grid-template-columns: 1fr 4fr;
+  z-index: 3;
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  background-color: var(--primary-background);
+}
+.settingsGap {
+  height: 48px;
+}
+.settingsHeaderColumn {
+  display: flex;
+  flex-direction: column;
+}
+.settingsHeader {
+  height: 48px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.settingLabel {
+  font-size: 0.8rem;
+  color: var(--primary-gray);
+}
+.settingField {
+  margin-top: 24px;
+  border-radius: 12px;
+  background-color: var(--primary-highlight);
+  color: black;
+  width: 256px;
+  height: 64px;
+  padding: 4px;
+  padding-left: 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  position: relative;
+}
+#dropdownWeekDays {
+  top: 64px;
+  left: 0;
+  background-color: var(--primary-background);
+}
+.dropdownWeekDays:hover {
+  background-color: var(--primary-light-gray);
+}
+.settingField:hover {
+  background-color: var(--primary-light-gray);
+}
+.dropdownWeekStart {
+  border: none;
+  background-color: inherit;
+  padding-left: 0;
+  padding-top: 8px;
+  font-size: 1rem;
+}
+.settingsHeading {
+  margin: auto;
+  font-size: 1.2rem;
+}
 .headerCenter,
 .headerCenterLeft,
 .headerCenterRight,
@@ -478,6 +552,7 @@ td.timeColumn {
   left: 15%;
   right: 5%;
   box-shadow: var(--box-shadow);
+  z-index: 2;
 }
 
 .iconButton.alignedRight {
@@ -567,6 +642,32 @@ td.timeColumn {
   z-index: 2;
 }
 
+.dropdownSettings {
+  display: none;
+  position: absolute;
+  background-color: var(--primary-background);
+  min-width: 200px;
+  box-shadow: var(--box-shadow);
+  text-align: left;
+  flex-direction: column;
+  z-index: 2;
+  padding: 0;
+}
+.settingsDropdown {
+  margin: auto;
+}
+.basicButton {
+  border: none;
+  background-color: inherit;
+  width: 100%;
+  height: 100%;
+  text-align: left;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  padding-left: 8px;
+  padding-right: 8px;
+  font-size: 1rem;
+}
 .dropdownItem {
   display: inline-flex;
   justify-content: space-between;
@@ -575,8 +676,10 @@ td.timeColumn {
   padding-left: 8px;
   padding-right: 8px;
 }
+
 .dropdownItem:hover,
-.eventButton:hover {
+.eventButton:hover,
+.basicButton:hover {
   background-color: #c9c9c9;
 }
 

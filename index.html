@@ -57,9 +57,15 @@
           <button class="iconButton" id="support">
             <img src="./media/help.svg" />
           </button>
-          <button class="iconButton" id="settings">
-            <img src="./media/settings.svg" />
-          </button>
+          <div class="settingsDropdown">
+            <button class="iconButton" id="settings">
+              <img src="./media/settings.svg" />
+            </button>
+            <div id="dropdownSettings" tabindex="-1" class="dropdownSettings">
+              <button id="settingsButton" class="basicButton">Settings</button>
+            </div>
+          </div>
+
           <div id="weekDropdown">
             <button
               id="viewSelectionButton"
@@ -323,6 +329,50 @@
       <button id="eventSaveButton" type="text" class="eventSaveButton">
         Save
       </button>
+    </div>
+    <div class="settingsView notDisplayed" tabindex="-1" id="settingsView">
+      <div class="settingsHeaderColumn">
+        <div class="settingsHeader">
+          <button class="iconButton" id="goBack">
+            <img src="./media/chevron_left.svg" />
+          </button>
+          <span class="settingsHeading">Settings</span>
+        </div>
+        <hr class="separator" />
+      </div>
+
+      <div class="settingsMainColumn">
+        <div class="settingsGap"></div>
+        <hr class="separator" />
+        <div class="settingField" id="settingField">
+          <div class="settingText">
+            <label class="settingLabel" for="weekStart">Start Week On</label>
+            <button
+              class="dropdownWeekStart"
+              id="selectStartOfWeek"
+              value="weekStart"
+            >
+              Sunday
+            </button>
+          </div>
+          <img class="iconAlignedRight" src="./media/arrow_down.svg" />
+          <div
+            id="dropdownWeekDays"
+            tabindex="-1"
+            class="dropdownContent dropdownWeekDays"
+          >
+            <div id="selectSaturday" class="dropdownItem">
+              <p>Saturday</p>
+            </div>
+            <div id="selectSunday" class="dropdownItem">
+              <p>Sunday</p>
+            </div>
+            <div id="selectMonday" class="dropdownItem">
+              <p>Monday</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </body>
 </html>
