@@ -13,20 +13,16 @@ document.addEventListener("DOMContentLoaded", function () {
     createEventListeners(currentDate);
     renderTable();
     renderCalendar();
-    createWeekViewListeners(currentDate);
+    createTimeframeListeners(currentDate);
     createCalendarListeners(currentDate);
-    fillOutWeekDays(currentDate, 0);
+    timeframeUpdate(currentDate, 0);
     displayCalendarMonth(currentDate);
 });
-function fillOutWeekDays(workingDate, offset) {
+function fillOutWeekDays(currentDate, offset) {
     var _a, _b, _c, _d;
-    workingDate.setDate(workingDate.getDate() + offset);
-    displayMonthName(workingDate);
-    fillOutMonthDays(workingDate);
-    var date = new Date(workingDate);
+    currentDate.setDate(currentDate.getDate() + offset);
+    var date = new Date(currentDate);
     date.setDate(date.getDate() - date.getDay());
-    clearEvents();
-    displayEvents(date);
     for (var i = 0; i < 7; i++) {
         var weekDate = (document.getElementById("weekDisplayDate" + i));
         weekDate.innerText = date.getDate().toString();
@@ -34,7 +30,7 @@ function fillOutWeekDays(workingDate, offset) {
     }
     var todayDate = new Date();
     if (offset === 0) {
-        workingDate = new Date(todayDate);
+        date = new Date(todayDate);
         (_b = (_a = document
             .getElementById("weekDisplayDate" + [todayDate.getDay()])) === null || _a === void 0 ? void 0 : _a.parentElement) === null || _b === void 0 ? void 0 : _b.classList.add("weekViewGridHeaderMarked");
     }
@@ -42,6 +38,8 @@ function fillOutWeekDays(workingDate, offset) {
         (_d = (_c = document
             .getElementById("weekDisplayDate" + [todayDate.getDay()])) === null || _c === void 0 ? void 0 : _c.parentElement) === null || _d === void 0 ? void 0 : _d.classList.remove("weekViewGridHeaderMarked");
     }
+    console.log(currentDate);
+    return currentDate;
 }
 function fillOutMonthDays(currentDate) {
     var workingDate = new Date(currentDate);
@@ -206,7 +204,6 @@ function displayEvents(currentDate) {
         _loop_1(i);
     }
 }
-// ^^^^
 function clearEvents() {
     var keys = Object.keys(localStorage);
     for (var i = 0; i < keys.length; i++) {
@@ -216,7 +213,6 @@ function clearEvents() {
         }
     }
 }
-// ^^^^
 function sameDayEventRender(identifier, eventDuration) {
     var event = JSON.parse(localStorage.getItem(identifier));
     var startTime = event.startTime;
@@ -237,7 +233,6 @@ function sameDayEventRender(identifier, eventDuration) {
         openEditEventWindow(event, identifier);
     });
 }
-// ^^^^
 function openEditEventWindow(event, identifier) {
     var _a;
     eventViewTrigger();
@@ -463,19 +458,33 @@ function createEventListeners(currentDate) {
     });
     var headerTodayButton = (document.getElementById("headerTodayButton"));
     headerTodayButton.addEventListener("click", function () {
-        fillOutWeekDays(new Date(), 0);
-        currentDate = new Date();
+        timeframeUpdate((currentDate = new Date()), 0);
     });
 }
-function createWeekViewListeners(currentDate) {
+function createTimeframeListeners(currentDate) {
+    var workingDate = new Date(currentDate);
     var nextTimeframe = (document.getElementById("nextTimeframe"));
     var previousTimeframe = (document.getElementById("previousTimeframe"));
     nextTimeframe.addEventListener("click", function () {
-        fillOutWeekDays(currentDate, 7);
+        workingDate = timeframeUpdate(workingDate, 7);
     });
     previousTimeframe.addEventListener("click", function () {
-        fillOutWeekDays(currentDate, -7);
+        workingDate = timeframeUpdate(workingDate, -7);
     });
+    return workingDate;
+}
+function timeframeUpdate(currentDate, offset) {
+    fillOutWeekDays(currentDate, offset);
+    //clearEvents();
+    //displayEvents(currentDate);
+    displayMonthName(currentDate);
+    //fillOutMonthDays(currentDate);
+    //update week view
+    //update header month
+    //update month calendar
+    //update month highlighted
+    // redisplay events
+    return currentDate;
 }
 function createCalendarListeners(currentDate) {
     var previousMonth = (document.getElementById("previousMonth"));

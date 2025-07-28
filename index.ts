@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const currentDate: Date = new Date();
+  let currentDate: Date = new Date();
   const dateInLogo = <HTMLElement>document.getElementById("logoText");
   if (dateInLogo) {
     dateInLogo.innerText = currentDate.getDate().toString();
@@ -20,10 +20,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   renderCalendar();
 
-  createWeekViewListeners(currentDate);
+  createTimeframeListeners(currentDate);
   createCalendarListeners(currentDate);
 
-  fillOutWeekDays(currentDate, 0);
+  timeframeUpdate(currentDate, 0);
+
   displayCalendarMonth(currentDate);
 });
 interface StoredEvent {
@@ -37,15 +38,11 @@ interface StoredEvent {
   location?: string;
   description?: string;
 }
-function fillOutWeekDays(workingDate: Date, offset: number): void {
-  workingDate.setDate(workingDate.getDate() + offset);
-  displayMonthName(workingDate);
-  fillOutMonthDays(workingDate);
-
-  let date: Date = new Date(workingDate);
+function fillOutWeekDays(currentDate: Date, offset: number): Date {
+  currentDate.setDate(currentDate.getDate() + offset);
+  let date: Date = new Date(currentDate);
   date.setDate(date.getDate() - date.getDay());
-  clearEvents();
-  displayEvents(date);
+
   for (let i = 0; i < 7; i++) {
     let weekDate = <HTMLTableCellElement>(
       document.getElementById("weekDisplayDate" + i)
@@ -57,7 +54,7 @@ function fillOutWeekDays(workingDate: Date, offset: number): void {
 
   let todayDate: Date = new Date();
   if (offset === 0) {
-    workingDate = new Date(todayDate);
+    date = new Date(todayDate);
     document
       .getElementById("weekDisplayDate" + [todayDate.getDay()])
       ?.parentElement?.classList.add("weekViewGridHeaderMarked");
@@ -66,8 +63,9 @@ function fillOutWeekDays(workingDate: Date, offset: number): void {
       .getElementById("weekDisplayDate" + [todayDate.getDay()])
       ?.parentElement?.classList.remove("weekViewGridHeaderMarked");
   }
+  console.log(currentDate);
+  return currentDate;
 }
-
 function fillOutMonthDays(currentDate: Date): void {
   const workingDate: Date = new Date(currentDate);
   workingDate.setDate(1);
@@ -253,7 +251,6 @@ function displayEvents(currentDate: Date): void {
     checkOverlappingEvents();
   }
 }
-// ^^^^
 function clearEvents(): void {
   const keys: string[] = Object.keys(localStorage);
   for (let i = 0; i < keys.length; i++) {
@@ -263,7 +260,6 @@ function clearEvents(): void {
     }
   }
 }
-// ^^^^
 function sameDayEventRender(identifier: string, eventDuration: number): void {
   const event: StoredEvent = JSON.parse(
     localStorage.getItem(identifier) as string
@@ -290,7 +286,6 @@ function sameDayEventRender(identifier: string, eventDuration: number): void {
     openEditEventWindow(event, identifier);
   });
 }
-// ^^^^
 function openEditEventWindow(event: StoredEvent, identifier: string): void {
   eventViewTrigger();
   for (let i = 0; i < formInputFieldList.length; i++) {
@@ -313,7 +308,6 @@ function openEditEventWindow(event: StoredEvent, identifier: string): void {
     ?.getElementsByTagName("img")[0];
   idImgHolder?.setAttribute("id", identifier);
 }
-
 function checkOverlappingEvents(): void {
   const keys: string[] = Object.keys(localStorage);
   for (let i = 0; i < keys.length; i++) {
@@ -587,11 +581,11 @@ function createEventListeners(currentDate: Date): void {
     document.getElementById("headerTodayButton")
   );
   headerTodayButton.addEventListener("click", () => {
-    fillOutWeekDays(new Date(), 0);
-    currentDate = new Date();
+    timeframeUpdate((currentDate = new Date()), 0);
   });
 }
-function createWeekViewListeners(currentDate: Date): void {
+function createTimeframeListeners(currentDate: Date): Date {
+  let workingDate = new Date(currentDate);
   const nextTimeframe = <HTMLButtonElement>(
     document.getElementById("nextTimeframe")
   );
@@ -599,11 +593,25 @@ function createWeekViewListeners(currentDate: Date): void {
     document.getElementById("previousTimeframe")
   );
   nextTimeframe.addEventListener("click", () => {
-    fillOutWeekDays(currentDate, 7);
+    workingDate = timeframeUpdate(workingDate, 7);
   });
   previousTimeframe.addEventListener("click", () => {
-    fillOutWeekDays(currentDate, -7);
+    workingDate = timeframeUpdate(workingDate, -7);
   });
+  return workingDate;
+}
+function timeframeUpdate(currentDate: Date, offset: number): Date {
+  fillOutWeekDays(currentDate, offset);
+  //clearEvents();
+  //displayEvents(currentDate);
+  displayMonthName(currentDate);
+  //fillOutMonthDays(currentDate);
+  //update week view
+  //update header month
+  //update month calendar
+  //update month highlighted
+  // redisplay events
+  return currentDate;
 }
 function createCalendarListeners(currentDate: Date): void {
   const previousMonth = <HTMLButtonElement>(
