@@ -23,21 +23,20 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function fillOutWeekDays(workingDate, offset) {
-  let date;
   workingDate.setDate(workingDate.getDate() + offset);
   displayMonthName(workingDate);
   fillOutMonthDays(workingDate);
 
-  date = new Date(workingDate);
+  let date = new Date(workingDate);
   date.setDate(date.getDate() - date.getDay());
+  clearEvents();
+  console.log(date);
+  displayEvents(date);
   for (let i = 0; i < 7; i++) {
     document.getElementById("weekDisplayDate" + i).innerText = date.getDate();
 
     date.setDate(date.getDate() + 1);
   }
-
-  clearEvents();
-  displayEvents(workingDate);
 
   let todayDate = new Date();
   if (offset === 0) {
@@ -57,36 +56,43 @@ function fillOutMonthDays(currentDate) {
   date.setDate(1);
   let startDate = date.getDate() - date.getDay();
   date.setDate(startDate);
-  let parentContainer = document
+  let calendarTBody = document
     .getElementById("calendarContainer")
     .getElementsByTagName("tbody")[0];
   for (let i = 0; i < 6; i++) {
-    let row = parentContainer.getElementsByClassName("calendarRow")[i];
+    let calendarRow = calendarTBody.getElementsByClassName("calendarRow")[i];
     for (let j = 0; j < 7; j++) {
-      let dayCell = row.getElementsByClassName("calendarCell")[j];
+      let dayCell = calendarRow.getElementsByClassName("calendarCell")[j];
       dayCell.innerText = date.getDate();
       dayCell.removeAttribute("id");
       dayCell.setAttribute("id", date);
-      if (
-        date.getDate() == new Date().getDate() &&
-        date.getMonth() == new Date().getMonth()
-      ) {
+      const isTodayDate = () => {
+        return (
+          date.getDate() == new Date().getDate() &&
+          date.getMonth() == new Date().getMonth()
+        );
+      };
+      /*const isDateSelected = () => {
+        return (
+          date.getDay() == new Date().getDay() &&
+          date.getDate() >= currentDate.getDate() &&
+          date.getDate() <= currentDate.getDate() + 6 &&
+          date.getDate() != currentDate.getDate() &&
+          date.getDate() == currentDate.getDate() + date.getDay() &&
+          date.getMonth() == currentDate.getMonth()
+        );
+      };*/
+      if (isTodayDate()) {
         dayCell.classList.add("calendarCellSelected");
       } else if (date.getMonth() != new Date().getMonth()) {
         dayCell.classList.remove("calendarCellSelected");
       }
-      if (
-        date.getDay() == new Date().getDay() &&
-        date.getDate() >= currentDate.getDate() &&
-        date.getDate() <= currentDate.getDate() + 6 &&
-        date.getDate() != currentDate.getDate() &&
-        date.getDate() == currentDate.getDate() + date.getDay() &&
-        date.getMonth() == currentDate.getMonth()
-      ) {
+      /*if (isDateSelected()) {
         dayCell.classList.add("calendarCellHighlighted");
       } else {
         dayCell.classList.remove("calendarCellHighlighted");
-      }
+      }*/
+      dayCell.classList.remove("calendarCellHighlighted");
       date.setDate(date.getDate() + 1);
     }
   }
@@ -159,8 +165,10 @@ function displayEvents(currentDate) {
   startOfWeekTime.setHours(0);
   startOfWeekTime.setMinutes(0);
   startOfWeekTime.setSeconds(0);
+
   let endOfWeekTime = new Date(startOfWeekTime);
   endOfWeekTime.setDate(startOfWeekTime.getDate() + 6);
+  console.log(startOfWeekTime, endOfWeekTime);
 
   for (let i = 0; i < keys.length; i++) {
     let event = JSON.parse(localStorage.getItem(keys[i]));
@@ -169,8 +177,9 @@ function displayEvents(currentDate) {
     let startTime = event.startTime;
     let endTime = event.endTime;
     let eventDuration;
+    let minToPxRatio = 1.25;
     const isSameDayEvent = () => {
-      return startDate === endDate;
+      return startDate.getDate() === endDate.getDate();
     };
     const isLessThan24Hours = () => {
       return (
@@ -186,16 +195,17 @@ function displayEvents(currentDate) {
         startDate.getMonth() == startOfWeekTime.getMonth()
       );
     };
-    if (isEventThisWeek) {
+
+    if (isEventThisWeek()) {
       eventDuration =
         (+endTime.substr(0, 2) - +startTime.substr(0, 2)) * 60 +
         (+endTime.substr(3, 2) - +startTime.substr(3, 2));
-      if (isSameDayEvent) {
-        eventDuration = eventDuration / 1.25;
+      if (isSameDayEvent()) {
+        eventDuration = eventDuration / minToPxRatio;
         sameDayEventRender(keys[i], eventDuration);
-      } else if (isLessThan24Hours) {
-        eventDuration = (eventDuration + 24 * 60) / 1.25;
-        // Missing function
+      } else if (isLessThan24Hours()) {
+        eventDuration = (eventDuration + 24 * 60) / minToPxRatio;
+        // spanning two days but less than 24h event render func
       }
     } else {
       // multiDayEventRender(keys[i], startDate, endDate);
