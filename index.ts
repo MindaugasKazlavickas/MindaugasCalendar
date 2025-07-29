@@ -38,6 +38,11 @@ interface StoredEvent {
   location?: string;
   description?: string;
 }
+interface APIResponse<T> {
+  status: number;
+  data: T;
+  error?: string;
+}
 function fillOutWeekDays(currentDate: Date, offset: number): void {
   currentDate.setDate(currentDate.getDate() + offset);
   let date: Date = new Date(currentDate);
