@@ -28,12 +28,12 @@ document.addEventListener("DOMContentLoaded", () => {
   displayCalendarMonth(currentDate);
 });
 interface StoredEvent {
-  identifier: string;
+  id: number;
   title: string;
   startTime: string;
-  startDate: Date;
+  startDate: string;
   endTime: string;
-  endDate: Date;
+  endDate: string;
   guests?: string;
   location?: string;
   description?: string;
@@ -123,8 +123,38 @@ function fillOutMonthDays(currentDate: Date): void {
     }
   }
 }
-function saveEvent(currentDate: Date): void {
-  const eventIdentifier: string = "event " + Date.now();
+async function apiHelper<T>(url: string, payload: T): Promise<APIResponse<T>> {
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await response.json();
+
+    if(!response.ok) {
+      return {
+        status: response.status,
+        data: data,
+        error: data?.error || "Failed to access API",
+      };
+    }
+    return {
+      status: response.status,
+      data,
+    };
+  } catch(error) {
+    return {
+      status: 500,
+      data: payload,
+      error: error.message,
+    };
+  }
+}
+async function saveEvent(currentDate: Date): Promise<void> {
   let newEvent: StoredEvent;
   const inputStartDate = <HTMLInputElement>document.getElementById("startDate");
   const inputEndDate = <HTMLInputElement>document.getElementById("endDate");
@@ -162,11 +192,11 @@ function saveEvent(currentDate: Date): void {
     return;
   }
   newEvent = {
-    identifier: Date.now().toString(),
+    id: Date.now(),
     title,
-    startDate,
+    startDate: startDate.toString(),
     startTime,
-    endDate,
+    endDate: endDate.toString(),
     endTime,
 
     guests: inputGuests.value,
@@ -174,22 +204,17 @@ function saveEvent(currentDate: Date): void {
     description: inputDescription.value,
   };
 
-  // REWRITE LOCAL STORAGE JSON UNDER ARRAY
-  const oldEventIdHolder = document.getElementById("event");
-  const oldEventId = oldEventIdHolder
-    ? oldEventIdHolder.getElementsByTagName("img")[0]
-    : "";
-  if (oldEventId !== "") {
-    if (!oldEventId.getAttribute("id")) {
-      localStorage.setItem(eventIdentifier, JSON.stringify(newEvent));
-    } else {
-      localStorage.removeItem(oldEventId.getAttribute("id") as string);
-      localStorage.setItem(eventIdentifier, JSON.stringify(newEvent));
-    }
-  }
+  const result =await apiHelper<StoredEvent>("http://localhost:3000/events", newEvent);
 
-  clearEvents();
-  displayEvents(currentDate);
+  if(result.error) {
+    console.log("Error saving event: " + result.error);
+    return;
+  }
+  console.log("Event saved with ID: ", newEvent.id);
+  console.log(result.data);
+
+  //clearEvents();
+  //displayEvents(currentDate);
   eventViewTrigger();
 }
 function deleteEvent() {
@@ -625,8 +650,8 @@ function timeframeUpdate(currentDate: Date, offset: number): void {
   };
 
   fillOutWeekDays(currentDate, offset);
-  clearEvents();
-  displayEvents(currentDate);
+  //clearEvents();
+  //displayEvents(currentDate);
   displayMonthName(currentDate);
 
   if (isNewMonth()) {
