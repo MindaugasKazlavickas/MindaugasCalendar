@@ -39,7 +39,6 @@ function fillOutWeekDays(currentDate, offset) {
             .getElementById("weekDisplayDate" + [todayDate.getDay()])) === null || _c === void 0 ? void 0 : _c.parentElement) === null || _d === void 0 ? void 0 : _d.classList.remove("weekViewGridHeaderMarked");
     }
     console.log(currentDate);
-    return currentDate;
 }
 function fillOutMonthDays(currentDate) {
     var workingDate = new Date(currentDate);
@@ -145,6 +144,9 @@ function saveEvent(currentDate) {
     clearEvents();
     displayEvents(currentDate);
     eventViewTrigger();
+}
+function deleteEvent() {
+    console.log("Getting yeeted");
 }
 /* TODO
     Event starts on day n and end on day n+1 but event time is <24h
@@ -295,34 +297,36 @@ function checkOverlappingEvents() {
         _loop_2(i);
     }
 }
-var monthsShort = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-];
-var monthsLong = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-];
+var monthsShort;
+(function (monthsShort) {
+    monthsShort[monthsShort["Jan"] = 0] = "Jan";
+    monthsShort[monthsShort["Feb"] = 1] = "Feb";
+    monthsShort[monthsShort["Mar"] = 2] = "Mar";
+    monthsShort[monthsShort["Apr"] = 3] = "Apr";
+    monthsShort[monthsShort["May"] = 4] = "May";
+    monthsShort[monthsShort["Jun"] = 5] = "Jun";
+    monthsShort[monthsShort["Jul"] = 6] = "Jul";
+    monthsShort[monthsShort["Aug"] = 7] = "Aug";
+    monthsShort[monthsShort["Sep"] = 8] = "Sep";
+    monthsShort[monthsShort["Oct"] = 9] = "Oct";
+    monthsShort[monthsShort["Nov"] = 10] = "Nov";
+    monthsShort[monthsShort["Dec"] = 11] = "Dec";
+})(monthsShort || (monthsShort = {}));
+var monthsLong;
+(function (monthsLong) {
+    monthsLong[monthsLong["January"] = 0] = "January";
+    monthsLong[monthsLong["February"] = 1] = "February";
+    monthsLong[monthsLong["March"] = 2] = "March";
+    monthsLong[monthsLong["April"] = 3] = "April";
+    monthsLong[monthsLong["May"] = 4] = "May";
+    monthsLong[monthsLong["June"] = 5] = "June";
+    monthsLong[monthsLong["July"] = 6] = "July";
+    monthsLong[monthsLong["August"] = 7] = "August";
+    monthsLong[monthsLong["September"] = 8] = "September";
+    monthsLong[monthsLong["October"] = 9] = "October";
+    monthsLong[monthsLong["November"] = 10] = "November";
+    monthsLong[monthsLong["December"] = 11] = "December";
+})(monthsLong || (monthsLong = {}));
 var formInputFieldList = [
     "title",
     "startTime",
@@ -405,11 +409,11 @@ function getGMT() {
     return "GMT ".concat(sign).concat(addZero ? addZero : timezone);
 }
 function setupPanelTriggers() {
-    var closeSidePanel = document.getElementById("closeSidePanel");
+    var closeCalendarPanel = (document.getElementById("closeSidePanel"));
     var calendarSidePanel = (document.getElementById("calendarSideView"));
     var rightSidePanel = document.getElementById("rightSidePanel");
     var rightPanelTrigger = (document.getElementById("rightPanelChevron"));
-    closeSidePanel.addEventListener("click", function () {
+    closeCalendarPanel.addEventListener("click", function () {
         calendarSidePanel.classList.toggle("notDisplayed");
         adjustMainDisplay(calendarSidePanel, rightSidePanel);
     });
@@ -420,8 +424,8 @@ function setupPanelTriggers() {
             : toggleChevron[0];
         adjustMainDisplay(calendarSidePanel, rightSidePanel);
     });
-    var adjustMainDisplay = function (leftPanel, rightPanel) {
-        var leftSideWidth = leftPanel.classList.contains("notDisplayed")
+    var adjustMainDisplay = function (calendarPanel, rightPanel) {
+        var calendarSideWidth = calendarPanel.classList.contains("notDisplayed")
             ? ""
             : "256px";
         var rightSideWidth = rightPanel.classList.contains("notDisplayed")
@@ -429,7 +433,7 @@ function setupPanelTriggers() {
             : "56px";
         var contentGrid = document.getElementById("content");
         contentGrid.style.gridTemplateColumns =
-            leftSideWidth + " 1fr " + rightSideWidth;
+            calendarSideWidth + " 1fr " + rightSideWidth;
     };
 }
 function createEventListeners(currentDate) {
@@ -456,35 +460,41 @@ function createEventListeners(currentDate) {
         resetEventCreationForm();
         eventViewTrigger();
     });
+    var deleteEventButton = (document.getElementById("deleteEventButton"));
+    deleteEventButton.addEventListener("click", function () {
+        deleteEvent();
+        resetEventCreationForm();
+        eventViewTrigger();
+    });
+}
+function createTimeframeListeners(currentDate) {
+    var nextTimeframe = (document.getElementById("nextTimeframe"));
+    var previousTimeframe = (document.getElementById("previousTimeframe"));
     var headerTodayButton = (document.getElementById("headerTodayButton"));
+    nextTimeframe.addEventListener("click", function () {
+        timeframeUpdate(currentDate, 7);
+    });
+    previousTimeframe.addEventListener("click", function () {
+        timeframeUpdate(currentDate, -7);
+    });
     headerTodayButton.addEventListener("click", function () {
         timeframeUpdate((currentDate = new Date()), 0);
     });
 }
-function createTimeframeListeners(currentDate) {
-    var workingDate = new Date(currentDate);
-    var nextTimeframe = (document.getElementById("nextTimeframe"));
-    var previousTimeframe = (document.getElementById("previousTimeframe"));
-    nextTimeframe.addEventListener("click", function () {
-        workingDate = timeframeUpdate(workingDate, 7);
-    });
-    previousTimeframe.addEventListener("click", function () {
-        workingDate = timeframeUpdate(workingDate, -7);
-    });
-    return workingDate;
-}
 function timeframeUpdate(currentDate, offset) {
+    var checkNewMonth = new Date(currentDate);
+    var isNewMonth = function () {
+        return (currentDate.getMonth() !=
+            checkNewMonth.setDate(currentDate.getDate() + offset));
+    };
     fillOutWeekDays(currentDate, offset);
-    //clearEvents();
-    //displayEvents(currentDate);
+    clearEvents();
+    displayEvents(currentDate);
     displayMonthName(currentDate);
-    //fillOutMonthDays(currentDate);
-    //update week view
-    //update header month
-    //update month calendar
-    //update month highlighted
-    // redisplay events
-    return currentDate;
+    if (isNewMonth()) {
+        fillOutMonthDays(currentDate);
+        displayCalendarMonth(currentDate);
+    }
 }
 function createCalendarListeners(currentDate) {
     var previousMonth = (document.getElementById("previousMonth"));
@@ -522,7 +532,7 @@ function selection() {
         displayDropdown("dropdownWeekDays");
     });
     (_b = document
-        .getElementById("dropdownWeekDays")) === null || _b === void 0 ? void 0 : _b.addEventListener("click", function (weekDay) { }); // To be added, currently de-scoped
+        .getElementById("dropdownWeekDays")) === null || _b === void 0 ? void 0 : _b.addEventListener("click", function (weekDay) { });
     (_c = document.getElementById("closeSettings")) === null || _c === void 0 ? void 0 : _c.addEventListener("click", function () {
         var _a;
         settingsView.classList.toggle("notDisplayed");

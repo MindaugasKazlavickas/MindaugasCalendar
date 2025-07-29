@@ -555,7 +555,7 @@ td.timeColumn {
   z-index: var(--above-all);
 }
 
-.iconButton.alignedRight {
+.alignedRight {
   margin-left: auto;
   margin-right: 0;
 }

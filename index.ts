@@ -38,7 +38,7 @@ interface StoredEvent {
   location?: string;
   description?: string;
 }
-function fillOutWeekDays(currentDate: Date, offset: number): Date {
+function fillOutWeekDays(currentDate: Date, offset: number): void {
   currentDate.setDate(currentDate.getDate() + offset);
   let date: Date = new Date(currentDate);
   date.setDate(date.getDate() - date.getDay());
@@ -64,7 +64,6 @@ function fillOutWeekDays(currentDate: Date, offset: number): Date {
       ?.parentElement?.classList.remove("weekViewGridHeaderMarked");
   }
   console.log(currentDate);
-  return currentDate;
 }
 function fillOutMonthDays(currentDate: Date): void {
   const workingDate: Date = new Date(currentDate);
@@ -187,6 +186,9 @@ function saveEvent(currentDate: Date): void {
   clearEvents();
   displayEvents(currentDate);
   eventViewTrigger();
+}
+function deleteEvent() {
+  console.log("Getting yeeted");
 }
 /* TODO
     Event starts on day n and end on day n+1 but event time is <24h
@@ -357,7 +359,7 @@ function checkOverlappingEvents(): void {
     }
   }
 }
-const monthsShort: string[] = [
+enum monthsShort {
   "Jan",
   "Feb",
   "Mar",
@@ -370,8 +372,8 @@ const monthsShort: string[] = [
   "Oct",
   "Nov",
   "Dec",
-];
-const monthsLong: string[] = [
+}
+enum monthsLong {
   "January",
   "February",
   "March",
@@ -384,7 +386,8 @@ const monthsLong: string[] = [
   "October",
   "November",
   "December",
-];
+}
+
 const formInputFieldList: string[] = [
   "title",
   "startTime",
@@ -402,7 +405,7 @@ const toggleChevron: string[] = [
 function createDOMElement(
   type: string,
   classes?: string | string[],
-  text?: string | undefined
+  text?: string
 ): HTMLElement {
   const newItem = <HTMLElement>document.createElement(type);
   if (typeof classes === "string") {
@@ -495,7 +498,9 @@ function getGMT(): string {
   return `GMT ${sign}${addZero ? addZero : timezone}`;
 }
 function setupPanelTriggers(): void {
-  const closeSidePanel = <HTMLElement>document.getElementById("closeSidePanel");
+  const closeCalendarPanel = <HTMLElement>(
+    document.getElementById("closeSidePanel")
+  );
   const calendarSidePanel = <HTMLElement>(
     document.getElementById("calendarSideView")
   );
@@ -504,7 +509,7 @@ function setupPanelTriggers(): void {
     document.getElementById("rightPanelChevron")
   );
 
-  closeSidePanel.addEventListener("click", () => {
+  closeCalendarPanel.addEventListener("click", () => {
     calendarSidePanel.classList.toggle("notDisplayed");
     adjustMainDisplay(calendarSidePanel, rightSidePanel);
   });
@@ -514,17 +519,16 @@ function setupPanelTriggers(): void {
     rightPanelTrigger.src = rightSidePanel.classList.contains("notDisplayed")
       ? toggleChevron[1]
       : toggleChevron[0];
-    adjustMainDisplay(
-      <HTMLElement>calendarSidePanel,
-      <HTMLElement>rightSidePanel
-    );
+    adjustMainDisplay(calendarSidePanel, rightSidePanel);
   });
 
   const adjustMainDisplay = (
-    leftPanel: HTMLElement,
+    calendarPanel: HTMLElement,
     rightPanel: HTMLElement
   ): void => {
-    let leftSideWidth: string = leftPanel.classList.contains("notDisplayed")
+    let calendarSideWidth: string = calendarPanel.classList.contains(
+      "notDisplayed"
+    )
       ? ""
       : "256px";
     let rightSideWidth: string = rightPanel.classList.contains("notDisplayed")
@@ -532,7 +536,7 @@ function setupPanelTriggers(): void {
       : "56px";
     const contentGrid = <HTMLElement>document.getElementById("content");
     contentGrid.style.gridTemplateColumns =
-      leftSideWidth + " 1fr " + rightSideWidth;
+      calendarSideWidth + " 1fr " + rightSideWidth;
   };
 }
 function createEventListeners(currentDate: Date): void {
@@ -576,42 +580,54 @@ function createEventListeners(currentDate: Date): void {
     resetEventCreationForm();
     eventViewTrigger();
   });
-
-  const headerTodayButton = <HTMLButtonElement>(
-    document.getElementById("headerTodayButton")
+  const deleteEventButton = <HTMLButtonElement>(
+    document.getElementById("deleteEventButton")
   );
-  headerTodayButton.addEventListener("click", () => {
-    timeframeUpdate((currentDate = new Date()), 0);
+  deleteEventButton.addEventListener("click", () => {
+    deleteEvent();
+    resetEventCreationForm();
+    eventViewTrigger();
   });
 }
-function createTimeframeListeners(currentDate: Date): Date {
-  let workingDate = new Date(currentDate);
+function createTimeframeListeners(currentDate: Date): void {
   const nextTimeframe = <HTMLButtonElement>(
     document.getElementById("nextTimeframe")
   );
   const previousTimeframe = <HTMLButtonElement>(
     document.getElementById("previousTimeframe")
   );
+  const headerTodayButton = <HTMLButtonElement>(
+    document.getElementById("headerTodayButton")
+  );
   nextTimeframe.addEventListener("click", () => {
-    workingDate = timeframeUpdate(workingDate, 7);
+    timeframeUpdate(currentDate, 7);
   });
   previousTimeframe.addEventListener("click", () => {
-    workingDate = timeframeUpdate(workingDate, -7);
+    timeframeUpdate(currentDate, -7);
   });
-  return workingDate;
+  headerTodayButton.addEventListener("click", () => {
+    timeframeUpdate((currentDate = new Date()), 0);
+  });
 }
-function timeframeUpdate(currentDate: Date, offset: number): Date {
+function timeframeUpdate(currentDate: Date, offset: number): void {
+  let checkNewMonth = new Date(currentDate);
+
+  const isNewMonth = (): boolean => {
+    return (
+      currentDate.getMonth() !=
+      checkNewMonth.setDate(currentDate.getDate() + offset)
+    );
+  };
+
   fillOutWeekDays(currentDate, offset);
-  //clearEvents();
-  //displayEvents(currentDate);
+  clearEvents();
+  displayEvents(currentDate);
   displayMonthName(currentDate);
-  //fillOutMonthDays(currentDate);
-  //update week view
-  //update header month
-  //update month calendar
-  //update month highlighted
-  // redisplay events
-  return currentDate;
+
+  if (isNewMonth()) {
+    fillOutMonthDays(currentDate);
+    displayCalendarMonth(currentDate);
+  }
 }
 function createCalendarListeners(currentDate: Date): void {
   const previousMonth = <HTMLButtonElement>(
@@ -646,7 +662,7 @@ function createCalendarListeners(currentDate: Date): void {
   });
 }
 // Currently de-scoped
-function selection() {
+function selection(): void {
   const settingsView = <HTMLElement>document.getElementById("settingsView");
   settingsView.classList.toggle("notDisplayed");
   settingsView.focus();
@@ -655,7 +671,7 @@ function selection() {
   });
   document
     .getElementById("dropdownWeekDays")
-    ?.addEventListener("click", (weekDay) => {}); // To be added, currently de-scoped
+    ?.addEventListener("click", (weekDay) => {});
   document.getElementById("closeSettings")?.addEventListener("click", () => {
     settingsView.classList.toggle("notDisplayed");
     document
