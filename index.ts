@@ -1,20 +1,20 @@
+const SERVER_URL = "http://localhost:3000/events";
+
 document.addEventListener("DOMContentLoaded", () => {
-  let currentDate: Date = new Date();
-  const dateInLogo = <HTMLElement>document.getElementById("logoText");
-  if (dateInLogo) {
-    dateInLogo.innerText = currentDate.getDate().toString();
+  let currentDate = new Date();
+  const headerIconDate = document.getElementById("logoText");
+  if (headerIconDate) {
+    headerIconDate.innerText = currentDate.getDate().toString();
   }
 
-  displayMonthName(currentDate);
-
-  const tableTimezone = <HTMLElement>document.getElementById("timezone");
-  if (tableTimezone) {
-    tableTimezone.innerText = getGMT();
+  const timeframeTimezone = document.getElementById("timezone");
+  if (timeframeTimezone) {
+    timeframeTimezone.innerText = getGMT();
   }
 
   setupPanelTriggers();
 
-  createEventListeners(currentDate);
+  createEventListeners();
 
   renderTable();
 
@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   timeframeUpdate(currentDate, 0);
 
-  displayCalendarMonth(currentDate);
+  sideCalendarMonth(currentDate);
 });
 interface StoredEvent {
   id: number;
@@ -43,9 +43,9 @@ interface APIResponse<T> {
   data: T;
   error?: string;
 }
-function fillOutWeekDays(currentDate: Date, offset: number): void {
+function fillOutWeekDays(currentDate: Date, offset: number) {
   currentDate.setDate(currentDate.getDate() + offset);
-  let date: Date = new Date(currentDate);
+  let date = new Date(currentDate);
   date.setDate(date.getDate() - date.getDay());
 
   for (let i = 0; i < 7; i++) {
@@ -55,26 +55,27 @@ function fillOutWeekDays(currentDate: Date, offset: number): void {
     weekDate.innerText = date.getDate().toString();
 
     date.setDate(date.getDate() + 1);
+    if (
+      offset === 0 ||
+      (currentDate.getDate() === date.getDate() &&
+        currentDate.getMonth() === date.getMonth() &&
+        currentDate.getFullYear() === date.getFullYear())
+    ) {
+      document
+        .getElementById("weekDisplayDate" + [currentDate.getDay()])
+        ?.parentElement?.classList.toggle("weekViewGridHeaderMarked");
+    } else {
+      document
+        .getElementById("weekDisplayDate" + [currentDate.getDay()])
+        ?.parentElement?.classList.remove("weekViewGridHeaderMarked");
+    }
   }
-
-  let todayDate: Date = new Date();
-  if (offset === 0) {
-    date = new Date(todayDate);
-    document
-      .getElementById("weekDisplayDate" + [todayDate.getDay()])
-      ?.parentElement?.classList.add("weekViewGridHeaderMarked");
-  } else {
-    document
-      .getElementById("weekDisplayDate" + [todayDate.getDay()])
-      ?.parentElement?.classList.remove("weekViewGridHeaderMarked");
-  }
-  console.log(currentDate);
 }
-function fillOutMonthDays(currentDate: Date): void {
-  const workingDate: Date = new Date(currentDate);
+function fillOutMonthDays(currentDate: Date) {
+  let workingDate = new Date(currentDate);
   workingDate.setDate(1);
-  let startDate = workingDate.getDate() - workingDate.getDay();
-  workingDate.setDate(startDate);
+  console.log(workingDate.getDate());
+  workingDate.setDate(-workingDate.getDay());
   const calendarTable = <HTMLTableElement>(
     document.getElementById("calendarTable")
   );
@@ -82,15 +83,14 @@ function fillOutMonthDays(currentDate: Date): void {
     calendarTable.getElementsByTagName("tbody")[0]
   );
   for (let i = 0; i < 6; i++) {
-    let calendarRow = <HTMLTableRowElement>(
+    const calendarRow = <HTMLTableRowElement>(
       calendarTBody.getElementsByClassName("calendarRow")[i]
     );
     for (let j = 0; j < 7; j++) {
-      let dayCell = <HTMLTableCellElement>(
+      const dayCell = <HTMLTableCellElement>(
         calendarRow.getElementsByClassName("calendarCell")[j]
       );
       dayCell.innerText = workingDate.getDate().toString();
-      dayCell.removeAttribute("id");
       dayCell.setAttribute("id", workingDate.toString());
       const isTodayDate = () => {
         return (
@@ -123,7 +123,7 @@ function fillOutMonthDays(currentDate: Date): void {
     }
   }
 }
-async function apiHelper<T>(url: string, payload: T): Promise<APIResponse<T>> {
+async function apiPOST<T>(url: string, payload: T) {
   try {
     const response = await fetch(url, {
       method: "POST",
@@ -135,7 +135,33 @@ async function apiHelper<T>(url: string, payload: T): Promise<APIResponse<T>> {
 
     const data = await response.json();
 
-    if(!response.ok) {
+    if (!response.ok) {
+      throw Error;
+    }
+    return {
+      status: response.status,
+      data,
+    };
+  } catch (error) {
+    return {
+      status: 500,
+      data: payload,
+      error: error.message,
+    };
+  }
+}
+async function apiDELETE<T>(url: string, id: T) {
+  try {
+    const response = await fetch(url, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
       return {
         status: response.status,
         data: data,
@@ -146,7 +172,72 @@ async function apiHelper<T>(url: string, payload: T): Promise<APIResponse<T>> {
       status: response.status,
       data,
     };
-  } catch(error) {
+  } catch (error) {
+    return {
+      status: 500,
+      data: id,
+      error: error.message,
+    };
+  }
+}
+async function apiGET<T>(url: string) {
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return {
+        status: response.status,
+        data: data,
+        error: data?.error || "Failed to access API",
+      };
+    }
+    return {
+      status: response.status,
+      data,
+    };
+  } catch (error) {
+    return {
+      status: 500,
+      data: "success",
+      error: error.message,
+    };
+  }
+}
+async function apiPUT<T>(
+  url: string,
+  payload: T,
+  id: number
+): Promise<APIResponse<T>> {
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return {
+        status: response.status,
+        data: data,
+        error: data?.error || "Failed to access API",
+      };
+    }
+    return {
+      status: response.status,
+      data,
+    };
+  } catch (error) {
     return {
       status: 500,
       data: payload,
@@ -154,8 +245,7 @@ async function apiHelper<T>(url: string, payload: T): Promise<APIResponse<T>> {
     };
   }
 }
-async function saveEvent(currentDate: Date): Promise<void> {
-  let newEvent: StoredEvent;
+async function saveEvent(): Promise<void> {
   const inputStartDate = <HTMLInputElement>document.getElementById("startDate");
   const inputEndDate = <HTMLInputElement>document.getElementById("endDate");
   const inputStartTime = <HTMLInputElement>document.getElementById("startTime");
@@ -191,7 +281,7 @@ async function saveEvent(currentDate: Date): Promise<void> {
     alert("End time of event can not be before the start time.");
     return;
   }
-  newEvent = {
+  const newEvent: StoredEvent = {
     id: Date.now(),
     title,
     startDate: startDate.toString(),
@@ -204,21 +294,37 @@ async function saveEvent(currentDate: Date): Promise<void> {
     description: inputDescription.value,
   };
 
-  const result =await apiHelper<StoredEvent>("http://localhost:3000/events", newEvent);
+  const result = await apiPOST<StoredEvent>(SERVER_URL, newEvent);
 
-  if(result.error) {
+  if (result.error) {
     console.log("Error saving event: " + result.error);
     return;
+  } else {
+    console.log("Event saved with ID: ", newEvent.id);
+    console.log(result.data);
   }
-  console.log("Event saved with ID: ", newEvent.id);
-  console.log(result.data);
 
   //clearEvents();
   //displayEvents(currentDate);
   eventViewTrigger();
 }
-function deleteEvent() {
-  console.log("Getting yeeted");
+async function deleteEvent(): Promise<void> {
+  const imgWithId = document
+    .getElementById("event")
+    ?.getElementsByTagName("img")[0];
+  if (!imgWithId) {
+    return;
+  }
+  const idToDelete = imgWithId.getAttribute("id") as string;
+  const result = await apiDELETE<string>(
+    SERVER_URL + "/" + idToDelete,
+    idToDelete
+  );
+
+  if (result.error) {
+    console.log("Error saving event: " + result.error);
+    return;
+  }
 }
 /* TODO
     Event starts on day n and end on day n+1 but event time is <24h
@@ -226,7 +332,8 @@ function deleteEvent() {
     Atidaryti "event viewer" ir atnaujinti info
     On click on table -> open event window with pre-selected time
 */
-function displayEvents(currentDate: Date): void {
+function displayEvents(currentDate: Date) {
+  //GET /foo?x.y_lt=100
   const keys: string[] = Object.keys(localStorage);
   let startOfWeekTime: Date = new Date(currentDate);
   startOfWeekTime.setDate(startOfWeekTime.getDate() - startOfWeekTime.getDay());
@@ -236,7 +343,9 @@ function displayEvents(currentDate: Date): void {
 
   let endOfWeekTime: Date = new Date(startOfWeekTime);
   endOfWeekTime.setDate(startOfWeekTime.getDate() + 6);
-
+  /*const result = await apiGET<StoredEvent>(
+    SERVER_URL + "?.startDate>" + startOfWeekTime.toString()
+  );*/
   for (let i = 0; i < keys.length; i++) {
     let event: StoredEvent = JSON.parse(
       localStorage.getItem(keys[i]) as string
@@ -283,7 +392,7 @@ function displayEvents(currentDate: Date): void {
     checkOverlappingEvents();
   }
 }
-function clearEvents(): void {
+function clearEvents() {
   const keys: string[] = Object.keys(localStorage);
   for (let i = 0; i < keys.length; i++) {
     let displayedEvent = <HTMLDivElement>document.getElementById(keys[i]);
@@ -292,7 +401,7 @@ function clearEvents(): void {
     }
   }
 }
-function sameDayEventRender(identifier: string, eventDuration: number): void {
+function sameDayEventRender(identifier: string, eventDuration: number) {
   const event: StoredEvent = JSON.parse(
     localStorage.getItem(identifier) as string
   );
@@ -318,7 +427,7 @@ function sameDayEventRender(identifier: string, eventDuration: number): void {
     openEditEventWindow(event, identifier);
   });
 }
-function openEditEventWindow(event: StoredEvent, identifier: string): void {
+function openEditEventWindow(event: StoredEvent, identifier: string) {
   eventViewTrigger();
   for (let i = 0; i < formInputFieldList.length; i++) {
     if (event[formInputFieldList[i]]) {
@@ -340,7 +449,7 @@ function openEditEventWindow(event: StoredEvent, identifier: string): void {
     ?.getElementsByTagName("img")[0];
   idImgHolder?.setAttribute("id", identifier);
 }
-function checkOverlappingEvents(): void {
+function checkOverlappingEvents() {
   const keys: string[] = Object.keys(localStorage);
   for (let i = 0; i < keys.length; i++) {
     if (<HTMLDivElement>document.getElementById(keys[i])) {
@@ -417,7 +526,6 @@ enum monthsLong {
   "November",
   "December",
 }
-
 const formInputFieldList: string[] = [
   "title",
   "startTime",
@@ -428,19 +536,15 @@ const formInputFieldList: string[] = [
   "location",
   "description",
 ];
-const toggleChevron: string[] = [
-  "./media/chevron_right.svg",
-  "./media/chevron_left.svg",
-];
+const chevronLeftSrc = "./media/chevron_left.svg";
+const chevronRightSrc = "./media/chevron_right.svg";
 function createDOMElement(
   type: string,
-  classes?: string | string[],
+  classes?: string[],
   text?: string
 ): HTMLElement {
-  const newItem = <HTMLElement>document.createElement(type);
-  if (typeof classes === "string") {
-    newItem.classList.add(classes);
-  } else if (classes) {
+  const newItem = document.createElement(type);
+  if (classes) {
     classes.forEach((itemClass) => {
       newItem.classList.add(itemClass);
     });
@@ -450,7 +554,7 @@ function createDOMElement(
   }
   return newItem;
 }
-function renderCalendar(): void {
+function renderCalendar() {
   const table = <HTMLTableElement>document.getElementById("calendarTable");
   const tableBody = <HTMLTableSectionElement>table.createTBody();
 
@@ -469,7 +573,7 @@ function renderCalendar(): void {
     tableBody.appendChild(calendarRow);
   }
 }
-function renderTable(): void {
+function renderTable() {
   const table = <HTMLElement>document.getElementById("weekGrid");
   const tableBody = <HTMLTableSectionElement>(
     table.getElementsByTagName("tbody")[0]
@@ -517,59 +621,57 @@ function renderTable(): void {
     tableBody.appendChild(tableRow);
   }
 }
-function getGMT(): string {
+function getGMT() {
   let timezone: number = new Date().getTimezoneOffset() / 60;
   const sign: string = timezone == 0 ? "" : timezone > 0 ? "-" : "+";
-  let addZero: string | undefined;
   timezone = Math.abs(timezone);
-  if (timezone < 10 && timezone > -10) {
-    addZero = "0" + timezone;
-  }
-  return `GMT ${sign}${addZero ? addZero : timezone}`;
+  return `GMT ${sign}${timezone < 10 ? "0" : ""}${timezone}`;
 }
-function setupPanelTriggers(): void {
-  const closeCalendarPanel = <HTMLElement>(
+function setupPanelTriggers() {
+  const sideCalendarPanelTrigger = <HTMLElement>(
     document.getElementById("closeSidePanel")
   );
   const calendarSidePanel = <HTMLElement>(
     document.getElementById("calendarSideView")
   );
-  const rightSidePanel = <HTMLElement>document.getElementById("rightSidePanel");
-  const rightPanelTrigger = <HTMLImageElement>(
+  const iconsSidePanel = <HTMLElement>document.getElementById("rightSidePanel");
+  const iconsPanelTrigger = <HTMLImageElement>(
     document.getElementById("rightPanelChevron")
   );
+  const calendarPanelWidth = "256px";
+  const iconsPanelWidth = "56px";
 
-  closeCalendarPanel.addEventListener("click", () => {
+  sideCalendarPanelTrigger.addEventListener("click", () => {
     calendarSidePanel.classList.toggle("notDisplayed");
-    adjustMainDisplay(calendarSidePanel, rightSidePanel);
+    adjustMainDisplay(calendarSidePanel, iconsSidePanel);
   });
 
-  rightPanelTrigger.addEventListener("click", () => {
-    rightSidePanel.classList.toggle("notDisplayed");
-    rightPanelTrigger.src = rightSidePanel.classList.contains("notDisplayed")
-      ? toggleChevron[1]
-      : toggleChevron[0];
-    adjustMainDisplay(calendarSidePanel, rightSidePanel);
+  iconsPanelTrigger.addEventListener("click", () => {
+    iconsSidePanel.classList.toggle("notDisplayed");
+    iconsPanelTrigger.src = iconsSidePanel.classList.contains("notDisplayed")
+      ? chevronLeftSrc
+      : chevronRightSrc;
+    adjustMainDisplay(calendarSidePanel, iconsSidePanel);
   });
 
   const adjustMainDisplay = (
     calendarPanel: HTMLElement,
     rightPanel: HTMLElement
   ): void => {
-    let calendarSideWidth: string = calendarPanel.classList.contains(
+    const calendarSideWidth: string = calendarPanel.classList.contains(
       "notDisplayed"
     )
       ? ""
-      : "256px";
-    let rightSideWidth: string = rightPanel.classList.contains("notDisplayed")
+      : calendarPanelWidth;
+    const rightSideWidth: string = rightPanel.classList.contains("notDisplayed")
       ? ""
-      : "56px";
+      : iconsPanelWidth;
     const contentGrid = <HTMLElement>document.getElementById("content");
     contentGrid.style.gridTemplateColumns =
       calendarSideWidth + " 1fr " + rightSideWidth;
   };
 }
-function createEventListeners(currentDate: Date): void {
+function createEventListeners() {
   const eventWindowButton = <HTMLButtonElement>(
     document.getElementById("eventWindowButton")
   );
@@ -601,13 +703,12 @@ function createEventListeners(currentDate: Date): void {
   const eventSaveToStorage = <HTMLButtonElement>(
     document.getElementById("eventSaveButton")
   );
-  eventSaveToStorage.addEventListener("click", () => saveEvent(currentDate));
+  eventSaveToStorage.addEventListener("click", () => saveEvent());
 
   const dialogCloseButton = <HTMLButtonElement>(
     document.getElementById("dialogCloseButton")
   );
   dialogCloseButton.addEventListener("click", () => {
-    resetEventCreationForm();
     eventViewTrigger();
   });
   const deleteEventButton = <HTMLButtonElement>(
@@ -615,11 +716,10 @@ function createEventListeners(currentDate: Date): void {
   );
   deleteEventButton.addEventListener("click", () => {
     deleteEvent();
-    resetEventCreationForm();
     eventViewTrigger();
   });
 }
-function createTimeframeListeners(currentDate: Date): void {
+function createTimeframeListeners(currentDate: Date) {
   const nextTimeframe = <HTMLButtonElement>(
     document.getElementById("nextTimeframe")
   );
@@ -639,27 +739,25 @@ function createTimeframeListeners(currentDate: Date): void {
     timeframeUpdate((currentDate = new Date()), 0);
   });
 }
-function timeframeUpdate(currentDate: Date, offset: number): void {
-  let checkNewMonth = new Date(currentDate);
-
+function timeframeUpdate(currentDate: Date, offset: number) {
   const isNewMonth = (): boolean => {
+    let newMonth: Date = new Date(currentDate);
     return (
-      currentDate.getMonth() !=
-      checkNewMonth.setDate(currentDate.getDate() + offset)
+      currentDate.getMonth() ===
+      new Date(newMonth.setDate(newMonth.getDate() + offset)).getMonth()
     );
   };
 
   fillOutWeekDays(currentDate, offset);
   //clearEvents();
   //displayEvents(currentDate);
-  displayMonthName(currentDate);
-
+  headerTimeframeDate(currentDate);
   if (isNewMonth()) {
     fillOutMonthDays(currentDate);
-    displayCalendarMonth(currentDate);
+    sideCalendarMonth(currentDate);
   }
 }
-function createCalendarListeners(currentDate: Date): void {
+function createCalendarListeners(currentDate: Date) {
   const previousMonth = <HTMLButtonElement>(
     document.getElementById("previousMonth")
   );
@@ -668,14 +766,14 @@ function createCalendarListeners(currentDate: Date): void {
   previousMonth.addEventListener("click", () => {
     currentDate.setMonth(currentDate.getMonth() - 1);
     fillOutMonthDays(currentDate);
-    displayCalendarMonth(currentDate);
+    sideCalendarMonth(currentDate);
   });
   nextMonth.addEventListener("click", () => {
     currentDate.setMonth(currentDate.getMonth() + 1);
     fillOutMonthDays(currentDate);
-    displayCalendarMonth(currentDate);
+    sideCalendarMonth(currentDate);
   });
-
+  fillOutMonthDays(currentDate);
   const calendarTable = <HTMLElement>document.getElementById("calendarTable");
   const calendarTBody = <HTMLTableSectionElement>(
     calendarTable.getElementsByTagName("tbody")[0]
@@ -685,14 +783,15 @@ function createCalendarListeners(currentDate: Date): void {
     const targetDate = <HTMLElement>cell.target;
     if (targetDate.closest("td")) {
       let dateId = targetDate.closest("td")?.getAttribute("id");
-      let setWeek: Date = new Date(Date.parse(dateId as string));
-      fillOutWeekDays(setWeek, 0);
+      let setWeek = new Date(Date.parse(dateId as string));
+      timeframeUpdate(setWeek, 0);
       targetDate.classList.add("calendarCellHighlighted");
     }
   });
 }
 // Currently de-scoped
-function selection(): void {
+/*
+function selection() {
   const settingsView = <HTMLElement>document.getElementById("settingsView");
   settingsView.classList.toggle("notDisplayed");
   settingsView.focus();
@@ -708,52 +807,60 @@ function selection(): void {
       .getElementById("dropdownSettings")
       ?.classList.toggle("notDisplayed");
   });
-}
-function eventViewTrigger(): void {
+}*/
+function eventViewTrigger() {
   resetEventCreationForm();
   const eventView = <HTMLDialogElement>document.getElementById("event");
   eventView.classList.toggle("notDisplayed");
   const eventInputTitle = <HTMLInputElement>document.getElementById("title");
   eventInputTitle.focus();
 }
-function displayMonthName(currentDate: Date): void {
-  const isPassingWeek = (): boolean => {
-    const weekStartDate: Date = new Date(currentDate);
-    const weekEndDate: Date = new Date(currentDate);
-
-    weekStartDate.setDate(weekStartDate.getDate() - weekStartDate.getDay());
-    weekEndDate.setDate(weekEndDate.getDate() - weekEndDate.getDay() + 6);
-    return weekStartDate.getDate() > weekEndDate.getDate();
+function headerTimeframeDate(currentDate: Date) {
+  const getWeekStartDate = (): Date => {
+    return new Date(
+      new Date(currentDate).setDate(
+        currentDate.getDate() - currentDate.getDay()
+      )
+    );
+  };
+  const getMonthNames = () => {
+    let weekStartDate = getWeekStartDate();
+    let weekEndDate = new Date(
+      getWeekStartDate().setDate(
+        weekStartDate.getDate() - weekStartDate.getDay() + 6
+      )
+    );
+    return weekStartDate.getDate() > weekEndDate.getDate()
+      ? monthsShort[currentDate.getMonth()] +
+          " - " +
+          monthsShort[currentDate.getMonth() + 1]
+      : monthsLong[currentDate.getMonth()];
   };
 
-  let headerDateDisplay: string = `${
-    isPassingWeek()
-      ? monthsShort[currentDate.getMonth()] +
-        " - " +
-        monthsShort[currentDate.getMonth() + 1]
-      : monthsLong[currentDate.getMonth()]
-  }, ${currentDate.getFullYear()}`;
+  let headerDateDisplay = `${
+    getMonthNames() + ", " + currentDate.getFullYear()
+  }`;
 
-  const monthDisplay = <HTMLElement>document.getElementById("monthDisplay");
-  if (monthDisplay.innerText) {
-    monthDisplay.innerText = headerDateDisplay;
+  const headerDate = <HTMLElement>document.getElementById("monthDisplay");
+  if (headerDate) {
+    headerDate.innerText = headerDateDisplay;
   }
 }
-function displayCalendarMonth(currentDate: Date): void {
+function sideCalendarMonth(currentDate: Date) {
   const calendarMonthDisplay = <HTMLElement>(
     document.getElementById("calendarMonthDisplay")
   );
   calendarMonthDisplay.innerText =
     monthsLong[currentDate.getMonth()] + ", " + currentDate.getFullYear();
 }
-function displayDropdown(dropdown: string): void {
+function displayDropdown(dropdown: string) {
   const dropdownField = <HTMLElement>document.getElementById(dropdown);
   if (dropdownField) {
     dropdownField.classList.toggle("notDisplayed");
     dropdownField.focus();
   }
 }
-function resetEventCreationForm(): void {
+function resetEventCreationForm() {
   formInputFieldList.forEach((elem: string) => {
     let inputField = <HTMLInputElement>document.getElementById(elem);
     inputField.value = "";
@@ -763,11 +870,3 @@ function resetEventCreationForm(): void {
   );
   imgWithId.removeAttribute("id");
 }
-/* TYPESCRIPT TODO:
-
-1.  TRANSPILE AS IS
-2.  TYPES FOR PRIMITIVES
-3.  CUSTOM TYPES
-4.  ENUMS
-5.  JSON SERVER
-*/

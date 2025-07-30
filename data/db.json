@@ -21,6 +21,17 @@
       "guests": "Mindaugas",
       "location": "",
       "description": ""
+    },
+    {
+      "id": 1753874811948,
+      "title": "Naujas eventas",
+      "startDate": "Thu Jul 31 2025 03:00:00 GMT+0300 (Eastern European Summer Time)",
+      "startTime": "14:26",
+      "endDate": "Thu Jul 31 2025 03:00:00 GMT+0300 (Eastern European Summer Time)",
+      "endTime": "18:26",
+      "guests": "Mindaugas",
+      "location": "Vieta",
+      "description": "Teksto daug"
     }
   ]
 }

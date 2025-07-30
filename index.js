@@ -34,25 +34,25 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var SERVER_URL = "http://localhost:3000/events";
 document.addEventListener("DOMContentLoaded", function () {
     var currentDate = new Date();
-    var dateInLogo = document.getElementById("logoText");
-    if (dateInLogo) {
-        dateInLogo.innerText = currentDate.getDate().toString();
+    var headerIconDate = document.getElementById("logoText");
+    if (headerIconDate) {
+        headerIconDate.innerText = currentDate.getDate().toString();
     }
-    displayMonthName(currentDate);
-    var tableTimezone = document.getElementById("timezone");
-    if (tableTimezone) {
-        tableTimezone.innerText = getGMT();
+    var timeframeTimezone = document.getElementById("timezone");
+    if (timeframeTimezone) {
+        timeframeTimezone.innerText = getGMT();
     }
     setupPanelTriggers();
-    createEventListeners(currentDate);
+    createEventListeners();
     renderTable();
     renderCalendar();
     createTimeframeListeners(currentDate);
     createCalendarListeners(currentDate);
     timeframeUpdate(currentDate, 0);
-    displayCalendarMonth(currentDate);
+    sideCalendarMonth(currentDate);
 });
 function fillOutWeekDays(currentDate, offset) {
     var _a, _b, _c, _d;
@@ -63,24 +63,24 @@ function fillOutWeekDays(currentDate, offset) {
         var weekDate = (document.getElementById("weekDisplayDate" + i));
         weekDate.innerText = date.getDate().toString();
         date.setDate(date.getDate() + 1);
+        if (offset === 0 ||
+            (currentDate.getDate() === date.getDate() &&
+                currentDate.getMonth() === date.getMonth() &&
+                currentDate.getFullYear() === date.getFullYear())) {
+            (_b = (_a = document
+                .getElementById("weekDisplayDate" + [currentDate.getDay()])) === null || _a === void 0 ? void 0 : _a.parentElement) === null || _b === void 0 ? void 0 : _b.classList.toggle("weekViewGridHeaderMarked");
+        }
+        else {
+            (_d = (_c = document
+                .getElementById("weekDisplayDate" + [currentDate.getDay()])) === null || _c === void 0 ? void 0 : _c.parentElement) === null || _d === void 0 ? void 0 : _d.classList.remove("weekViewGridHeaderMarked");
+        }
     }
-    var todayDate = new Date();
-    if (offset === 0) {
-        date = new Date(todayDate);
-        (_b = (_a = document
-            .getElementById("weekDisplayDate" + [todayDate.getDay()])) === null || _a === void 0 ? void 0 : _a.parentElement) === null || _b === void 0 ? void 0 : _b.classList.add("weekViewGridHeaderMarked");
-    }
-    else {
-        (_d = (_c = document
-            .getElementById("weekDisplayDate" + [todayDate.getDay()])) === null || _c === void 0 ? void 0 : _c.parentElement) === null || _d === void 0 ? void 0 : _d.classList.remove("weekViewGridHeaderMarked");
-    }
-    console.log(currentDate);
 }
 function fillOutMonthDays(currentDate) {
     var workingDate = new Date(currentDate);
     workingDate.setDate(1);
-    var startDate = workingDate.getDate() - workingDate.getDay();
-    workingDate.setDate(startDate);
+    console.log(workingDate.getDate());
+    workingDate.setDate(-workingDate.getDay());
     var calendarTable = (document.getElementById("calendarTable"));
     var calendarTBody = (calendarTable.getElementsByTagName("tbody")[0]);
     for (var i = 0; i < 6; i++) {
@@ -88,7 +88,6 @@ function fillOutMonthDays(currentDate) {
         for (var j = 0; j < 7; j++) {
             var dayCell = (calendarRow.getElementsByClassName("calendarCell")[j]);
             dayCell.innerText = workingDate.getDate().toString();
-            dayCell.removeAttribute("id");
             dayCell.setAttribute("id", workingDate.toString());
             var isTodayDate = function () {
                 return (workingDate.getDate() == new Date().getDate() &&
@@ -120,9 +119,129 @@ function fillOutMonthDays(currentDate) {
         }
     }
 }
-function apiHelper(url, payload) {
+function apiPOST(url, payload) {
     return __awaiter(this, void 0, void 0, function () {
         var response, data, error_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 3, , 4]);
+                    return [4 /*yield*/, fetch(url, {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify(payload),
+                        })];
+                case 1:
+                    response = _a.sent();
+                    return [4 /*yield*/, response.json()];
+                case 2:
+                    data = _a.sent();
+                    if (!response.ok) {
+                        throw Error;
+                    }
+                    return [2 /*return*/, {
+                            status: response.status,
+                            data: data,
+                        }];
+                case 3:
+                    error_1 = _a.sent();
+                    return [2 /*return*/, {
+                            status: 500,
+                            data: payload,
+                            error: error_1.message,
+                        }];
+                case 4: return [2 /*return*/];
+            }
+        });
+    });
+}
+function apiDELETE(url, id) {
+    return __awaiter(this, void 0, void 0, function () {
+        var response, data, error_2;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 3, , 4]);
+                    return [4 /*yield*/, fetch(url, {
+                            method: "DELETE",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                        })];
+                case 1:
+                    response = _a.sent();
+                    return [4 /*yield*/, response.json()];
+                case 2:
+                    data = _a.sent();
+                    if (!response.ok) {
+                        return [2 /*return*/, {
+                                status: response.status,
+                                data: data,
+                                error: (data === null || data === void 0 ? void 0 : data.error) || "Failed to access API",
+                            }];
+                    }
+                    return [2 /*return*/, {
+                            status: response.status,
+                            data: data,
+                        }];
+                case 3:
+                    error_2 = _a.sent();
+                    return [2 /*return*/, {
+                            status: 500,
+                            data: id,
+                            error: error_2.message,
+                        }];
+                case 4: return [2 /*return*/];
+            }
+        });
+    });
+}
+function apiGET(url) {
+    return __awaiter(this, void 0, void 0, function () {
+        var response, data, error_3;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 3, , 4]);
+                    return [4 /*yield*/, fetch(url, {
+                            method: "GET",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                        })];
+                case 1:
+                    response = _a.sent();
+                    return [4 /*yield*/, response.json()];
+                case 2:
+                    data = _a.sent();
+                    if (!response.ok) {
+                        return [2 /*return*/, {
+                                status: response.status,
+                                data: data,
+                                error: (data === null || data === void 0 ? void 0 : data.error) || "Failed to access API",
+                            }];
+                    }
+                    return [2 /*return*/, {
+                            status: response.status,
+                            data: data,
+                        }];
+                case 3:
+                    error_3 = _a.sent();
+                    return [2 /*return*/, {
+                            status: 500,
+                            data: "success",
+                            error: error_3.message,
+                        }];
+                case 4: return [2 /*return*/];
+            }
+        });
+    });
+}
+function apiPUT(url, payload, id) {
+    return __awaiter(this, void 0, void 0, function () {
+        var response, data, error_4;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -151,20 +270,20 @@ function apiHelper(url, payload) {
                             data: data,
                         }];
                 case 3:
-                    error_1 = _a.sent();
+                    error_4 = _a.sent();
                     return [2 /*return*/, {
                             status: 500,
                             data: payload,
-                            error: error_1.message,
+                            error: error_4.message,
                         }];
                 case 4: return [2 /*return*/];
             }
         });
     });
 }
-function saveEvent(currentDate) {
+function saveEvent() {
     return __awaiter(this, void 0, void 0, function () {
-        var newEvent, inputStartDate, inputEndDate, inputStartTime, inputEndTime, inputTitle, inputGuests, inputLocation, inputDescription, startDate, endDate, startTime, endTime, title, result;
+        var inputStartDate, inputEndDate, inputStartTime, inputEndTime, inputTitle, inputGuests, inputLocation, inputDescription, startDate, endDate, startTime, endTime, title, newEvent, result;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -208,15 +327,17 @@ function saveEvent(currentDate) {
                         location: inputLocation.value,
                         description: inputDescription.value,
                     };
-                    return [4 /*yield*/, apiHelper("http://localhost:3000/events", newEvent)];
+                    return [4 /*yield*/, apiPOST(SERVER_URL, newEvent)];
                 case 1:
                     result = _a.sent();
                     if (result.error) {
                         console.log("Error saving event: " + result.error);
                         return [2 /*return*/];
                     }
-                    console.log("Event saved with ID: ", newEvent.id);
-                    console.log(result.data);
+                    else {
+                        console.log("Event saved with ID: ", newEvent.id);
+                        console.log(result.data);
+                    }
                     //clearEvents();
                     //displayEvents(currentDate);
                     eventViewTrigger();
@@ -226,7 +347,29 @@ function saveEvent(currentDate) {
     });
 }
 function deleteEvent() {
-    console.log("Getting yeeted");
+    return __awaiter(this, void 0, void 0, function () {
+        var imgWithId, idToDelete, result;
+        var _a;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    imgWithId = (_a = document
+                        .getElementById("event")) === null || _a === void 0 ? void 0 : _a.getElementsByTagName("img")[0];
+                    if (!imgWithId) {
+                        return [2 /*return*/];
+                    }
+                    idToDelete = imgWithId.getAttribute("id");
+                    return [4 /*yield*/, apiDELETE(SERVER_URL + "/" + idToDelete, idToDelete)];
+                case 1:
+                    result = _b.sent();
+                    if (result.error) {
+                        console.log("Error saving event: " + result.error);
+                        return [2 /*return*/];
+                    }
+                    return [2 /*return*/];
+            }
+        });
+    });
 }
 /* TODO
     Event starts on day n and end on day n+1 but event time is <24h
@@ -235,6 +378,7 @@ function deleteEvent() {
     On click on table -> open event window with pre-selected time
 */
 function displayEvents(currentDate) {
+    //GET /foo?x.y_lt=100
     var keys = Object.keys(localStorage);
     var startOfWeekTime = new Date(currentDate);
     startOfWeekTime.setDate(startOfWeekTime.getDate() - startOfWeekTime.getDay());
@@ -282,6 +426,9 @@ function displayEvents(currentDate) {
         }
         checkOverlappingEvents();
     };
+    /*const result = await apiGET<StoredEvent>(
+      SERVER_URL + "?.startDate>" + startOfWeekTime.toString()
+    );*/
     for (var i = 0; i < keys.length; i++) {
         _loop_1(i);
     }
@@ -417,16 +564,11 @@ var formInputFieldList = [
     "location",
     "description",
 ];
-var toggleChevron = [
-    "./media/chevron_right.svg",
-    "./media/chevron_left.svg",
-];
+var chevronLeftSrc = "./media/chevron_left.svg";
+var chevronRightSrc = "./media/chevron_right.svg";
 function createDOMElement(type, classes, text) {
     var newItem = document.createElement(type);
-    if (typeof classes === "string") {
-        newItem.classList.add(classes);
-    }
-    else if (classes) {
+    if (classes) {
         classes.forEach(function (itemClass) {
             newItem.classList.add(itemClass);
         });
@@ -481,42 +623,40 @@ function renderTable() {
 function getGMT() {
     var timezone = new Date().getTimezoneOffset() / 60;
     var sign = timezone == 0 ? "" : timezone > 0 ? "-" : "+";
-    var addZero;
     timezone = Math.abs(timezone);
-    if (timezone < 10 && timezone > -10) {
-        addZero = "0" + timezone;
-    }
-    return "GMT ".concat(sign).concat(addZero ? addZero : timezone);
+    return "GMT ".concat(sign).concat(timezone < 10 ? "0" : "").concat(timezone);
 }
 function setupPanelTriggers() {
-    var closeCalendarPanel = (document.getElementById("closeSidePanel"));
+    var sideCalendarPanelTrigger = (document.getElementById("closeSidePanel"));
     var calendarSidePanel = (document.getElementById("calendarSideView"));
-    var rightSidePanel = document.getElementById("rightSidePanel");
-    var rightPanelTrigger = (document.getElementById("rightPanelChevron"));
-    closeCalendarPanel.addEventListener("click", function () {
+    var iconsSidePanel = document.getElementById("rightSidePanel");
+    var iconsPanelTrigger = (document.getElementById("rightPanelChevron"));
+    var calendarPanelWidth = "256px";
+    var iconsPanelWidth = "56px";
+    sideCalendarPanelTrigger.addEventListener("click", function () {
         calendarSidePanel.classList.toggle("notDisplayed");
-        adjustMainDisplay(calendarSidePanel, rightSidePanel);
+        adjustMainDisplay(calendarSidePanel, iconsSidePanel);
     });
-    rightPanelTrigger.addEventListener("click", function () {
-        rightSidePanel.classList.toggle("notDisplayed");
-        rightPanelTrigger.src = rightSidePanel.classList.contains("notDisplayed")
-            ? toggleChevron[1]
-            : toggleChevron[0];
-        adjustMainDisplay(calendarSidePanel, rightSidePanel);
+    iconsPanelTrigger.addEventListener("click", function () {
+        iconsSidePanel.classList.toggle("notDisplayed");
+        iconsPanelTrigger.src = iconsSidePanel.classList.contains("notDisplayed")
+            ? chevronLeftSrc
+            : chevronRightSrc;
+        adjustMainDisplay(calendarSidePanel, iconsSidePanel);
     });
     var adjustMainDisplay = function (calendarPanel, rightPanel) {
         var calendarSideWidth = calendarPanel.classList.contains("notDisplayed")
             ? ""
-            : "256px";
+            : calendarPanelWidth;
         var rightSideWidth = rightPanel.classList.contains("notDisplayed")
             ? ""
-            : "56px";
+            : iconsPanelWidth;
         var contentGrid = document.getElementById("content");
         contentGrid.style.gridTemplateColumns =
             calendarSideWidth + " 1fr " + rightSideWidth;
     };
 }
-function createEventListeners(currentDate) {
+function createEventListeners() {
     var eventWindowButton = (document.getElementById("eventWindowButton"));
     eventWindowButton.addEventListener("click", function () {
         eventViewTrigger();
@@ -534,16 +674,14 @@ function createEventListeners(currentDate) {
         console.log("setting, to be implemented, is triggered");
     });
     var eventSaveToStorage = (document.getElementById("eventSaveButton"));
-    eventSaveToStorage.addEventListener("click", function () { return saveEvent(currentDate); });
+    eventSaveToStorage.addEventListener("click", function () { return saveEvent(); });
     var dialogCloseButton = (document.getElementById("dialogCloseButton"));
     dialogCloseButton.addEventListener("click", function () {
-        resetEventCreationForm();
         eventViewTrigger();
     });
     var deleteEventButton = (document.getElementById("deleteEventButton"));
     deleteEventButton.addEventListener("click", function () {
         deleteEvent();
-        resetEventCreationForm();
         eventViewTrigger();
     });
 }
@@ -562,18 +700,18 @@ function createTimeframeListeners(currentDate) {
     });
 }
 function timeframeUpdate(currentDate, offset) {
-    var checkNewMonth = new Date(currentDate);
     var isNewMonth = function () {
-        return (currentDate.getMonth() !=
-            checkNewMonth.setDate(currentDate.getDate() + offset));
+        var newMonth = new Date(currentDate);
+        return (currentDate.getMonth() ===
+            new Date(newMonth.setDate(newMonth.getDate() + offset)).getMonth());
     };
     fillOutWeekDays(currentDate, offset);
     //clearEvents();
     //displayEvents(currentDate);
-    displayMonthName(currentDate);
+    headerTimeframeDate(currentDate);
     if (isNewMonth()) {
         fillOutMonthDays(currentDate);
-        displayCalendarMonth(currentDate);
+        sideCalendarMonth(currentDate);
     }
 }
 function createCalendarListeners(currentDate) {
@@ -582,13 +720,14 @@ function createCalendarListeners(currentDate) {
     previousMonth.addEventListener("click", function () {
         currentDate.setMonth(currentDate.getMonth() - 1);
         fillOutMonthDays(currentDate);
-        displayCalendarMonth(currentDate);
+        sideCalendarMonth(currentDate);
     });
     nextMonth.addEventListener("click", function () {
         currentDate.setMonth(currentDate.getMonth() + 1);
         fillOutMonthDays(currentDate);
-        displayCalendarMonth(currentDate);
+        sideCalendarMonth(currentDate);
     });
+    fillOutMonthDays(currentDate);
     var calendarTable = document.getElementById("calendarTable");
     var calendarTBody = (calendarTable.getElementsByTagName("tbody")[0]);
     calendarTBody.addEventListener("click", function (cell) {
@@ -597,29 +736,30 @@ function createCalendarListeners(currentDate) {
         if (targetDate.closest("td")) {
             var dateId = (_a = targetDate.closest("td")) === null || _a === void 0 ? void 0 : _a.getAttribute("id");
             var setWeek = new Date(Date.parse(dateId));
-            fillOutWeekDays(setWeek, 0);
+            timeframeUpdate(setWeek, 0);
             targetDate.classList.add("calendarCellHighlighted");
         }
     });
 }
 // Currently de-scoped
+/*
 function selection() {
-    var _a, _b, _c;
-    var settingsView = document.getElementById("settingsView");
+  const settingsView = <HTMLElement>document.getElementById("settingsView");
+  settingsView.classList.toggle("notDisplayed");
+  settingsView.focus();
+  document.getElementById("settingField")?.addEventListener("click", () => {
+    displayDropdown("dropdownWeekDays");
+  });
+  document
+    .getElementById("dropdownWeekDays")
+    ?.addEventListener("click", (weekDay) => {});
+  document.getElementById("closeSettings")?.addEventListener("click", () => {
     settingsView.classList.toggle("notDisplayed");
-    settingsView.focus();
-    (_a = document.getElementById("settingField")) === null || _a === void 0 ? void 0 : _a.addEventListener("click", function () {
-        displayDropdown("dropdownWeekDays");
-    });
-    (_b = document
-        .getElementById("dropdownWeekDays")) === null || _b === void 0 ? void 0 : _b.addEventListener("click", function (weekDay) { });
-    (_c = document.getElementById("closeSettings")) === null || _c === void 0 ? void 0 : _c.addEventListener("click", function () {
-        var _a;
-        settingsView.classList.toggle("notDisplayed");
-        (_a = document
-            .getElementById("dropdownSettings")) === null || _a === void 0 ? void 0 : _a.classList.toggle("notDisplayed");
-    });
-}
+    document
+      .getElementById("dropdownSettings")
+      ?.classList.toggle("notDisplayed");
+  });
+}*/
 function eventViewTrigger() {
     resetEventCreationForm();
     var eventView = document.getElementById("event");
@@ -627,25 +767,26 @@ function eventViewTrigger() {
     var eventInputTitle = document.getElementById("title");
     eventInputTitle.focus();
 }
-function displayMonthName(currentDate) {
-    var isPassingWeek = function () {
-        var weekStartDate = new Date(currentDate);
-        var weekEndDate = new Date(currentDate);
-        weekStartDate.setDate(weekStartDate.getDate() - weekStartDate.getDay());
-        weekEndDate.setDate(weekEndDate.getDate() - weekEndDate.getDay() + 6);
-        return weekStartDate.getDate() > weekEndDate.getDate();
+function headerTimeframeDate(currentDate) {
+    var getWeekStartDate = function () {
+        return new Date(new Date(currentDate).setDate(currentDate.getDate() - currentDate.getDay()));
     };
-    var headerDateDisplay = "".concat(isPassingWeek()
-        ? monthsShort[currentDate.getMonth()] +
-            " - " +
-            monthsShort[currentDate.getMonth() + 1]
-        : monthsLong[currentDate.getMonth()], ", ").concat(currentDate.getFullYear());
-    var monthDisplay = document.getElementById("monthDisplay");
-    if (monthDisplay.innerText) {
-        monthDisplay.innerText = headerDateDisplay;
+    var getMonthNames = function () {
+        var weekStartDate = getWeekStartDate();
+        var weekEndDate = new Date(getWeekStartDate().setDate(weekStartDate.getDate() - weekStartDate.getDay() + 6));
+        return weekStartDate.getDate() > weekEndDate.getDate()
+            ? monthsShort[currentDate.getMonth()] +
+                " - " +
+                monthsShort[currentDate.getMonth() + 1]
+            : monthsLong[currentDate.getMonth()];
+    };
+    var headerDateDisplay = "".concat(getMonthNames() + ", " + currentDate.getFullYear());
+    var headerDate = document.getElementById("monthDisplay");
+    if (headerDate) {
+        headerDate.innerText = headerDateDisplay;
     }
 }
-function displayCalendarMonth(currentDate) {
+function sideCalendarMonth(currentDate) {
     var calendarMonthDisplay = (document.getElementById("calendarMonthDisplay"));
     calendarMonthDisplay.innerText =
         monthsLong[currentDate.getMonth()] + ", " + currentDate.getFullYear();
@@ -666,11 +807,3 @@ function resetEventCreationForm() {
     var imgWithId = ((_a = document.getElementById("event")) === null || _a === void 0 ? void 0 : _a.getElementsByTagName("img")[0]);
     imgWithId.removeAttribute("id");
 }
-/* TYPESCRIPT TODO:
-
-1.  TRANSPILE AS IS
-2.  TYPES FOR PRIMITIVES
-3.  CUSTOM TYPES
-4.  ENUMS
-5.  JSON SERVER
-*/
