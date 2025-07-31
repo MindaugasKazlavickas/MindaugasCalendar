@@ -145,7 +145,7 @@ async function apiPOST<T>(url: string, payload: T): Promise<APIResponse<T>> {
     return {
       status: 500,
       data: payload,
-      error: error instanceof Error ? error.message: String(error),
+      error: error.message,
     };
   }
 }
@@ -168,7 +168,7 @@ async function apiDELETE<T>(url: string, id: T): Promise<APIResponse<T>> {
     return {
       status: 500,
       data: id,
-      error: error instanceof Error ? error.message : String(error),
+      error: error.message,
     };
   }
 }
@@ -184,9 +184,7 @@ async function apiGET<T>(url: string): Promise<APIResponse<T>> {
     const data = await response.json();
 
     if (!response.ok) {
-      if (!response.ok) {
       throw new Error(`Request failed with status ${response.status}`);
-    }
     }
     return {
       status: response.status,
@@ -195,19 +193,15 @@ async function apiGET<T>(url: string): Promise<APIResponse<T>> {
   } catch (error) {
     return {
       status: 500,
-      data: null as unknown as T,
+      data: null as T,
       error: error.message,
     };
   }
 }
-async function apiPUT<T>(
-  url: string,
-  payload: T,
-  id: number
-): Promise<APIResponse<T>> {
+async function apiPUT<T>(url: string, payload: T): Promise<APIResponse<T>> {
   try {
     const response = await fetch(url, {
-      method: "POST",
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
@@ -217,11 +211,7 @@ async function apiPUT<T>(
     const data = await response.json();
 
     if (!response.ok) {
-      return {
-        status: response.status,
-        data: data,
-        error: data?.error || "Failed to access API",
-      };
+      throw new Error(`Request failed with status ${response.status}`);
     }
     return {
       status: response.status,
@@ -283,8 +273,19 @@ async function saveEvent(currentDate: Date): Promise<void> {
     location: inputLocation.value,
     description: inputDescription.value,
   };
-
-  const result = await apiPOST<StoredEvent>(SERVER_URL, newEvent);
+  const idImgHolder = document
+    .getElementById("event")
+    ?.getElementsByTagName("img")[0];
+  let result;
+  const existingEventId = idImgHolder?.getAttribute("id");
+  if (idImgHolder?.getAttribute("id")) {
+    result = await apiPUT<StoredEvent>(
+      `${SERVER_URL}/${existingEventId}`,
+      newEvent
+    );
+  } else {
+    result = await apiPOST<StoredEvent>(SERVER_URL, newEvent);
+  }
 
   if (result.error) {
     console.log("Error saving event: " + result.error);
@@ -294,9 +295,9 @@ async function saveEvent(currentDate: Date): Promise<void> {
     console.log(result.data);
   }
 
+  eventViewTrigger();
   clearEvents();
   displayEvents(currentDate);
-  eventViewTrigger();
 }
 async function deleteEvent(currentDate: Date): Promise<void> {
   const imgWithId = document
@@ -318,24 +319,19 @@ async function deleteEvent(currentDate: Date): Promise<void> {
   console.log("Successfully deleted event with ID: ", idToDelete);
   clearEvents();
   displayEvents(currentDate);
-  
 }
 /* TODO
     Event starts on day n and end on day n+1 but event time is <24h
-    Event lasts longer than 2 days
-    Atidaryti "event viewer" ir atnaujinti info
+    Event lasts longer than 24h
     On click on table -> open event window with pre-selected time
 */
 async function displayEvents(currentDate: Date) {
   let startOfWeekTime: Date = new Date(currentDate);
   startOfWeekTime.setDate(startOfWeekTime.getDate() - startOfWeekTime.getDay());
-  startOfWeekTime.setHours(0);
-  startOfWeekTime.setMinutes(0);
-  startOfWeekTime.setSeconds(0);
+  startOfWeekTime.setHours(0, 0, 0);
 
   let endOfWeekTime: Date = new Date(startOfWeekTime);
   endOfWeekTime.setDate(startOfWeekTime.getDate() + 7);
-
 
   const thisWeekUrl = () => {
     const startISO = startOfWeekTime.toISOString();
@@ -345,20 +341,22 @@ async function displayEvents(currentDate: Date) {
 
   const response = await apiGET<StoredEvent[]>(thisWeekUrl());
 
-  
   if (response.error || !response.data) {
     console.error("Error fetching events: ", response.error);
     return;
   }
   const events = response.data;
-
+  let eventDuration: number[] = [];
   for (let i = 0; i < events.length; i++) {
     const event = events[i];
     const startDate = new Date(event.startDate);
     const endDate = new Date(event.endDate);
     const startTime = event.startTime;
     const endTime = event.endTime;
-    let eventDuration: number;
+
+    eventDuration[i] =
+      (+endTime.substr(0, 2) - +startTime.substr(0, 2)) * 60 +
+      (+endTime.substr(3, 2) - +startTime.substr(3, 2));
     const minToPxRatio: number = 1.25;
     const isSameDayEvent = (): boolean => {
       return startDate.getDate() === endDate.getDate();
@@ -370,51 +368,31 @@ async function displayEvents(currentDate: Date) {
           endDate.getMonth() > startDate.getMonth())
       );
     };
-    /*
-    const isEventThisWeek = (): boolean => {
-      return (
-        startDate.getDate() >= startOfWeekTime.getDate() &&
-        endDate.getDate() < endOfWeekTime.getDate() &&
-        startDate.getMonth() == startOfWeekTime.getMonth()
-      );
-    };*/
-
-    //if (isEventThisWeek()) {
-      eventDuration =
-        (+endTime.substr(0, 2) - +startTime.substr(0, 2)) * 60 +
-        (+endTime.substr(3, 2) - +startTime.substr(3, 2));
-      if (isSameDayEvent()) {
-        eventDuration = eventDuration / minToPxRatio;
-        sameDayEventRender(event, eventDuration);
-      } else if (isLessThan24Hours()) {
-        eventDuration = (eventDuration + 24 * 60) / minToPxRatio;
-        // spanning two days but less than 24h event render func
-      }
-    //} else {
-      // multiDayEventRender(keys[i], startDate, endDate);
-    //}
-
-    checkOverlappingEvents();
+    if (isSameDayEvent()) {
+      eventDuration[i] = eventDuration[i] / minToPxRatio;
+      sameDayEventRender(event, eventDuration[i]);
+    } else if (isLessThan24Hours()) {
+      eventDuration[i] = (eventDuration[i] + 24 * 60) / minToPxRatio;
+      // spanning two days but less than 24h event render func
+    }
   }
+  checkOverlappingEvents(events, eventDuration);
 }
 function clearEvents() {
   const displayedEvents = document.querySelectorAll<HTMLDivElement>(".meeting");
   displayedEvents.forEach((event) => {
-  event.remove();
+    event.remove();
   });
 }
 function sameDayEventRender(event: StoredEvent, eventDuration: number) {
-  const {startTime, endTime, startDate, title} = event;
   const item = <HTMLDivElement>createDOMElement("div", ["meeting"], "");
   item.setAttribute("id", event.id.toString());
-  item.innerText = startTime + "-" + endTime + " " + event.title;
+  item.innerText = event.startTime + "-" + event.endTime + " " + event.title;
   item.style.height = eventDuration + "px";
-  const timeCheck =
-    +startTime.substr(0, 2) > 9
-      ? startTime.substr(0, 2)
-      : startTime.substr(1, 1);
   const target = <HTMLTableCellElement>(
-    document.getElementById(new Date(startDate).getDay() + "_" + timeCheck)
+    document.getElementById(
+      new Date(event.startDate).getDay() + "_" + +event.startTime.substr(0, 2)
+    )
   );
   target.style.overflow = "visible";
   target.style.position = "relative";
@@ -424,7 +402,7 @@ function sameDayEventRender(event: StoredEvent, eventDuration: number) {
     openEditEventWindow(event, event.id.toString());
   });
 }
-function openEditEventWindow(event: StoredEvent, identifier: string) {
+function openEditEventWindow(event: StoredEvent, id: string) {
   eventViewTrigger();
   for (let i = 0; i < formInputFieldList.length; i++) {
     if (event[formInputFieldList[i]]) {
@@ -432,8 +410,8 @@ function openEditEventWindow(event: StoredEvent, identifier: string) {
         document.getElementById(formInputFieldList[i])
       );
       if (
-        formInputFieldList[i] == "startDate" ||
-        formInputFieldList[i] == "endDate"
+        formInputFieldList[i] === "startDate" ||
+        formInputFieldList[i] === "endDate"
       ) {
         inputField.value = event[formInputFieldList[i]].substr(0, 10);
       } else {
@@ -444,51 +422,40 @@ function openEditEventWindow(event: StoredEvent, identifier: string) {
   const idImgHolder = document
     .getElementById("event")
     ?.getElementsByTagName("img")[0];
-  idImgHolder?.setAttribute("id", identifier);
+  idImgHolder?.setAttribute("id", id);
 }
-function checkOverlappingEvents() {
-  const keys: string[] = Object.keys(localStorage);
-  for (let i = 0; i < keys.length; i++) {
-    if (<HTMLDivElement>document.getElementById(keys[i])) {
-      let primaryRect = <DOMRect>(
-        document.getElementById(keys[i])?.getBoundingClientRect()
-      );
-      for (let j = 0; j < keys.length - 1; j++) {
-        if (keys[i] != keys[j] && document.getElementById(keys[j])) {
-          let secondaryRect = <DOMRect>(
-            document.getElementById(keys[j])?.getBoundingClientRect()
-          );
-          const isLonger = () => {
-            return (
-              primaryRect.bottom - primaryRect.top >
-              secondaryRect.bottom - secondaryRect.top
-            );
-          };
-          const isOverlapApplied = () => {
-            const event = <HTMLDivElement>document.getElementById(keys[j]);
-            return (
-              !event.classList.contains("overlappingShorterEvent") &&
-              !event.classList.contains("overlapped")
-            );
-          };
-          if (
-            primaryRect.top < secondaryRect.bottom &&
-            primaryRect.bottom > secondaryRect.top
-          ) {
-            if (isLonger() && isOverlapApplied()) {
-              document
-                .getElementById(keys[j])
-                ?.classList.add("overlappingShorterEvent");
-              document.getElementById(keys[i])?.classList.add("overlapped");
-            } else if (
-              primaryRect.bottom - primaryRect.top <
-              secondaryRect.bottom - secondaryRect.top
-            ) {
-              document
-                .getElementById(keys[i])
-                ?.classList.add("overlappingEvent");
-              document.getElementById(keys[j])?.classList.add("overlapped");
-            }
+function checkOverlappingEvents(
+  events: StoredEvent[],
+  eventDuration: number[]
+) {
+  let overlap: number = 0;
+  for (let i = 0; i < events.length - 1; i++) {
+    const firstEvent = document.getElementById(events[i].id.toString());
+    overlap = 0;
+    for (let j = 0; j < events.length; j++) {
+      if (
+        events[i].id.toString() != events[j].id.toString() &&
+        events[i].startDate === events[j].startDate
+      ) {
+        const secondEvent = document.getElementById(events[j].id.toString());
+        const isLonger = () => {
+          return eventDuration[i] > eventDuration[j];
+        };
+        if (
+          events[i].endTime >= events[j].startTime &&
+          secondEvent &&
+          firstEvent
+        ) {
+          overlap++;
+          if (isLonger()) {
+            secondEvent.style.width = `var(--event-layer-depth-${overlap})`;
+            secondEvent.style.backgroundColor = `var(--event-layer-color-${overlap})`;
+          } else {
+            firstEvent.style.width = `var(--event-layer-depth-${overlap})`;
+            firstEvent.style.backgroundColor = `var(--event-layer-color-${overlap})`;
+          }
+          if (firstEvent.style.width.slice(-2, -1)) {
+            overlap = +firstEvent.style.width.slice(-2, -1);
           }
         }
       }
@@ -828,12 +795,11 @@ function headerTimeframeDate(currentDate: Date) {
       )
     );
     return weekStartDate.getDate() > weekEndDate.getDate()
-      ? monthsShort[currentDate.getMonth()] +
+      ? monthsShort[weekStartDate.getMonth()] +
           " - " +
-          monthsShort[currentDate.getMonth() + 1]
+          monthsShort[weekStartDate.getMonth() + 1]
       : monthsLong[currentDate.getMonth()];
   };
-
   let headerDateDisplay = `${
     getMonthNames() + ", " + currentDate.getFullYear()
   }`;
