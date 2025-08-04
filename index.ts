@@ -20,10 +20,9 @@ document.addEventListener("DOMContentLoaded", () => {
   renderCalendar();
 
   createTimeframeListeners(currentDate);
-  createCalendarListeners(currentDate);
-
   timeframeUpdate(currentDate, 0);
 
+  fillOutMonthDays(currentDate);
   sideCalendarMonth(currentDate);
 });
 interface StoredEvent {
@@ -701,31 +700,10 @@ function createTimeframeListeners(currentDate: Date) {
   headerTodayButton.addEventListener("click", () => {
     timeframeUpdate((currentDate = new Date()), 0);
   });
-}
-function timeframeUpdate(currentDate: Date, offset: number) {
-  const isNewMonth = (): boolean => {
-    let newMonth: Date = new Date(currentDate.toString());
-    return (
-      currentDate.getMonth() ===
-      new Date(newMonth.setDate(newMonth.getDate() + offset)).getMonth()
-    );
-  };
-
-  fillOutWeekDays(currentDate, offset);
-  clearEvents();
-  displayEvents(currentDate);
-  headerTimeframeDate(currentDate);
-  if (isNewMonth()) {
-    fillOutMonthDays(currentDate);
-    sideCalendarMonth(currentDate);
-  }
-}
-function createCalendarListeners(currentDate: Date) {
   const previousMonth = <HTMLButtonElement>(
     document.getElementById("previousMonth")
   );
   const nextMonth = <HTMLButtonElement>document.getElementById("nextMonth");
-
   previousMonth.addEventListener("click", () => {
     currentDate.setMonth(currentDate.getMonth() - 1);
     fillOutMonthDays(currentDate);
@@ -736,7 +714,6 @@ function createCalendarListeners(currentDate: Date) {
     fillOutMonthDays(currentDate);
     sideCalendarMonth(currentDate);
   });
-  fillOutMonthDays(currentDate);
   const calendarTable = <HTMLElement>document.getElementById("calendarTable");
   const calendarTBody = <HTMLTableSectionElement>(
     calendarTable.getElementsByTagName("tbody")[0]
@@ -746,11 +723,28 @@ function createCalendarListeners(currentDate: Date) {
     const targetDate = <HTMLElement>cell.target;
     if (targetDate.closest("td")) {
       let dateId = targetDate.closest("td")?.getAttribute("id");
-      let setWeek = new Date(Date.parse(dateId as string));
-      timeframeUpdate(setWeek, 0);
+      currentDate = new Date(Date.parse(dateId as string));
+      timeframeUpdate(currentDate, 0);
       targetDate.classList.add("calendarCellHighlighted");
     }
   });
+}
+function timeframeUpdate(currentDate: Date, offset: number) {
+  const isNewMonth = (): boolean => {
+    let newMonth: Date = new Date(currentDate.toString());
+    return (
+      currentDate.getMonth() ===
+      new Date(newMonth.setDate(newMonth.getDate() + offset)).getMonth()
+    );
+  };
+  fillOutWeekDays(currentDate, offset);
+  clearEvents();
+  displayEvents(currentDate);
+  headerTimeframeDate(currentDate);
+  if (isNewMonth()) {
+    fillOutMonthDays(currentDate);
+    sideCalendarMonth(currentDate);
+  }
 }
 // Currently de-scoped
 /*
@@ -781,18 +775,20 @@ function eventViewTrigger() {
 function headerTimeframeDate(currentDate: Date) {
   const getWeekStartDate = (): Date => {
     return new Date(
-      new Date(currentDate).setDate(
+      new Date(currentDate.toString()).setDate(
         currentDate.getDate() - currentDate.getDay()
       )
     );
   };
+
   const getMonthNames = () => {
     let weekStartDate = getWeekStartDate();
     let weekEndDate = new Date(
-      getWeekStartDate()
-        .setDate(weekStartDate.getDate() - weekStartDate.getDay() + 6)
-        .toString()
+      getWeekStartDate().setDate(
+        weekStartDate.getDate() - weekStartDate.getDay() + 6
+      )
     );
+
     return weekStartDate.getDate() > weekEndDate.getDate()
       ? monthsShort[weekStartDate.getMonth()] +
           " - " +

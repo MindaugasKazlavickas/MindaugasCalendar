@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/MindaugasKazlavickas/calendarProgress#readme",
   "dependencies": {
+    "@types/es6-promise": "^0.0.33",
     "typescript": "^5.9.2"
   }
 }
