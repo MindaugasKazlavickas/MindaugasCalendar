@@ -120,15 +120,30 @@ function fillOutMonthDays(currentDate: Date) {
     }
   }
 }
-async function apiPOST<T>(url: string, payload: T): Promise<APIResponse<T>> {
+async function apiRequest<T>(
+  url: string,
+  method: string,
+  payload?: T,
+  id?: T
+): Promise<APIResponse<T>> {
   try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
+    let response;
+    if (payload) {
+      response = await fetch(url, {
+        method: method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+    } else {
+      response = await fetch(url, {
+        method: method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    }
 
     const data = await response.json();
 
@@ -140,87 +155,19 @@ async function apiPOST<T>(url: string, payload: T): Promise<APIResponse<T>> {
       data,
     };
   } catch (error) {
-    return {
-      status: 500,
-      data: payload,
-      error: error.message,
-    };
-  }
-}
-async function apiDELETE<T>(url: string, id: T): Promise<APIResponse<T>> {
-  try {
-    const response = await fetch(url, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (!response.ok) {
-      throw new Error(`Request failed with status ${response.status}`);
+    if (payload) {
+      return {
+        status: 500,
+        data: payload,
+        error: error.message,
+      };
+    } else {
+      return {
+        status: 500,
+        data: id,
+        error: error.message,
+      };
     }
-    return {
-      status: response.status,
-      data: id,
-    };
-  } catch (error) {
-    return {
-      status: 500,
-      data: id,
-      error: error.message,
-    };
-  }
-}
-async function apiGET<T>(url: string): Promise<APIResponse<T>> {
-  try {
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(`Request failed with status ${response.status}`);
-    }
-    return {
-      status: response.status,
-      data,
-    };
-  } catch (error) {
-    return {
-      status: 500,
-      data: null as T,
-      error: error.message,
-    };
-  }
-}
-async function apiPUT<T>(url: string, payload: T): Promise<APIResponse<T>> {
-  try {
-    const response = await fetch(url, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(`Request failed with status ${response.status}`);
-    }
-    return {
-      status: response.status,
-      data,
-    };
-  } catch (error) {
-    return {
-      status: 500,
-      data: payload,
-      error: error.message,
-    };
   }
 }
 async function saveEvent(currentDate: Date): Promise<void> {
@@ -277,12 +224,13 @@ async function saveEvent(currentDate: Date): Promise<void> {
   let result;
   const existingEventId = idImgHolder?.getAttribute("id");
   if (idImgHolder?.getAttribute("id")) {
-    result = await apiPUT<StoredEvent>(
+    result = await apiRequest<StoredEvent>(
       `${SERVER_URL}/${existingEventId}`,
+      "PUT",
       newEvent
     );
   } else {
-    result = await apiPOST<StoredEvent>(SERVER_URL, newEvent);
+    result = await apiRequest<StoredEvent>(SERVER_URL, "POST", newEvent);
   }
 
   if (result.error) {
@@ -305,8 +253,10 @@ async function deleteEvent(currentDate: Date): Promise<void> {
     return;
   }
   const idToDelete = imgWithId.getAttribute("id") as string;
-  const result = await apiDELETE<string>(
+  const result = await apiRequest<string>(
     `${SERVER_URL}/${idToDelete}`,
+    "DELETE",
+    "",
     idToDelete
   );
 
@@ -337,7 +287,7 @@ async function displayEvents(currentDate: Date) {
     return `${SERVER_URL}?startDate_gte=${startISO}&endDate_lte=${endISO}`;
   };
 
-  const response = await apiGET<StoredEvent[]>(thisWeekUrl());
+  const response = await apiRequest<StoredEvent[]>(thisWeekUrl(), "GET");
 
   if (response.error || !response.data) {
     console.error("Error fetching events: ", response.error);
@@ -353,25 +303,27 @@ async function displayEvents(currentDate: Date) {
     const endTime = event.endTime;
 
     eventDuration[i] =
-      (+endTime.substr(0, 2) - +startTime.substr(0, 2)) * 60 +
-      (+endTime.substr(3, 2) - +startTime.substr(3, 2));
+      Math.abs(+endTime.substr(0, 2) - +startTime.substr(0, 2)) * 60 +
+      Math.abs(+endTime.substr(3, 2) - +startTime.substr(3, 2));
     const minToPxRatio: number = 1.25;
     const isSameDayEvent = (): boolean => {
       return startDate.getDate() === endDate.getDate();
     };
     const isLessThan24Hours = (): boolean => {
+      const lastDayOfMonth = new Date(endDate.toString());
+      lastDayOfMonth.setDate(0);
       return (
-        endDate.getDate() > startDate.getDate() ||
-        (endDate.getDate() < startDate.getDate() &&
-          endDate.getMonth() > startDate.getMonth())
+        (endDate.getDate() === startDate.getDate() + 1 &&
+          endDate.getMonth() === startDate.getMonth()) ||
+        startDate.getDate() === lastDayOfMonth.getDate()
       );
     };
     if (isSameDayEvent()) {
       eventDuration[i] = eventDuration[i] / minToPxRatio;
       sameDayEventRender(event, eventDuration[i]);
     } else if (isLessThan24Hours()) {
-      eventDuration[i] = (eventDuration[i] + 24 * 60) / minToPxRatio;
-      // spanning two days but less than 24h event render func
+      eventDuration[i] = (24 * 60 - eventDuration[i]) / minToPxRatio;
+      lessThan24HoursEvent(event, eventDuration[i]);
     }
   }
   checkOverlappingEvents(events, eventDuration);
@@ -387,9 +339,13 @@ function sameDayEventRender(event: StoredEvent, eventDuration: number) {
   item.setAttribute("id", event.id.toString());
   item.innerText = event.startTime + "-" + event.endTime + " " + event.title;
   item.style.height = eventDuration + "px";
+  const marginFromTop = +event.startTime.substr(3, 2) / 1.25;
+  item.style.marginTop = marginFromTop + "px";
   const target = <HTMLTableCellElement>(
     document.getElementById(
-      new Date(event.startDate).getDay() + "_" + +event.startTime.substr(0, 2)
+      new Date(event.startDate).getDay() +
+        "_" +
+        (+event.startTime.substr(0, 2) + 1)
     )
   );
   target.style.overflow = "visible";
@@ -399,6 +355,46 @@ function sameDayEventRender(event: StoredEvent, eventDuration: number) {
   item.addEventListener("click", () => {
     openEditEventWindow(event, event.id.toString());
   });
+}
+function lessThan24HoursEvent(event: StoredEvent, eventDuration: number) {
+  const minToPxRatio = 1.25;
+  const eventText = event.startTime + "-" + event.endTime + " " + event.title;
+  eventDuration = eventDuration * minToPxRatio;
+  const duration = [
+    24 * 60 -
+      (+event.startTime.substr(0, 2) * 60 + +event.startTime.substr(3, 2)),
+    eventDuration -
+      (24 * 60 -
+        (+event.startTime.substr(0, 2) * 60 + +event.startTime.substr(3, 2))),
+  ];
+  console.log(eventDuration, duration[0], duration[1]);
+  for (let i = 0; i < 2; i++) {
+    const item = <HTMLDivElement>createDOMElement("div", ["meeting"], "");
+    item.setAttribute("id", event.id.toString());
+    item.innerText = eventText;
+    item.style.height = duration[i] / minToPxRatio + "px";
+
+    const target = <HTMLTableCellElement>(
+      document.getElementById(
+        i === 0
+          ? new Date(event.startDate).getDay() +
+              "_" +
+              (+event.startTime.substr(0, 2) + 1)
+          : new Date(event.endDate).getDay() + "_" + "1"
+      )
+    );
+
+    if (i === 0) {
+      const marginFromTop = +event.startTime.substr(3, 2) / 1.25;
+      item.style.marginTop = marginFromTop + "px";
+    }
+    target.style.overflow = "visible";
+    target.style.position = "relative";
+    target.appendChild(item);
+    item.addEventListener("click", () => {
+      openEditEventWindow(event, event.id.toString());
+    });
+  }
 }
 function openEditEventWindow(event: StoredEvent, id: string) {
   eventViewTrigger();
@@ -746,25 +742,6 @@ function timeframeUpdate(currentDate: Date, offset: number) {
     sideCalendarMonth(currentDate);
   }
 }
-// Currently de-scoped
-/*
-function selection() {
-  const settingsView = <HTMLElement>document.getElementById("settingsView");
-  settingsView.classList.toggle("notDisplayed");
-  settingsView.focus();
-  document.getElementById("settingField")?.addEventListener("click", () => {
-    displayDropdown("dropdownWeekDays");
-  });
-  document
-    .getElementById("dropdownWeekDays")
-    ?.addEventListener("click", (weekDay) => {});
-  document.getElementById("closeSettings")?.addEventListener("click", () => {
-    settingsView.classList.toggle("notDisplayed");
-    document
-      .getElementById("dropdownSettings")
-      ?.classList.toggle("notDisplayed");
-  });
-}*/
 function eventViewTrigger() {
   resetEventCreationForm();
   const eventView = <HTMLDialogElement>document.getElementById("event");
