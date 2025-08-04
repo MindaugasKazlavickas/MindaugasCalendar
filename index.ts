@@ -6,7 +6,6 @@ document.addEventListener("DOMContentLoaded", () => {
   if (headerIconDate) {
     headerIconDate.innerText = currentDate.getDate().toString();
   }
-
   const timeframeTimezone = document.getElementById("timezone");
   if (timeframeTimezone) {
     timeframeTimezone.innerText = getGMT();
@@ -45,9 +44,12 @@ interface APIResponse<T> {
 }
 function fillOutWeekDays(currentDate: Date, offset: number) {
   currentDate.setDate(currentDate.getDate() + offset);
-  let date = new Date(currentDate);
+  let date = new Date(currentDate.toString());
   date.setDate(date.getDate() - date.getDay());
-
+  const markedWeekDays = document.querySelectorAll(".weekViewGridHeader");
+  markedWeekDays.forEach((classes) => {
+    classes.classList.remove("weekViewGridHeaderMarked");
+  });
   for (let i = 0; i < 7; i++) {
     let weekDate = <HTMLTableCellElement>(
       document.getElementById("weekDisplayDate" + i)
@@ -57,24 +59,21 @@ function fillOutWeekDays(currentDate: Date, offset: number) {
     date.setDate(date.getDate() + 1);
     if (
       offset === 0 ||
-      (currentDate.getDate() === date.getDate() &&
-        currentDate.getMonth() === date.getMonth() &&
-        currentDate.getFullYear() === date.getFullYear())
+      (new Date().getDate() === date.getDate() &&
+        new Date().getMonth() === date.getMonth() &&
+        new Date().getFullYear() === date.getFullYear())
     ) {
       document
         .getElementById("weekDisplayDate" + [currentDate.getDay()])
         ?.parentElement?.classList.toggle("weekViewGridHeaderMarked");
     } else {
-      document
-        .getElementById("weekDisplayDate" + [currentDate.getDay()])
-        ?.parentElement?.classList.remove("weekViewGridHeaderMarked");
     }
   }
 }
 function fillOutMonthDays(currentDate: Date) {
-  let workingDate = new Date(currentDate);
+  let workingDate = new Date(currentDate.toString());
   workingDate.setDate(1);
-  workingDate.setDate(-workingDate.getDay());
+  workingDate.setDate(workingDate.getDate() - workingDate.getDay());
   const calendarTable = <HTMLTableElement>(
     document.getElementById("calendarTable")
   );
@@ -326,11 +325,11 @@ async function deleteEvent(currentDate: Date): Promise<void> {
     On click on table -> open event window with pre-selected time
 */
 async function displayEvents(currentDate: Date) {
-  let startOfWeekTime: Date = new Date(currentDate);
+  let startOfWeekTime: Date = new Date(currentDate.toString());
   startOfWeekTime.setDate(startOfWeekTime.getDate() - startOfWeekTime.getDay());
   startOfWeekTime.setHours(0, 0, 0);
 
-  let endOfWeekTime: Date = new Date(startOfWeekTime);
+  let endOfWeekTime: Date = new Date(startOfWeekTime.toString());
   endOfWeekTime.setDate(startOfWeekTime.getDate() + 7);
 
   const thisWeekUrl = () => {
@@ -349,8 +348,8 @@ async function displayEvents(currentDate: Date) {
   let eventDuration: number[] = [];
   for (let i = 0; i < events.length; i++) {
     const event = events[i];
-    const startDate = new Date(event.startDate);
-    const endDate = new Date(event.endDate);
+    const startDate = new Date(event.startDate.toString());
+    const endDate = new Date(event.endDate.toString());
     const startTime = event.startTime;
     const endTime = event.endTime;
 
@@ -705,7 +704,7 @@ function createTimeframeListeners(currentDate: Date) {
 }
 function timeframeUpdate(currentDate: Date, offset: number) {
   const isNewMonth = (): boolean => {
-    let newMonth: Date = new Date(currentDate);
+    let newMonth: Date = new Date(currentDate.toString());
     return (
       currentDate.getMonth() ===
       new Date(newMonth.setDate(newMonth.getDate() + offset)).getMonth()
@@ -790,9 +789,9 @@ function headerTimeframeDate(currentDate: Date) {
   const getMonthNames = () => {
     let weekStartDate = getWeekStartDate();
     let weekEndDate = new Date(
-      getWeekStartDate().setDate(
-        weekStartDate.getDate() - weekStartDate.getDay() + 6
-      )
+      getWeekStartDate()
+        .setDate(weekStartDate.getDate() - weekStartDate.getDay() + 6)
+        .toString()
     );
     return weekStartDate.getDate() > weekEndDate.getDate()
       ? monthsShort[weekStartDate.getMonth()] +
