@@ -564,10 +564,6 @@ function renderTable() {
     );
 
     tableRow.appendChild(dayTimeCell);
-    const gap = <HTMLTableCellElement>(
-      createDOMElement("td", ["weekViewGridBoxLeftMost"])
-    );
-    tableRow.appendChild(gap);
 
     for (let j = 0; j < 7; j++) {
       const tableCell = <HTMLTableCellElement>(
