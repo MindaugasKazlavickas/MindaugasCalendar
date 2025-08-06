@@ -1,5 +1,6 @@
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../store";
+import { jumpToDate } from "../currentDateSlice";
 
 function fillOutMonthDays(currentDate: Date) {
   let workingDate = new Date(currentDate.toString());
@@ -21,26 +22,12 @@ function fillOutMonthDays(currentDate: Date) {
           workingDate.getMonth() === new Date().getMonth()
         );
       };
-      /*const isDateSelected = () => {
-        return (
-          date.getDay() == new Date().getDay() &&
-          date.getDate() >= currentDate.getDate() &&
-          date.getDate() <= currentDate.getDate() + 6 &&
-          date.getDate() != currentDate.getDate() &&
-          date.getDate() == currentDate.getDate() + date.getDay() &&
-          date.getMonth() == currentDate.getMonth()
-        );
-      };*/
       if (isTodayDate()) {
         dayCell?.classList.add("calendarCellSelected");
       } else if (workingDate.getMonth() !== new Date().getMonth()) {
         dayCell?.classList.remove("calendarCellSelected");
       }
-      /*if (isDateSelected()) {
-        dayCell.classList.add("calendarCellHighlighted");
-      } else {
-        dayCell.classList.remove("calendarCellHighlighted");
-      }*/
+
       dayCell?.classList.remove("calendarCellHighlighted");
       workingDate.setDate(workingDate.getDate() + 1);
     }

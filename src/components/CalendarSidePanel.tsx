@@ -6,13 +6,21 @@ import fillOutMonthDays from "../timeframeUpdaters/fillOutMonthDays";
 import { eventViewTrigger } from "../helpers/handleEventForm";
 import { sideCalendarMonth } from "../timeframeUpdaters/displayTimeframeDate";
 import timeframeUpdate from "../timeframeUpdaters/updateTimeframe";
+import { useDispatch, useSelector } from "react-redux";
+import { jumpToDate, shiftMonthView } from "../currentDateSlice";
+import { AppDispatch, RootState } from "../store";
 function CalendarPanel() {
-  let currentDate = new Date();
+  const dispatch = useDispatch<AppDispatch>();
+  const monthViewDateStr = useSelector(
+    (state: RootState) => state.currentDate.monthViewDate
+  );
+  const monthViewdate = new Date(monthViewDateStr);
+
   useEffect(() => {
     RenderCalendarTableHeader();
     RenderCalendar();
     fillOutMonthDays(new Date());
-  }, []);
+  }, [monthViewDateStr]);
   return (
     <aside id="calendarSideView" className="calendarSidePanel">
       <button
@@ -42,9 +50,8 @@ function CalendarPanel() {
             id="previousMonth"
             className="smallIconButton"
             onClick={() => {
-              currentDate.setMonth(currentDate.getMonth() - 1);
-              fillOutMonthDays(currentDate);
-              sideCalendarMonth(currentDate);
+              dispatch(shiftMonthView(-1));
+              sideCalendarMonth(monthViewdate);
             }}
           >
             <img src="./media/chevron_left.svg" alt="Go back a month" />
@@ -53,9 +60,8 @@ function CalendarPanel() {
             id="nextMonth"
             className="smallIconButton"
             onClick={() => {
-              currentDate.setMonth(currentDate.getMonth() + 1);
-              fillOutMonthDays(currentDate);
-              sideCalendarMonth(currentDate);
+              dispatch(shiftMonthView(1));
+              sideCalendarMonth(monthViewdate);
             }}
           >
             <img src="./media/chevron_right.svg" alt="Go forward a month" />
@@ -72,9 +78,11 @@ function CalendarPanel() {
           const targetDate = cell.target as HTMLTableCellElement;
           if (targetDate.closest("td")) {
             let dateId = targetDate.closest("td")?.getAttribute("id");
-            currentDate = new Date(Date.parse(dateId as string));
-            timeframeUpdate(currentDate, 0);
-            targetDate.classList.add("calendarCellHighlighted");
+            if (dateId) {
+              dispatch(jumpToDate(dateId));
+              timeframeUpdate(new Date(dateId), 0);
+              targetDate.classList.add("calendarCellHighlighted");
+            }
           }
         }}
       >

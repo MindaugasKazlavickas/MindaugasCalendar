@@ -1,35 +1,53 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface CurrentDateState {
-  value: Date;
+  currentDate: string;
+  monthViewDate: string;
 }
 
 const initialState: CurrentDateState = {
-  value: new Date(),
+  currentDate: new Date().toISOString(),
+  monthViewDate: new Date().toISOString(),
 };
 
 const currentDateSlice = createSlice({
   name: "currentDate",
   initialState,
   reducers: {
-    setCurrentDate(state, action: PayloadAction<Date>) {
-      state.value = action.payload;
+    setCurrentDate(state, action: PayloadAction<string>) {
+      state.currentDate = action.payload;
     },
     resetToToday(state) {
-      state.value = new Date();
+      const today = new Date().toISOString();
+      state.currentDate = today;
+      state.monthViewDate = today;
     },
     shiftWeek(state, action: PayloadAction<number>) {
-      state.value = new Date(state.value.getTime() + action.payload * 86400000);
+      const current = new Date(state.currentDate);
+      current.setDate(current.getDate() + action.payload);
+      state.currentDate = current.toISOString();
     },
-    shiftMonth(state, action: PayloadAction<number>) {
-      const newDate = new Date(state.value);
-      newDate.setMonth(newDate.getMonth() + action.payload);
-      state.value = newDate;
+    shiftMonthView(state, action: PayloadAction<number>) {
+      const month = new Date(state.monthViewDate);
+      month.setMonth(month.getMonth() + action.payload);
+      state.monthViewDate = month.toISOString();
+    },
+    jumpToDate(state, action: PayloadAction<string>) {
+      state.currentDate = action.payload;
+    },
+    setMonthViewDate(state, action: PayloadAction<string>) {
+      state.monthViewDate = action.payload;
     },
   },
 });
 
-export const { setCurrentDate, resetToToday, shiftWeek, shiftMonth } =
-  currentDateSlice.actions;
+export const {
+  setCurrentDate,
+  resetToToday,
+  shiftWeek,
+  shiftMonthView,
+  jumpToDate,
+  setMonthViewDate,
+} = currentDateSlice.actions;
 
 export default currentDateSlice.reducer;

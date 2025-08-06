@@ -7,9 +7,7 @@ import { RootState, AppDispatch } from "../store";
 import { resetToToday, shiftWeek } from "../currentDateSlice";
 function Header() {
   const dispatch = useDispatch<AppDispatch>();
-  const currentDate = useSelector(
-    (state: RootState) => state.currentDate.value
-  );
+  let currentDate = new Date();
   useEffect(() => {
     const headerIconDate = document.getElementById("logoText");
     if (headerIconDate) {
@@ -51,7 +49,6 @@ function Header() {
             className="roundedCornerButton"
             onClick={() => {
               dispatch(resetToToday());
-              timeframeUpdate(currentDate, 0);
             }}
           >
             Today
@@ -159,5 +156,4 @@ function Header() {
     </header>
   );
 }
-
 export default Header;
