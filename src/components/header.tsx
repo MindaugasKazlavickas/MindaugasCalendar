@@ -2,8 +2,14 @@ import { useEffect } from "react";
 import timeframeUpdate from "../timeframeUpdaters/updateTimeframe";
 import adjustMainDisplay from "./renderers/setupPanelTriggers";
 import displayDropdown from "./renderers/displayDropdown";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "../store";
+import { resetToToday, shiftWeek } from "../currentDateSlice";
 function Header() {
-  let currentDate = new Date();
+  const dispatch = useDispatch<AppDispatch>();
+  const currentDate = useSelector(
+    (state: RootState) => state.currentDate.value
+  );
   useEffect(() => {
     const headerIconDate = document.getElementById("logoText");
     if (headerIconDate) {
@@ -43,21 +49,30 @@ function Header() {
           <button
             id="headerTodayButton"
             className="roundedCornerButton"
-            onClick={() => timeframeUpdate(currentDate, 0)}
+            onClick={() => {
+              dispatch(resetToToday());
+              timeframeUpdate(currentDate, 0);
+            }}
           >
             Today
           </button>
           <button
             id="previousTimeframe"
             className="iconButton"
-            onClick={() => timeframeUpdate(currentDate, -7)}
+            onClick={() => {
+              dispatch(shiftWeek(-7));
+              timeframeUpdate(currentDate, -7);
+            }}
           >
             <img src="./media/chevron_left.svg" alt="Go back a month" />
           </button>
           <button
             id="nextTimeframe"
             className="iconButton"
-            onClick={() => timeframeUpdate(currentDate, 7)}
+            onClick={() => {
+              dispatch(shiftWeek(7));
+              timeframeUpdate(currentDate, 7);
+            }}
           >
             <img src="./media/chevron_right.svg" alt="Go forward a month" />
           </button>

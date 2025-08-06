@@ -1,5 +1,6 @@
 const calendarPanelWidth = "256px";
 const iconsPanelWidth = "56px";
+
 function adjustMainDisplay(): void {
   const calendarPanel = document.getElementById("calendarSideView");
   const rightPanel = document.getElementById("rightSidePanel");

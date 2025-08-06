@@ -5,7 +5,7 @@ import fillOutWeekDays from "./fillOutWeekDays";
 import { headerTimeframeDate, sideCalendarMonth } from "./displayTimeframeDate";
 function timeframeUpdate(currentDate: Date, offset: number) {
   const isNewMonth = (): boolean => {
-    let newMonth: Date = new Date(currentDate.toString());
+    const newMonth: Date = new Date(currentDate.toString());
     return (
       currentDate.getMonth() ===
       new Date(newMonth.setDate(newMonth.getDate() + offset)).getMonth()
