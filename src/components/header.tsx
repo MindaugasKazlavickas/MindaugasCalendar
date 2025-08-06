@@ -1,5 +1,7 @@
 import { useEffect } from "react";
 import timeframeUpdate from "../timeframeUpdaters/updateTimeframe";
+import adjustMainDisplay from "./renderers/setupPanelTriggers";
+import displayDropdown from "./renderers/displayDropdown";
 function Header() {
   let currentDate = new Date();
   useEffect(() => {
@@ -11,7 +13,16 @@ function Header() {
   return (
     <header className="header">
       <div className="headerLeft">
-        <button className="iconButton headerLeftCollapse" id="closeSidePanel">
+        <button
+          className="iconButton headerLeftCollapse"
+          id="closeSidePanel"
+          onClick={() => {
+            document
+              .getElementById("calendarSideView")
+              ?.classList.toggle("notDisplayed");
+            adjustMainDisplay();
+          }}
+        >
           <img src="./media/burger.svg" alt="Closes and opens calendar view" />
         </button>
         <span className="headerLeftLogo">
@@ -66,7 +77,11 @@ function Header() {
             />
           </button>
           <div className="settingsDropdown">
-            <button className="iconButton" id="settings">
+            <button
+              className="iconButton"
+              id="settings"
+              onClick={() => displayDropdown("dropdownSettings")}
+            >
               <img
                 src="./media/settings.svg"
                 alt="Button to open settings menu"
@@ -87,6 +102,7 @@ function Header() {
             <button
               id="timeframeSelectButton"
               className="roundedCornerButton dropdownButton"
+              onClick={() => displayDropdown("dropdownContent")}
             >
               <span>Week</span>
               <img
@@ -101,15 +117,15 @@ function Header() {
               className="dropdownContent notDisplayed"
             >
               <div className="dropdownItem">
-                <p>text</p>
+                <p>First option</p>
                 <p>AB</p>
               </div>
               <div className="dropdownItem">
-                <p>More Text</p>
+                <p>Second option</p>
                 <p>B2</p>
               </div>
               <div className="dropdownItem">
-                <p>Even More text_here</p>
+                <p>Final option</p>
                 <p>CA</p>
               </div>
             </div>
