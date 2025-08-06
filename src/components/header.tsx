@@ -1,12 +1,13 @@
 import { useEffect } from "react";
+import timeframeUpdate from "../timeframeUpdaters/updateTimeframe";
 function Header() {
+  let currentDate = new Date();
   useEffect(() => {
-    let currentDate = new Date();
     const headerIconDate = document.getElementById("logoText");
     if (headerIconDate) {
       headerIconDate.innerText = currentDate.getDate().toString();
     }
-  }, []);
+  });
   return (
     <header className="header">
       <div className="headerLeft">
@@ -28,13 +29,25 @@ function Header() {
 
       <div className="headerCenter">
         <div className="headerCenterLeft">
-          <button id="headerTodayButton" className="roundedCornerButton">
+          <button
+            id="headerTodayButton"
+            className="roundedCornerButton"
+            onClick={() => timeframeUpdate(currentDate, 0)}
+          >
             Today
           </button>
-          <button id="previousTimeframe" className="iconButton">
+          <button
+            id="previousTimeframe"
+            className="iconButton"
+            onClick={() => timeframeUpdate(currentDate, -7)}
+          >
             <img src="./media/chevron_left.svg" alt="Go back a month" />
           </button>
-          <button id="nextTimeframe" className="iconButton">
+          <button
+            id="nextTimeframe"
+            className="iconButton"
+            onClick={() => timeframeUpdate(currentDate, 7)}
+          >
             <img src="./media/chevron_right.svg" alt="Go forward a month" />
           </button>
           <p className="headerCenterLeftHeading" id="monthDisplay">

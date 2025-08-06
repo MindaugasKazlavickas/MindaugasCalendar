@@ -2,7 +2,7 @@ import { WeekDays } from "../consts/nameArrays";
 import { useEffect } from "react";
 import createDOMElement from "./renderers/createDOMElement";
 import RenderCalendar from "./renderers/renderCalendar";
-import fillOutMonthDays from "./fillOutMonthDays";
+import fillOutMonthDays from "../timeframeUpdaters/fillOutMonthDays";
 function CalendarPanel() {
   useEffect(() => {
     RenderCalendarTableHeader();

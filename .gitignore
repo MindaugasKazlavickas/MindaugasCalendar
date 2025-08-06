@@ -14,6 +14,7 @@
 package-lock.json
 data/node_modules
 data/package-lock.json
+data/db.json
 # misc
 .DS_Store
 .env.local

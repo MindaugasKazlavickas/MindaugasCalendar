@@ -1,8 +1,9 @@
 import { WeekDays } from "../consts/nameArrays";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import createDOMElement from "./renderers/createDOMElement";
 import RenderTable from "./renderers/renderTable";
 import getGMT from "../helpers/getGMT";
+import timeframeUpdate from "../timeframeUpdaters/updateTimeframe";
 function WeekViewTable() {
   useEffect(() => {
     RenderTableHeader();
@@ -12,7 +13,10 @@ function WeekViewTable() {
     if (timeframeTimezone) {
       timeframeTimezone.innerText = getGMT();
     }
+    const currentDate = new Date();
+    timeframeUpdate(currentDate, 0);
   }, []);
+
   return (
     <main className="weekView">
       <table className="topWeekViewGrid" id="weekGridHeader">

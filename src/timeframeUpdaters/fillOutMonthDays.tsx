@@ -30,7 +30,7 @@ function fillOutMonthDays(currentDate: Date) {
       };*/
       if (isTodayDate()) {
         dayCell?.classList.add("calendarCellSelected");
-      } else if (workingDate.getMonth() != new Date().getMonth()) {
+      } else if (workingDate.getMonth() !== new Date().getMonth()) {
         dayCell?.classList.remove("calendarCellSelected");
       }
       /*if (isDateSelected()) {

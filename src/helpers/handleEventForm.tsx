@@ -23,7 +23,8 @@ function resetEventCreationForm() {
 export function openEditEventWindow(event: StoredEvent, id: string) {
   eventViewTrigger();
   for (let i = 0; i < formInputFieldList.length; i++) {
-    if (event[formInputFieldList[i]]) {
+    const key = formInputFieldList[i] as keyof StoredEvent;
+    if (event[key]) {
       const inputField = document.getElementById(
         formInputFieldList[i]
       ) as HTMLInputElement;
@@ -31,9 +32,9 @@ export function openEditEventWindow(event: StoredEvent, id: string) {
         formInputFieldList[i] === "startDate" ||
         formInputFieldList[i] === "endDate"
       ) {
-        inputField.value = event[formInputFieldList[i]].substr(0, 10);
+        inputField.value = (event[key] as string).substr(0, 10);
       } else {
-        inputField.value = event[formInputFieldList[i]];
+        inputField.value = event[key] as string;
       }
     }
   }

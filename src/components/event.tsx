@@ -1,4 +1,8 @@
+import { eventViewTrigger } from "../helpers/handleEventForm";
+import saveEvent from "../helpers/saveEvent";
+import deleteEvent from "../helpers/deleteEvent";
 function Event() {
+  let currentDate = new Date();
   return (
     <div id="event" tabIndex={-1} className="eventContainer notDisplayed">
       {/*Header row*/}
@@ -8,10 +12,18 @@ function Event() {
         alt="Drag the event creation menu"
       />
       <div className="alignedRight">
-        <button id="deleteEventButton" className="iconButton">
+        <button
+          id="deleteEventButton"
+          className="iconButton"
+          onClick={() => deleteEvent(currentDate)}
+        >
           <img src="./media/delete.svg" alt="Delete event" />
         </button>
-        <button id="dialogCloseButton" className="iconButton">
+        <button
+          id="dialogCloseButton"
+          className="iconButton"
+          onClick={() => eventViewTrigger()}
+        >
           <img src="./media/close.svg" alt="Close the event creation menu" />
         </button>
       </div>
@@ -68,7 +80,11 @@ function Event() {
         placeholder="Add description"
       />
       <div className="gap"></div>
-      <button id="eventSaveButton" className="eventSaveButton">
+      <button
+        id="eventSaveButton"
+        className="eventSaveButton"
+        onClick={() => saveEvent(currentDate)}
+      >
         Save
       </button>
     </div>

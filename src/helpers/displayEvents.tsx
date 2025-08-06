@@ -96,7 +96,6 @@ function lessThan24HoursEvent(event: StoredEvent, eventDuration: number) {
       (24 * 60 -
         (+event.startTime.substr(0, 2) * 60 + +event.startTime.substr(3, 2))),
   ];
-  console.log(eventDuration, duration[0], duration[1]);
   for (let i = 0; i < 2; i++) {
     const item = createDOMElement("div", ["meeting"], "");
     item.setAttribute("id", event.id.toString());
@@ -108,7 +107,7 @@ function lessThan24HoursEvent(event: StoredEvent, eventDuration: number) {
         ? new Date(event.startDate).getDay() +
             "_" +
             (+event.startTime.substr(0, 2) + 1)
-        : new Date(event.endDate).getDay() + "_" + "1"
+        : new Date(event.endDate).getDay() + "_1"
     ) as HTMLTableCellElement;
 
     if (i === 0) {

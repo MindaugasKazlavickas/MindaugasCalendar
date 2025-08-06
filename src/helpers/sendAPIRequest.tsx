@@ -39,13 +39,20 @@ async function apiRequest<T>(
       return {
         status: 500,
         data: payload,
-        error: error.message,
+
+        error: (error as Error).message,
       };
     } else if (id) {
       return {
         status: 500,
         data: id,
-        error: error.message,
+        error: (error as Error).message,
+      };
+    } else {
+      return {
+        status: 500,
+        data: null as unknown as T,
+        error: (error as Error).message,
       };
     }
   }
