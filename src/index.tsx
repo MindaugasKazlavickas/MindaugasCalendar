@@ -5,7 +5,6 @@ import "./styling/reset.css";
 import "./styling/style.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );

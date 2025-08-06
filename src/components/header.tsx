@@ -1,4 +1,12 @@
+import { useEffect } from "react";
 function Header() {
+  useEffect(() => {
+    let currentDate = new Date();
+    const headerIconDate = document.getElementById("logoText");
+    if (headerIconDate) {
+      headerIconDate.innerText = currentDate.getDate().toString();
+    }
+  }, []);
   return (
     <header className="header">
       <div className="headerLeft">

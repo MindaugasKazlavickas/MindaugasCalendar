@@ -1,9 +1,8 @@
-import React from "react";
 import "./styling/App.css";
-import Header from "./components/header";
-import Content from "./components/content";
-import RightSideTrigger from "./components/rightSideTrigger";
-import Event from "./components/event";
+import Header from "./components/Header";
+import Content from "./components/MainContent";
+import RightSideTrigger from "./components/RightSideTrigger";
+import Event from "./components/Event";
 function App() {
   return (
     <div className="App">

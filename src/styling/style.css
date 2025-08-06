@@ -17,6 +17,7 @@
   --tableTop: 1;
   --dropdown: 2;
   --above-all: 3;
+  /*event-overlap-levels*/
   --event-layer-depth-0: 95%;
   --event-layer-depth-1: 75%;
   --event-layer-depth-2: 55%;
@@ -334,39 +335,26 @@ td.timeColumn {
   font-size: 0.8rem;
   font-weight: bold;
   color: var(--primary-black);
-  padding-right: 16px;
   margin-bottom: auto;
-  transform: translateY(32px);
+  transform: translateY(36px);
   border: none;
   width: 80px;
 }
 
-.timeColumn {
-  width: 80px;
+.weekViewGrid .timeColumn::after {
+  content: "";
+  width: 8px;
+  box-sizing: border-box;
+  border-top: 1px solid var(--primary-light-gray);
+  border-right: 1px solid var(--primary-light-gray);
+  display: inline-block;
+  height: 48px;
+  margin-top: -36px;
+  margin-left: 8px;
 }
 
 .weekViewGridBoxDivider.timeColumn {
   transform: translateY(20px);
-}
-
-.weekViewGridBoxLeftMost,
-.weekViewGridBoxDividerLeftMost,
-.weekViewGridHeaderLeftMost {
-  width: 8px;
-  max-width: 8px;
-}
-
-.weekViewGridHeaderLeftMost {
-  background: white;
-  color: var(--primary-black);
-  width: 8px;
-  height: 102px;
-  text-align: center;
-  font-weight: bold;
-  position: relative;
-  padding-top: 6px;
-  padding-bottom: 26px;
-  font-weight: 300;
 }
 
 .weekViewGridRow td.weekViewGridBox:last-child,
@@ -374,8 +362,7 @@ td.timeColumn {
   border-right: none;
 }
 
-.weekViewGridRow:last-child .weekViewGridBox,
-.weekViewGridRow:last-child .weekViewGridBoxLeftMost {
+.weekViewGridRow:last-child .weekViewGridBox {
   border-bottom: none;
 }
 
@@ -428,7 +415,9 @@ td.timeColumn {
   min-width: 650px;
   background-color: inherit;
 }
-
+.topWeekViewGrid .timeColumn {
+  width: 80px;
+}
 .topWeekViewGrid {
   position: sticky;
   top: 0;
@@ -451,10 +440,6 @@ td.timeColumn {
   transform: translateY(60px);
 }
 
-.gapRow {
-  display: none;
-}
-
 .weekViewGrid:last-child tr {
   border-right: 0;
 }
@@ -464,21 +449,17 @@ td.timeColumn {
 }
 
 .weekViewGridBoxDivider,
-.weekViewGridBox,
-.weekViewGridBoxLeftMost,
-.weekViewGridBoxDividerLeftMost {
+.weekViewGridBox {
   border-bottom: 1px solid var(--primary-light-gray);
   border-right: 1px solid var(--primary-light-gray);
 }
 
-.weekViewGridBox,
-.weekViewGridBoxLeftMost {
+.weekViewGridBox {
   max-height: 48px;
   height: 48px;
 }
 
-.weekViewGridBoxDivider,
-.weekViewGridBoxDividerLeftMost {
+.weekViewGridBoxDivider {
   padding: 13px 0;
 }
 

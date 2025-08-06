@@ -1,0 +1,14 @@
+{
+  "name": "myrestapi",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "ts-node ./server.ts"
+  },
+  "dependencies": {
+    "json-server": "^0.17.3"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "ts-node": "^10.9.2"
+  }
+}
