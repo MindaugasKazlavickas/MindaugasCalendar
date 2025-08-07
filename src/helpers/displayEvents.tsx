@@ -142,6 +142,7 @@ function checkOverlappingEvents(
         };
         if (
           events[i].endTime >= events[j].startTime &&
+          events[i].startTime <= events[j].endTime &&
           secondEvent &&
           firstEvent
         ) {
