@@ -1,17 +1,30 @@
 import { useEffect } from "react";
-import timeframeUpdate from "../timeframeUpdaters/updateTimeframe";
 import adjustMainDisplay from "./renderers/setupPanelTriggers";
 import displayDropdown from "./renderers/displayDropdown";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../store";
-import { resetToToday, shiftWeek } from "../currentDateSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../store";
+import { resetToToday, shiftMonthView, shiftWeek } from "../currentDateSlice";
+import { monthsLong } from "../consts/nameArrays";
+import { sideCalendarMonth } from "../timeframeUpdaters/displayTimeframeDate";
+import timeframeUpdate from "../timeframeUpdaters/updateTimeframe";
 function Header() {
   const dispatch = useDispatch<AppDispatch>();
-  let currentDate = new Date();
+  const monthDateStr = useSelector(
+    (state: RootState) => state.currentDate.currentDate
+  );
+  const currentDateStr = useSelector(
+    (state: RootState) => state.currentDate.currentDate
+  );
   useEffect(() => {
+    const currentDate = new Date(currentDateStr);
+    timeframeUpdate(currentDate, 0);
+  }, [currentDateStr]);
+
+  useEffect(() => {
+    const logoDate = new Date();
     const headerIconDate = document.getElementById("logoText");
     if (headerIconDate) {
-      headerIconDate.innerText = currentDate.getDate().toString();
+      headerIconDate.innerText = logoDate.getDate().toString();
     }
   });
   return (
@@ -58,7 +71,15 @@ function Header() {
             className="iconButton"
             onClick={() => {
               dispatch(shiftWeek(-7));
-              timeframeUpdate(currentDate, -7);
+              const currentMonth = new Date(currentDateStr);
+              if (
+                currentMonth.getMonth() >
+                new Date(
+                  currentMonth.setDate(currentMonth.getDate() - 7)
+                ).getMonth()
+              ) {
+                dispatch(shiftMonthView(-1));
+              }
             }}
           >
             <img src="./media/chevron_left.svg" alt="Go back a month" />
@@ -68,7 +89,15 @@ function Header() {
             className="iconButton"
             onClick={() => {
               dispatch(shiftWeek(7));
-              timeframeUpdate(currentDate, 7);
+              const currentMonth = new Date(currentDateStr);
+              if (
+                currentMonth.getMonth() <
+                new Date(
+                  currentMonth.setDate(currentMonth.getDate() + 7)
+                ).getMonth()
+              ) {
+                dispatch(shiftMonthView(1));
+              }
             }}
           >
             <img src="./media/chevron_right.svg" alt="Go forward a month" />

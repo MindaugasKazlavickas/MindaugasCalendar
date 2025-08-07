@@ -1,6 +1,5 @@
 import { WeekDays } from "../consts/nameArrays";
 import { useEffect } from "react";
-import createDOMElement from "./renderers/createDOMElement";
 import { eventViewTrigger } from "../helpers/handleEventForm";
 import { sideCalendarMonth } from "../timeframeUpdaters/displayTimeframeDate";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,8 +13,8 @@ function CalendarPanel() {
   );
   const monthViewdate = new Date(monthViewDateStr);
   useEffect(() => {
-    RenderCalendarTableHeader();
     sideCalendarMonth(monthViewdate);
+    dispatch(shiftMonthView(0));
   }, [monthViewDateStr]);
   return (
     <aside id="calendarSideView" className="calendarSidePanel">
@@ -63,28 +62,17 @@ function CalendarPanel() {
         </div>
       </div>
       <div className="calendarRow" id="calendarHeaderRow">
+        {WeekDays.map((weekDay, i) => {
+          return (
+            <p key={i} className="calendarCell">
+              {weekDay[0]}
+            </p>
+          );
+        })}
         {/*header gets inserted here*/}
       </div>
       <MonthCalendar />
     </aside>
   );
-}
-function RenderCalendarTableHeader() {
-  const calendarTableHeader = document.getElementById("calendarHeaderRow");
-  if (calendarTableHeader && calendarTableHeader.hasChildNodes()) {
-    for (let i = 0; i < 7; i++) {
-      (
-        calendarTableHeader.getElementsByClassName("calendarCell")[
-          i
-        ] as HTMLElement
-      ).innerText = WeekDays[i][0];
-    }
-  } else {
-    for (let i = 0; i < 7; i++) {
-      calendarTableHeader?.appendChild(
-        createDOMElement("p", ["calendarCell"], WeekDays[i][0])
-      );
-    }
-  }
 }
 export default CalendarPanel;

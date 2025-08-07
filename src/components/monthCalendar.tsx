@@ -1,8 +1,9 @@
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../store";
 import { jumpToDate } from "../currentDateSlice";
+import { monthsLong } from "../consts/nameArrays";
 
-export default function MonthCalendar() {
+function MonthCalendar() {
   const dispatch = useDispatch();
   const monthViewDateStr = useSelector(
     (state: RootState) => state.currentDate.monthViewDate
@@ -68,3 +69,4 @@ export default function MonthCalendar() {
     </table>
   );
 }
+export default MonthCalendar;
