@@ -10,9 +10,10 @@ import { Fragment } from "react/jsx-runtime";
 function Content() {
   return (
     <div className="content" id="content">
+      <TimeframeToday />
       <CalendarPanel />
       <WeekViewTable />
-      <TimeframeToday />
+
       <aside id="rightSidePanel" className="rightSideMenu">
         {[0, 1, 2, 3, 4, 5].map((button, i) => {
           return (

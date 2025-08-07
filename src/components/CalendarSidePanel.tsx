@@ -14,7 +14,6 @@ function CalendarPanel() {
   const monthViewdate = new Date(monthViewDateStr);
   useEffect(() => {
     sideCalendarMonth(monthViewdate);
-    dispatch(shiftMonthView(0));
   }, [monthViewDateStr]);
   return (
     <aside id="calendarSideView" className="calendarSidePanel">

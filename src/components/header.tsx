@@ -4,22 +4,11 @@ import displayDropdown from "./renderers/displayDropdown";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store";
 import { resetToToday, shiftMonthView, shiftWeek } from "../currentDateSlice";
-import { monthsLong } from "../consts/nameArrays";
-import { sideCalendarMonth } from "../timeframeUpdaters/displayTimeframeDate";
-import timeframeUpdate from "../timeframeUpdaters/updateTimeframe";
 function Header() {
   const dispatch = useDispatch<AppDispatch>();
-  const monthDateStr = useSelector(
-    (state: RootState) => state.currentDate.currentDate
-  );
   const currentDateStr = useSelector(
     (state: RootState) => state.currentDate.currentDate
   );
-  useEffect(() => {
-    const currentDate = new Date(currentDateStr);
-    timeframeUpdate(currentDate, 0);
-  }, [currentDateStr]);
-
   useEffect(() => {
     const logoDate = new Date();
     const headerIconDate = document.getElementById("logoText");
