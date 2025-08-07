@@ -2,8 +2,8 @@ import { useEffect } from "react";
 import timeframeUpdate from "../timeframeUpdaters/updateTimeframe";
 import adjustMainDisplay from "./renderers/setupPanelTriggers";
 import displayDropdown from "./renderers/displayDropdown";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState, AppDispatch } from "../store";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../store";
 import { resetToToday, shiftWeek } from "../currentDateSlice";
 function Header() {
   const dispatch = useDispatch<AppDispatch>();

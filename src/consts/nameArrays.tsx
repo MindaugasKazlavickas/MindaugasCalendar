@@ -40,3 +40,29 @@ export const formInputFieldList: string[] = [
 
 export const chevronLeftSrc = "./media/chevron_left.svg";
 export const chevronRightSrc = "./media/chevron_right.svg";
+
+export const rightSideButtonHref: string[] = [
+  "https://keep.google.com/",
+  "https://tasks.google.com/tasks/",
+  "https://contacts.google.com/",
+  "https://www.google.com/maps",
+  "https://www.zoom.com//",
+  "https://developers.google.com/workspace/add-ons/overview",
+];
+export const rightSideButtonSrc: string[] = [
+  "./media/keep_colored.png",
+  "./media/tasks_colored.png",
+  "./media/contacts_colored.png",
+  "./media/maps_colored.png",
+  "./media/zoom_colored.png",
+  "./media/add.svg",
+];
+
+export const rightSideButtonAlt: string[] = [
+  "Open Google Keep",
+  "Open Google Tasks",
+  "Open Google Contacts",
+  "Open Google Maps",
+  "Open Zoom",
+  "Open adding more tools",
+];

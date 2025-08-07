@@ -11,7 +11,7 @@ function RenderCalendar() {
     for (let j = 0; j < 7; j++) {
       let dayCell = createDOMElement("td", ["calendarCell"]);
       dayCell.setAttribute("id", "calendar" + i + j);
-      dayCell.innerText = `${i + j}`;
+      //dayCell.innerText = `${i + j}`;
       calendarRow.appendChild(dayCell);
     }
     tableBody.appendChild(calendarRow);

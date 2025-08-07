@@ -3,24 +3,41 @@ import { useEffect } from "react";
 import createDOMElement from "./renderers/createDOMElement";
 import RenderTable from "./renderers/renderTable";
 import getGMT from "../helpers/getGMT";
-import timeframeUpdate from "../timeframeUpdaters/updateTimeframe";
 function WeekViewTable() {
   useEffect(() => {
-    RenderTableHeader();
+    //RenderTableHeader();
     RenderTable();
-    RenderTableDivider();
+    //RenderTableDivider();
     const timeframeTimezone = document.getElementById("timezone");
     if (timeframeTimezone) {
       timeframeTimezone.innerText = getGMT();
     }
-    const currentDate = new Date();
-    timeframeUpdate(currentDate, 0);
   }, []);
 
   return (
     <main className="weekView">
       <table className="topWeekViewGrid" id="weekGridHeader">
-        <tbody></tbody>
+        <tbody>
+          <tr>
+            <th className="weekViewGridHeader timeColumn" id="timezone"></th>
+            {WeekDays.map((weekDay, i) => {
+              const paragraphClass = "weekDisplayDate" + i;
+              return (
+                <th key={i} className="weekViewGridHeader">
+                  <p className="weekViewGridHeaderWeekday">{weekDay}</p>
+
+                  <p className="weekViewGridHeaderDate" id={paragraphClass}></p>
+                </th>
+              );
+            })}
+          </tr>
+          <tr className="weekViewGridRow">
+            <td className="weekViewGridBoxDivider timeColumn"></td>
+            {WeekDays.map((i) => {
+              return <td key={i} className="weekViewGridBoxDivider"></td>;
+            })}
+          </tr>
+        </tbody>
       </table>
       <table className="weekViewGrid" id="weekGrid"></table>
     </main>
@@ -29,12 +46,7 @@ function WeekViewTable() {
 
 function RenderTableHeader() {
   const weekHeaderRow = createDOMElement("tr");
-  const timezoneCell = createDOMElement("th", [
-    "weekViewGridHeader",
-    "timeColumn",
-  ]);
-  timezoneCell.setAttribute("id", "timezone");
-  weekHeaderRow.appendChild(timezoneCell);
+
   for (let i = 0; i < 7; i++) {
     const headerCell = createDOMElement("th", ["weekViewGridHeader"]);
     const headerDayOfWeek = createDOMElement("p", [

@@ -5,7 +5,7 @@ interface CurrentDateState {
   monthViewDate: string;
 }
 
-const initialState: CurrentDateState = {
+export const initialState: CurrentDateState = {
   currentDate: new Date().toISOString(),
   monthViewDate: new Date().toISOString(),
 };

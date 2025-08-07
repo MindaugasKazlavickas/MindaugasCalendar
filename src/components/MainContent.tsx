@@ -1,71 +1,40 @@
 import WeekViewTable from "./WeekViewTable";
 import CalendarPanel from "./CalendarSidePanel";
+import TimeframeToday from "../timeframeUpdaters/timeframeToday";
+import {
+  rightSideButtonAlt,
+  rightSideButtonHref,
+  rightSideButtonSrc,
+} from "../consts/nameArrays";
+import { Fragment } from "react/jsx-runtime";
 function Content() {
   return (
     <div className="content" id="content">
       <CalendarPanel />
-
       <WeekViewTable />
-
+      <TimeframeToday />
       <aside id="rightSidePanel" className="rightSideMenu">
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://keep.google.com/"
-        >
-          <button className="asideIconButton">
-            <img src="./media/keep_colored.png" alt="Open Google Keep" />
-          </button>
-        </a>
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://tasks.google.com/tasks/"
-        >
-          <button className="asideIconButton">
-            <img src="./media/tasks_colored.png" alt="Open Google Tasks" />
-          </button>
-        </a>
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://contacts.google.com/"
-        >
-          <button className="asideIconButton">
-            <img
-              src="./media/contacts_colored.png"
-              alt="Open Google Contacts"
-            />
-          </button>
-        </a>
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://www.google.com/maps"
-        >
-          <button className="asideIconButton">
-            <img src="./media/maps_colored.png" alt="Open Google Maps" />
-          </button>
-        </a>
-        <hr className="separator" />
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://www.zoom.com//"
-        >
-          <button className="asideIconButton">
-            <img src="./media/zoom_colored.png" alt="Open Zoom" />
-          </button>
-        </a>
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://developers.google.com/workspace/add-ons/overview"
-        >
-          <button className="asideIconButton">
-            <img src="./media/add.svg" alt="Open adding more tools" />
-          </button>
-        </a>
+        {[0, 1, 2, 3, 4, 5].map((button, i) => {
+          return (
+            <Fragment key={i + "fragment"}>
+              <a
+                key={i}
+                target="_blank"
+                rel="noopener noreferrer"
+                href={rightSideButtonHref[i]}
+              >
+                <button key={i + "button"} className="asideIconButton">
+                  <img
+                    key={i + "img"}
+                    src={rightSideButtonSrc[i]}
+                    alt={rightSideButtonAlt[i]}
+                  />
+                </button>
+              </a>
+              {i === 3 ? <hr key={i + "line"} className="separator" /> : ""}
+            </Fragment>
+          );
+        })}
       </aside>
     </div>
   );

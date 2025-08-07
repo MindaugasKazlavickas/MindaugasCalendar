@@ -6,8 +6,9 @@ export default function TimeframeToday() {
   const currentDateStr = useSelector(
     (state: RootState) => state.currentDate.currentDate
   );
-  const currentDate = new Date(currentDateStr);
+
   useEffect(() => {
+    const currentDate = new Date(currentDateStr);
     timeframeUpdate(currentDate, 0);
   }, [currentDateStr]);
 

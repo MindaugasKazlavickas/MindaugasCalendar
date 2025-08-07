@@ -1,25 +1,21 @@
 import { WeekDays } from "../consts/nameArrays";
 import { useEffect } from "react";
 import createDOMElement from "./renderers/createDOMElement";
-import RenderCalendar from "./renderers/renderCalendar";
-import fillOutMonthDays from "../timeframeUpdaters/fillOutMonthDays";
 import { eventViewTrigger } from "../helpers/handleEventForm";
 import { sideCalendarMonth } from "../timeframeUpdaters/displayTimeframeDate";
-import timeframeUpdate from "../timeframeUpdaters/updateTimeframe";
 import { useDispatch, useSelector } from "react-redux";
-import { jumpToDate, shiftMonthView } from "../currentDateSlice";
+import { shiftMonthView } from "../currentDateSlice";
 import { AppDispatch, RootState } from "../store";
+import MonthCalendar from "./MonthCalendar";
 function CalendarPanel() {
   const dispatch = useDispatch<AppDispatch>();
   const monthViewDateStr = useSelector(
     (state: RootState) => state.currentDate.monthViewDate
   );
   const monthViewdate = new Date(monthViewDateStr);
-
   useEffect(() => {
     RenderCalendarTableHeader();
-    RenderCalendar();
-    fillOutMonthDays(new Date());
+    sideCalendarMonth(monthViewdate);
   }, [monthViewDateStr]);
   return (
     <aside id="calendarSideView" className="calendarSidePanel">
@@ -51,7 +47,6 @@ function CalendarPanel() {
             className="smallIconButton"
             onClick={() => {
               dispatch(shiftMonthView(-1));
-              sideCalendarMonth(monthViewdate);
             }}
           >
             <img src="./media/chevron_left.svg" alt="Go back a month" />
@@ -61,7 +56,6 @@ function CalendarPanel() {
             className="smallIconButton"
             onClick={() => {
               dispatch(shiftMonthView(1));
-              sideCalendarMonth(monthViewdate);
             }}
           >
             <img src="./media/chevron_right.svg" alt="Go forward a month" />
@@ -71,23 +65,7 @@ function CalendarPanel() {
       <div className="calendarRow" id="calendarHeaderRow">
         {/*header gets inserted here*/}
       </div>
-      <table
-        id="calendarTable"
-        className="calendarTable"
-        onClick={(cell) => {
-          const targetDate = cell.target as HTMLTableCellElement;
-          if (targetDate.closest("td")) {
-            let dateId = targetDate.closest("td")?.getAttribute("id");
-            if (dateId) {
-              dispatch(jumpToDate(dateId));
-              timeframeUpdate(new Date(dateId), 0);
-              targetDate.classList.add("calendarCellHighlighted");
-            }
-          }
-        }}
-      >
-        {/*calendar gets inserted here*/}
-      </table>
+      <MonthCalendar />
     </aside>
   );
 }

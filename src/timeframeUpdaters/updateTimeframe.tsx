@@ -1,4 +1,3 @@
-import fillOutMonthDays from "./fillOutMonthDays";
 import { displayEvents } from "../helpers/displayEvents";
 import { clearEvents } from "../helpers/displayEvents";
 import fillOutWeekDays from "./fillOutWeekDays";
@@ -16,7 +15,6 @@ function timeframeUpdate(currentDate: Date, offset: number) {
   displayEvents(currentDate);
   headerTimeframeDate(currentDate);
   if (isNewMonth()) {
-    fillOutMonthDays(currentDate);
     sideCalendarMonth(currentDate);
   }
 }
