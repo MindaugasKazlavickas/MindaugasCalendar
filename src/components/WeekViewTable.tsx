@@ -1,8 +1,8 @@
-import { WeekDays } from "../consts/nameArrays";
+import { WeekDays } from "../consts/consts";
 import { useEffect } from "react";
 import RenderTable from "./renderers/renderTable";
-import getGMT from "../helpers/getGMT";
-import { minToPxRatio } from "../consts/nameArrays";
+import getGMT from "../utils/getGMT";
+import { minToPxRatio } from "../consts/consts";
 function WeekViewTable() {
   useEffect(() => {
     RenderTable();

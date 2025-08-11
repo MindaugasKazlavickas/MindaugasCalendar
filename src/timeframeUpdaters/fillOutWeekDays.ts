@@ -4,8 +4,8 @@ function fillOutWeekDays(currentDate: Date, offset: number) {
   let date = new Date(currentDate.toString());
   date.setDate(date.getDate() - date.getDay());
   const markedWeekDays = document.querySelectorAll(".weekViewGridHeader");
-  markedWeekDays.forEach((classes) => {
-    classes.classList.remove("weekViewGridHeaderMarked");
+  markedWeekDays.forEach((classList) => {
+    classList.classList.remove("weekViewGridHeaderMarked");
   });
   for (let i = 0; i < 7; i++) {
     let weekDate = document.getElementById(
@@ -36,7 +36,6 @@ function fillOutWeekDays(currentDate: Date, offset: number) {
     //disable timeframeMarker
     if (!markerIsShown) {
       markerIsShown = false;
-      console.log("triggered");
       (
         document.getElementById("timeframeMarker") as HTMLDivElement
       ).style.display = "none";

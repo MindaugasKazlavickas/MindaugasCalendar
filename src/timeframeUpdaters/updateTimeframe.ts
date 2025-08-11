@@ -1,5 +1,5 @@
-import { displayEvents } from "../helpers/displayEvents";
-import { clearEvents } from "../helpers/displayEvents";
+import { displayEvents } from "../utils/displayEvents";
+import { clearEvents } from "../utils/displayEvents";
 import fillOutWeekDays from "./fillOutWeekDays";
 import { headerTimeframeDate } from "./displayTimeframeDate";
 function timeframeUpdate(currentDate: Date, offset: number) {

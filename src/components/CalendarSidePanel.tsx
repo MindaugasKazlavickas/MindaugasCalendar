@@ -1,6 +1,6 @@
-import { WeekDays } from "../consts/nameArrays";
+import { WeekDays } from "../consts/consts";
 import { useEffect } from "react";
-import { eventViewTrigger } from "../helpers/handleEventForm";
+import { eventViewTrigger } from "../utils/handleEventForm";
 import { sideCalendarMonth } from "../timeframeUpdaters/displayTimeframeDate";
 import { useDispatch, useSelector } from "react-redux";
 import { shiftMonthView } from "../currentDateSlice";

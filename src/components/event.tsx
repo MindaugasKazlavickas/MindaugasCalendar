@@ -1,6 +1,6 @@
-import { eventViewTrigger } from "../helpers/handleEventForm";
-import saveEvent from "../helpers/saveEvent";
-import deleteEvent from "../helpers/deleteEvent";
+import { eventViewTrigger } from "../utils/handleEventForm";
+import saveEvent from "../utils/saveEvent";
+import deleteEvent from "../utils/deleteEvent";
 
 function Event() {
   function handleShowEndDate() {

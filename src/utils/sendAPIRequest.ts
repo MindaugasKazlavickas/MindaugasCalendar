@@ -1,4 +1,4 @@
-import { APIResponse } from "../consts/tsTypes";
+import { APIResponse } from "../consts/types";
 
 async function apiRequest<T>(
   url: string,

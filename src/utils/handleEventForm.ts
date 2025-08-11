@@ -1,5 +1,5 @@
-import { formInputFieldList } from "../consts/nameArrays";
-import { StoredEvent } from "../consts/tsTypes";
+import { formInputFieldList } from "../consts/consts";
+import { StoredEvent } from "../consts/types";
 
 export function eventViewTrigger() {
   resetEventCreationForm();

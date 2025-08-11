@@ -1,4 +1,4 @@
-import { chevronLeftSrc, chevronRightSrc } from "../consts/nameArrays";
+import { chevronLeftSrc, chevronRightSrc } from "../consts/consts";
 import adjustMainDisplay from "./renderers/setupPanelTriggers";
 function RightSideTrigger() {
   return (

@@ -1,4 +1,4 @@
-import { monthsShort, monthsLong } from "../consts/nameArrays";
+import { monthsShort, monthsLong } from "../consts/consts";
 export function headerTimeframeDate(currentDate: Date) {
   const getWeekStartDate = (): Date => {
     return new Date(

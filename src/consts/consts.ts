@@ -68,3 +68,5 @@ export const rightSideButtonAlt: string[] = [
 ];
 
 export const minToPxRatio = 1.25;
+
+export const SERVER_URL = "http://localhost:3000/events";

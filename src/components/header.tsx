@@ -11,9 +11,9 @@ function Header() {
   );
   useEffect(() => {
     const logoDate = new Date();
-    const headerIconDate = document.getElementById("logoText");
-    if (headerIconDate) {
-      headerIconDate.innerText = logoDate.getDate().toString();
+    const headerDateIcon = document.getElementById("logoText");
+    if (headerDateIcon) {
+      headerDateIcon.innerText = logoDate.getDate().toString();
     }
   });
   return (

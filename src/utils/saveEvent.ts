@@ -1,7 +1,7 @@
 import { eventViewTrigger } from "./handleEventForm";
 import { displayEvents, clearEvents } from "./displayEvents";
-import { StoredEvent } from "../consts/tsTypes";
-import { SERVER_URL } from "../consts/serverURL";
+import { StoredEvent } from "../consts/types";
+import { SERVER_URL } from "../consts/consts";
 import apiRequest from "./sendAPIRequest";
 
 async function saveEvent(currentDate: Date): Promise<void> {

@@ -1,6 +1,6 @@
-import { SERVER_URL } from "../consts/serverURL";
+import { SERVER_URL } from "../consts/consts";
 import apiRequest from "./sendAPIRequest";
-import { StoredEvent } from "../consts/tsTypes";
+import { StoredEvent } from "../consts/types";
 import createDOMElement from "./createDOMElement";
 import { openEditEventWindow } from "./handleEventForm";
 export async function displayEvents(currentDate: Date) {
@@ -148,14 +148,18 @@ function checkOverlappingEvents(
         ) {
           overlap++;
           if (isLonger()) {
-            secondEvent.style.width = `var(--event-layer-depth-${overlap})`;
-            secondEvent.style.backgroundColor = `var(--event-layer-color-${overlap})`;
+            secondEvent.style.width = `${95 - overlap * 10}%`;
+            secondEvent.style.backgroundColor = `rgb(21,${
+              150 - overlap * 15
+            }, ${227 - overlap * 30})`;
           } else {
-            firstEvent.style.width = `var(--event-layer-depth-${overlap})`;
-            firstEvent.style.backgroundColor = `var(--event-layer-color-${overlap})`;
+            firstEvent.style.width = `${95 - overlap * 10}%`;
+            firstEvent.style.backgroundColor = `rgb(21,${150 - overlap * 15}, ${
+              227 - overlap * 30
+            })`;
           }
           if (firstEvent.style.width.slice(-2, -1)) {
-            overlap = +firstEvent.style.width.slice(-2, -1);
+            overlap = (95 - +firstEvent.style.width.slice(-3, -1)) / 10;
           }
         }
       }

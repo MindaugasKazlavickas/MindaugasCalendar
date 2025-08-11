@@ -1,4 +1,4 @@
-import { SERVER_URL } from "../consts/serverURL";
+import { SERVER_URL } from "../consts/consts";
 import apiRequest from "./sendAPIRequest";
 import { clearEvents, displayEvents } from "./displayEvents";
 import { eventViewTrigger } from "./handleEventForm";

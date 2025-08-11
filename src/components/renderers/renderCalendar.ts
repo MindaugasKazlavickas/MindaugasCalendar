@@ -1,4 +1,4 @@
-import createDOMElement from "../../helpers/createDOMElement";
+import createDOMElement from "../../utils/createDOMElement";
 
 function RenderCalendar() {
   const table = document.getElementById("calendarTable") as HTMLTableElement;

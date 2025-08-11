@@ -14,3 +14,7 @@ export interface APIResponse<T> {
   data: T;
   error?: string;
 }
+export interface CurrentDateState {
+  currentDate: string;
+  monthViewDate: string;
+}

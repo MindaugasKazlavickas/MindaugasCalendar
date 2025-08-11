@@ -17,18 +17,6 @@
   --tableTop: 1;
   --dropdown: 2;
   --above-all: 3;
-  /*event-overlap-levels*/
-  --event-layer-depth-0: 95%;
-  --event-layer-depth-1: 75%;
-  --event-layer-depth-2: 55%;
-  --event-layer-depth-3: 35%;
-  --event-layer-depth-4: 15%;
-  --event-layer-color-0: #159ae3;
-  --event-layer-color-1: #107db7;
-  --event-layer-color-2: #0e6594;
-  --event-layer-color-3: #0c5a84;
-  --event-layer-color-4: #0b405c;
-
   --marker-width: 100%;
 }
 
@@ -513,7 +501,6 @@ td.timeColumn {
 }
 
 .meeting {
-  width: var(--event-layer-depth-0);
   border: 1px solid white;
   background-color: var(--primary-event);
   color: white;

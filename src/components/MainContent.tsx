@@ -1,11 +1,11 @@
 import WeekViewTable from "./WeekViewTable";
 import CalendarPanel from "./CalendarSidePanel";
-import TimeframeToday from "../timeframeUpdaters/timeframeToday";
+import TimeframeToday from "../timeframeUpdaters/useReduxCallTimeframe";
 import {
   rightSideButtonAlt,
   rightSideButtonHref,
   rightSideButtonSrc,
-} from "../consts/nameArrays";
+} from "../consts/consts";
 import { Fragment } from "react/jsx-runtime";
 function Content() {
   return (
@@ -15,7 +15,7 @@ function Content() {
       <WeekViewTable />
 
       <aside id="rightSidePanel" className="rightSideMenu">
-        {[0, 1, 2, 3, 4, 5].map((button, i) => {
+        {[0, 1, 2, 3, 4, 5].map((i) => {
           return (
             <Fragment key={i + "fragment"}>
               <a
