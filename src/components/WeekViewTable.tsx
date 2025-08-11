@@ -2,6 +2,7 @@ import { WeekDays } from "../consts/nameArrays";
 import { useEffect } from "react";
 import RenderTable from "./renderers/renderTable";
 import getGMT from "../helpers/getGMT";
+import { minToPxRatio } from "../consts/nameArrays";
 function WeekViewTable() {
   useEffect(() => {
     RenderTable();
@@ -11,8 +12,26 @@ function WeekViewTable() {
     }
   }, []);
 
+  useEffect(() => {
+    const currentWeekDay = new Date().getDay();
+    const currentHour = new Date().getHours();
+    const currentMinutes = new Date().getMinutes();
+
+    const rect = document
+      .getElementById(currentWeekDay + "_" + currentHour)
+      ?.getBoundingClientRect();
+    const marker = document.getElementById("timeframeMarker") as HTMLDivElement;
+    if (rect) {
+      const sidePanelWidthOffset = rect?.x - 256 - 4; // magic number
+      marker.style.marginTop = currentMinutes / minToPxRatio - 20 + "px"; // magic number
+      marker.style.top = rect?.y + "px";
+      marker.style.width = rect.width + 6 + "px"; // magic number
+      marker.style.marginLeft = sidePanelWidthOffset + "px";
+    }
+  }, []);
   return (
     <main className="weekView">
+      <TimeframeMarker />
       <table className="topWeekViewGrid" id="weekGridHeader">
         <tbody>
           <tr>
@@ -41,3 +60,12 @@ function WeekViewTable() {
   );
 }
 export default WeekViewTable;
+
+function TimeframeMarker() {
+  return (
+    <div className="timeframeMarker" id="timeframeMarker">
+      <span className="redDot"></span>
+      <hr className="redLine" />
+    </div>
+  );
+}

@@ -66,3 +66,5 @@ export const rightSideButtonAlt: string[] = [
   "Open Zoom",
   "Open adding more tools",
 ];
+
+export const minToPxRatio = 1.25;

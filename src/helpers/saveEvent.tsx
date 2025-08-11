@@ -21,7 +21,9 @@ async function saveEvent(currentDate: Date): Promise<void> {
   ) as HTMLInputElement;
 
   const startDate = new Date(inputStartDate.value);
-  const endDate = new Date(inputEndDate.value);
+  let endDate = new Date(inputEndDate.value)
+    ? new Date(inputEndDate.value)
+    : startDate;
   const startTime = inputStartTime.value;
   const endTime = inputEndTime.value;
   const title = inputTitle.value;
@@ -39,7 +41,7 @@ async function saveEvent(currentDate: Date): Promise<void> {
     return;
   } else if (
     startDate > endDate ||
-    (startDate === endDate && startTime > endTime)
+    !(startDate === endDate && startTime > endTime)
   ) {
     alert("End time of event can not be before the start time.");
     return;

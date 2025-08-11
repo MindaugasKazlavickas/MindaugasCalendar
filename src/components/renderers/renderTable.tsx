@@ -1,4 +1,4 @@
-import createDOMElement from "./createDOMElement";
+import createDOMElement from "../../helpers/createDOMElement";
 function RenderTable() {
   if (document.getElementById("weekGrid")?.getElementsByTagName("tbody")[0]) {
     document

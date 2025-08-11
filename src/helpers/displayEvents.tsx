@@ -1,7 +1,7 @@
 import { SERVER_URL } from "../consts/serverURL";
 import apiRequest from "./sendAPIRequest";
 import { StoredEvent } from "../consts/tsTypes";
-import createDOMElement from "../components/renderers/createDOMElement";
+import createDOMElement from "./createDOMElement";
 import { openEditEventWindow } from "./handleEventForm";
 export async function displayEvents(currentDate: Date) {
   let startOfWeekTime: Date = new Date(currentDate.toString());

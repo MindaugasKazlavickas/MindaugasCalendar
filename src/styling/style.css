@@ -6,8 +6,8 @@
   --primary-background: #f8fafd;
   --secondary-highlight: #ebecef;
   --primary-black: #4d4d4d;
-  --primary-gray: #959595;
-  --primary-light-gray: #cdcdcd;
+  --primary-gray: #afafaf;
+  --primary-light-gray: #dddddd;
   font-size: default;
   background-color: var(--primary-background);
   color: black;
@@ -28,6 +28,8 @@
   --event-layer-color-2: #0e6594;
   --event-layer-color-3: #0c5a84;
   --event-layer-color-4: #0b405c;
+
+  --marker-width: 100%;
 }
 
 .header {
@@ -41,14 +43,13 @@
 }
 
 .iconButton {
-  text-align: center;
   margin: auto;
   background-color: inherit;
   border: none;
   width: 32px;
   height: 32px;
-  padding: 4px;
-  padding-inline: 0;
+  align-content: center;
+  justify-self: center;
 }
 
 .iconButton:hover,
@@ -507,7 +508,8 @@ td.timeColumn {
 .calendarCell {
   width: 20px;
   height: 20px;
-  padding: 4px;
+  padding: 6px 0;
+  align-content: center;
 }
 
 .meeting {
@@ -586,14 +588,16 @@ td.timeColumn {
   border-bottom: 3px solid transparent;
 }
 
-.eventOtherInput::placeholder {
+.eventOtherInput::placeholder,
+.datepickerInput::placeholder {
   color: var(--primary-black);
 }
 
-.eventOtherInput:focus {
+.eventOtherInput:focus,
+.datepickerInput:focus {
   background-color: var(--primary-light-gray);
-  border-bottom: 3px solid var(--primary-black);
-  border-radius: 8px;
+  border-bottom: 3px solid var(--primary-blue);
+  border-radius: 4px;
 }
 
 .eventButton,
@@ -711,4 +715,49 @@ td.timeColumn {
 }
 .notDisplayed {
   display: none;
+}
+
+.eventTimePickerContainer {
+  text-align: left;
+}
+.datepickerDash {
+  display: inline;
+}
+
+.datepickerInput {
+  line-height: 1rem;
+  font-size: 0.8rem;
+  background-color: var(--primary-light-gray);
+  border-radius: 4px;
+  color: var(--primary-black);
+  border: none;
+  outline: none;
+  padding: 12px 12px;
+  border-bottom: 3px solid transparent;
+  margin: 0 4px;
+}
+.datepickerInput:first-child {
+  margin-left: 0;
+}
+
+.timeframeMarker {
+  position: absolute;
+  z-index: var(--tableTop);
+  display: none;
+  align-items: center;
+  height: 12px;
+}
+.redDot {
+  border-radius: 50%;
+  background-color: red;
+  border: none;
+  height: 12px;
+  width: 12px;
+}
+.redLine {
+  height: 2px;
+  width: 100%;
+  background-color: red;
+  border: none;
+  margin: 0;
 }

@@ -1,8 +1,30 @@
 import { eventViewTrigger } from "../helpers/handleEventForm";
 import saveEvent from "../helpers/saveEvent";
 import deleteEvent from "../helpers/deleteEvent";
+
 function Event() {
-  let currentDate = new Date();
+  function handleShowEndDate() {
+    const endTime = document.getElementById("endTime") as HTMLInputElement;
+    const startTime = document.getElementById("startTime") as HTMLInputElement;
+    const endDate = document.getElementById("endDate") as HTMLInputElement;
+    const startDate = document.getElementById("startDate") as HTMLInputElement;
+
+    const areDatesEntered = startTime.value !== "" && endTime.value !== "";
+    const isEventEndAfterStart =
+      endTime.value < startTime.value && startDate.value > endDate.value;
+    const isEndDateNeeded =
+      endDate.value === "" && startTime.value > endDate.value;
+
+    if (areDatesEntered && isEventEndAfterStart) {
+      endDate?.classList.toggle("notDisplayed");
+    } else if (
+      !endDate?.classList.contains("notDisplayed") &&
+      isEndDateNeeded
+    ) {
+      endDate?.classList.toggle("notDisplayed");
+      endDate.value = "";
+    }
+  }
   return (
     <div id="event" tabIndex={-1} className="eventContainer notDisplayed">
       {/*Header row*/}
@@ -15,7 +37,7 @@ function Event() {
         <button
           id="deleteEventButton"
           className="iconButton"
-          onClick={() => deleteEvent(currentDate)}
+          onClick={() => deleteEvent(new Date())}
         >
           <img src="./media/delete.svg" alt="Delete event" />
         </button>
@@ -50,10 +72,25 @@ function Event() {
       {/*Datepicker row*/}
       <img className="icon" src="./media/schedule_watch.svg" alt="Watch icon" />
       <div className="eventTimePickerContainer">
-        <input type="date" id="startDate" />
-        <input type="time" id="startTime" />
-        <input type="time" id="endTime" />
-        <input type="date" id="endDate" />
+        <input className="datepickerInput" type="date" id="startDate" />
+        <input
+          className="datepickerInput"
+          type="time"
+          id="startTime"
+          onChange={handleShowEndDate}
+        />
+        <p className="datepickerDash">-</p>
+        <input
+          className="datepickerInput"
+          type="time"
+          id="endTime"
+          onChange={handleShowEndDate}
+        />
+        <input
+          className="datepickerInput notDisplayed"
+          type="date"
+          id="endDate"
+        />
       </div>
       {/*Guests row*/}
       <img className="icon" src="./media/contacts.svg" alt="Add guests" />
@@ -83,7 +120,7 @@ function Event() {
       <button
         id="eventSaveButton"
         className="eventSaveButton"
-        onClick={() => saveEvent(currentDate)}
+        onClick={() => saveEvent(new Date())}
       >
         Save
       </button>
