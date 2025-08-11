@@ -11,7 +11,7 @@
 # production
 /build
 
-package-lock.json
+/package-lock.json
 data/node_modules
 data/package-lock.json
 data/db.json
