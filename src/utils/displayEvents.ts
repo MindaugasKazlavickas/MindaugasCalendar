@@ -3,12 +3,13 @@ import apiRequest from "./sendAPIRequest";
 import { StoredEvent } from "../consts/types";
 import createDOMElement from "./createDOMElement";
 import { openEditEventWindow } from "./handleEventForm";
+import { minToPxRatio } from "../consts/consts";
 export async function displayEvents(currentDate: Date) {
-  let startOfWeekTime: Date = new Date(currentDate.toString());
+  const startOfWeekTime: Date = new Date(currentDate.toString());
   startOfWeekTime.setDate(startOfWeekTime.getDate() - startOfWeekTime.getDay());
   startOfWeekTime.setHours(0, 0, 0);
 
-  let endOfWeekTime: Date = new Date(startOfWeekTime.toString());
+  const endOfWeekTime: Date = new Date(startOfWeekTime.toString());
   endOfWeekTime.setDate(startOfWeekTime.getDate() + 7);
 
   const thisWeekUrl = () => {
@@ -23,8 +24,9 @@ export async function displayEvents(currentDate: Date) {
     console.error("Error fetching events: ", response.error);
     return;
   }
+
   const events = response.data;
-  let eventDuration: number[] = [];
+  const eventDuration: number[] = [];
   for (let i = 0; i < events.length; i++) {
     const event = events[i];
     const startDate = new Date(event.startDate.toString());
@@ -33,9 +35,8 @@ export async function displayEvents(currentDate: Date) {
     const endTime = event.endTime;
 
     eventDuration[i] =
-      Math.abs(+endTime.substr(0, 2) - +startTime.substr(0, 2)) * 60 +
-      Math.abs(+endTime.substr(3, 2) - +startTime.substr(3, 2));
-    const minToPxRatio: number = 1.25;
+      Math.abs(+endTime.slice(0, 2) - +startTime.slice(0, 2)) * 60 +
+      Math.abs(+endTime.slice(3, 5) - +startTime.slice(3, 5));
     const isSameDayEvent = (): boolean => {
       return startDate.getDate() === endDate.getDate();
     };
@@ -50,10 +51,10 @@ export async function displayEvents(currentDate: Date) {
     };
     if (isSameDayEvent()) {
       eventDuration[i] = eventDuration[i] / minToPxRatio;
-      sameDayEventRender(event, eventDuration[i]);
+      renderSameDayEvent(event, eventDuration[i]);
     } else if (isLessThan24Hours()) {
       eventDuration[i] = (24 * 60 - eventDuration[i]) / minToPxRatio;
-      lessThan24HoursEvent(event, eventDuration[i]);
+      renderLessThan24Hours(event, eventDuration[i]);
     }
   }
   checkOverlappingEvents(events, eventDuration);
@@ -64,17 +65,17 @@ export function clearEvents() {
     event.remove();
   });
 }
-function sameDayEventRender(event: StoredEvent, eventDuration: number) {
+function renderSameDayEvent(event: StoredEvent, eventDuration: number) {
   const item = createDOMElement("div", ["meeting"], "");
   item.setAttribute("id", event.id.toString());
   item.innerText = event.startTime + "-" + event.endTime + " " + event.title;
   item.style.height = eventDuration + "px";
-  const marginFromTop = +event.startTime.substr(3, 2) / 1.25;
+  const marginFromTop = +event.startTime.slice(3, 5) / 1.25;
   item.style.marginTop = marginFromTop + "px";
   const target = document.getElementById(
     new Date(event.startDate).getDay() +
       "_" +
-      (+event.startTime.substr(0, 2) + 1)
+      (+event.startTime.slice(0, 2) + 1)
   ) as HTMLTableCellElement;
   target.style.overflow = "visible";
   target.style.position = "relative";
@@ -85,16 +86,15 @@ function sameDayEventRender(event: StoredEvent, eventDuration: number) {
   });
 }
 
-function lessThan24HoursEvent(event: StoredEvent, eventDuration: number) {
-  const minToPxRatio = 1.25;
+function renderLessThan24Hours(event: StoredEvent, eventDuration: number) {
   const eventText = event.startTime + "-" + event.endTime + " " + event.title;
   eventDuration = eventDuration * minToPxRatio;
   const duration = [
     24 * 60 -
-      (+event.startTime.substr(0, 2) * 60 + +event.startTime.substr(3, 2)),
+      (+event.startTime.slice(0, 2) * 60 + +event.startTime.slice(3, 5)),
     eventDuration -
       (24 * 60 -
-        (+event.startTime.substr(0, 2) * 60 + +event.startTime.substr(3, 2))),
+        (+event.startTime.slice(0, 2) * 60 + +event.startTime.slice(3, 5))),
   ];
   for (let i = 0; i < 2; i++) {
     const item = createDOMElement("div", ["meeting"], "");
@@ -106,12 +106,12 @@ function lessThan24HoursEvent(event: StoredEvent, eventDuration: number) {
       i === 0
         ? new Date(event.startDate).getDay() +
             "_" +
-            (+event.startTime.substr(0, 2) + 1)
+            (+event.startTime.slice(0, 2) + 1)
         : new Date(event.endDate).getDay() + "_1"
     ) as HTMLTableCellElement;
 
     if (i === 0) {
-      const marginFromTop = +event.startTime.substr(3, 2) / 1.25;
+      const marginFromTop = +event.startTime.slice(3, 5) / 1.25;
       item.style.marginTop = marginFromTop + "px";
     }
     target.style.overflow = "visible";

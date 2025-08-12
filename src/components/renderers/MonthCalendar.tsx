@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../store";
-import { jumpToDate } from "../currentDateSlice";
+import { RootState } from "../../store";
+import { jumpToDate } from "../../reduxDateManagement";
 
 function MonthCalendar() {
   const dispatch = useDispatch();
@@ -43,7 +43,7 @@ function MonthCalendar() {
 
               const isSelected =
                 day.toDateString() === currentDate.toDateString();
-              const classes = [
+              const classList = [
                 "calendarCell",
                 isSelected && !isToday ? "calendarCellHighlighted" : "",
                 isToday ? "calendarCellSelected" : "",
@@ -52,7 +52,7 @@ function MonthCalendar() {
               return (
                 <td
                   key={i}
-                  className={classes}
+                  className={classList}
                   id={day.toISOString()}
                   onClick={() => {
                     dispatch(jumpToDate(day.toISOString()));

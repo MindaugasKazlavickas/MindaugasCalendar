@@ -1,6 +1,6 @@
-import WeekViewTable from "./WeekViewTable";
+import WeekViewTable from "./WeekViewTimeframe";
 import CalendarPanel from "./CalendarSidePanel";
-import TimeframeToday from "../timeframeUpdaters/useReduxCallTimeframe";
+import TimeframeToday from "../timeframeUpdaters/useReduxToUpdate";
 import {
   rightSideButtonAlt,
   rightSideButtonHref,

@@ -1,8 +1,10 @@
 function fillOutWeekDays(currentDate: Date, offset: number) {
   let markerIsShown: boolean = false;
+
   currentDate.setDate(currentDate.getDate() + offset);
   let date = new Date(currentDate.toString());
   date.setDate(date.getDate() - date.getDay());
+
   const markedWeekDays = document.querySelectorAll(".weekViewGridHeader");
   markedWeekDays.forEach((classList) => {
     classList.classList.remove("weekViewGridHeaderMarked");
@@ -17,7 +19,9 @@ function fillOutWeekDays(currentDate: Date, offset: number) {
       new Date().getDate() === date.getDate() &&
       new Date().getMonth() === date.getMonth() &&
       new Date().getFullYear() === date.getFullYear();
-
+    const isAnyGridCellMarked = document.getElementById(
+      "weekDisplayDate" + [date.getDay()]
+    );
     if (todayIsInShownWeek) {
       document
         .getElementById("weekDisplayDate" + [date.getDay()])
@@ -28,7 +32,7 @@ function fillOutWeekDays(currentDate: Date, offset: number) {
         document.getElementById("timeframeMarker") as HTMLDivElement
       ).style.display = "flex";
       markerIsShown = true;
-    } else if (document.getElementById("weekDisplayDate" + [date.getDay()])) {
+    } else if (isAnyGridCellMarked) {
       document
         .getElementById("weekDisplayDate" + [date.getDay()])
         ?.parentElement?.classList.remove("weekViewGridHeaderMarked");

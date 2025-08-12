@@ -10,8 +10,8 @@ export function eventViewTrigger() {
 }
 
 function resetEventCreationForm() {
-  formInputFieldList.forEach((elem: string) => {
-    const inputField = document.getElementById(elem) as HTMLInputElement;
+  formInputFieldList.forEach((formField: string) => {
+    const inputField = document.getElementById(formField) as HTMLInputElement;
     inputField.value = "";
   });
   const imgWithId = document
@@ -32,7 +32,7 @@ export function openEditEventWindow(event: StoredEvent, id: string) {
         formInputFieldList[i] === "startDate" ||
         formInputFieldList[i] === "endDate"
       ) {
-        inputField.value = (event[key] as string).substr(0, 10);
+        inputField.value = (event[key] as string).slice(0, 10);
       } else {
         inputField.value = event[key] as string;
       }

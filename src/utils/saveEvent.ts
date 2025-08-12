@@ -28,21 +28,24 @@ async function saveEvent(currentDate: Date): Promise<void> {
   const endTime = inputEndTime.value;
   const title = inputTitle.value;
 
-  if (title === "") {
-    alert("Title is mandatory.");
-    return;
-  } else if (
+  const isTitleEntered = title === "";
+
+  const areDatesEntered =
     startDate == null ||
     endDate == null ||
     startTime == null ||
-    endTime == null
-  ) {
+    endTime == null;
+
+  const isEndAfterStart =
+    startDate > endDate || !(startDate === endDate && startTime > endTime);
+
+  if (isTitleEntered) {
+    alert("Title is mandatory.");
+    return;
+  } else if (areDatesEntered) {
     alert("Make sure to enter start and end time and date.");
     return;
-  } else if (
-    startDate > endDate ||
-    !(startDate === endDate && startTime > endTime)
-  ) {
+  } else if (isEndAfterStart) {
     alert("End time of event can not be before the start time.");
     return;
   }

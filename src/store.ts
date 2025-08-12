@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import currentDateReducer from "./currentDateSlice";
+import currentDateReducer from "./reduxDateManagement";
 
 export const store = configureStore({
   reducer: {

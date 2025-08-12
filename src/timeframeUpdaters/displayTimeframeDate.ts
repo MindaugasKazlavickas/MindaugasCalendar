@@ -11,9 +11,7 @@ export function headerTimeframeDate(currentDate: Date) {
   const getMonthNames = () => {
     let weekStartDate = getWeekStartDate();
     let weekEndDate = new Date(
-      getWeekStartDate().setDate(
-        weekStartDate.getDate() - weekStartDate.getDay() + 6
-      )
+      getWeekStartDate().setDate(weekStartDate.getDate() + 6)
     );
 
     return weekStartDate.getDate() > weekEndDate.getDate()

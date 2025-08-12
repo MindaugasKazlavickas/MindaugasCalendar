@@ -3,16 +3,17 @@ import { useEffect } from "react";
 import { eventViewTrigger } from "../utils/handleEventForm";
 import { sideCalendarMonth } from "../timeframeUpdaters/displayTimeframeDate";
 import { useDispatch, useSelector } from "react-redux";
-import { shiftMonthView } from "../currentDateSlice";
+import { shiftMonthView } from "../reduxDateManagement";
 import { AppDispatch, RootState } from "../store";
-import MonthCalendar from "./MonthCalendar";
+import MonthCalendar from "./renderers/MonthCalendar";
 function CalendarPanel() {
   const dispatch = useDispatch<AppDispatch>();
   const monthViewDateStr = useSelector(
     (state: RootState) => state.currentDate.monthViewDate
   );
-  const monthViewdate = new Date(monthViewDateStr);
+
   useEffect(() => {
+    const monthViewdate = new Date(monthViewDateStr);
     sideCalendarMonth(monthViewdate);
   }, [monthViewDateStr]);
   return (

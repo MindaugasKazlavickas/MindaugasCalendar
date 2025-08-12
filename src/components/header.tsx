@@ -3,7 +3,11 @@ import adjustMainDisplay from "./renderers/setupPanelTriggers";
 import displayDropdown from "./renderers/displayDropdown";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store";
-import { resetToToday, shiftMonthView, shiftWeek } from "../currentDateSlice";
+import {
+  resetToToday,
+  shiftMonthView,
+  shiftWeek,
+} from "../reduxDateManagement";
 function Header() {
   const dispatch = useDispatch<AppDispatch>();
   const currentDateStr = useSelector(
