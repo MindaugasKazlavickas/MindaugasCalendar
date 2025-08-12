@@ -7,23 +7,15 @@ async function apiRequest<T>(
   id?: T
 ): Promise<APIResponse<T>> {
   try {
-    let response;
-    if (payload) {
-      response = await fetch(url, {
-        method: method,
-        headers: {
-          "Content-Type": "application/json",
-        },
+    const response = await fetch(url, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      ...(payload && {
         body: JSON.stringify(payload),
-      });
-    } else {
-      response = await fetch(url, {
-        method: method,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-    }
+      }),
+    });
 
     const data = await response.json();
 
@@ -35,26 +27,11 @@ async function apiRequest<T>(
       data,
     };
   } catch (error) {
-    if (payload) {
-      return {
-        status: 500,
-        data: payload,
-
-        error: (error as Error).message,
-      };
-    } else if (id) {
-      return {
-        status: 500,
-        data: id,
-        error: (error as Error).message,
-      };
-    } else {
-      return {
-        status: 500,
-        data: null as unknown as T,
-        error: (error as Error).message,
-      };
-    }
+    return {
+      status: 500,
+      data: (payload ?? id ?? null) as T,
+      error: (error as Error).message ?? String(error),
+    };
   }
 }
 export default apiRequest;

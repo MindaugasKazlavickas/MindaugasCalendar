@@ -11,7 +11,7 @@ export interface StoredEvent {
 }
 export interface APIResponse<T> {
   status: number;
-  data: T;
+  data: T | undefined;
   error?: string;
 }
 export interface CurrentDateState {

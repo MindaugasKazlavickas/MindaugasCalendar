@@ -1,8 +1,13 @@
 import { eventViewTrigger } from "../utils/handleEventForm";
 import saveEvent from "../utils/saveEvent";
 import deleteEvent from "../utils/deleteEvent";
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
 
 function Event() {
+  const currentDateStr = useSelector(
+    (state: RootState) => state.currentDate.currentDate
+  );
   function handleShowEndDate() {
     const endTime = document.getElementById("endTime") as HTMLInputElement;
     const startTime = document.getElementById("startTime") as HTMLInputElement;
@@ -37,7 +42,7 @@ function Event() {
         <button
           id="deleteEventButton"
           className="iconButton"
-          onClick={() => deleteEvent(new Date())}
+          onClick={() => deleteEvent(currentDateStr)}
         >
           <img src="./media/delete.svg" alt="Delete event" />
         </button>
@@ -120,7 +125,7 @@ function Event() {
       <button
         id="eventSaveButton"
         className="eventSaveButton"
-        onClick={() => saveEvent(new Date())}
+        onClick={() => saveEvent(currentDateStr)}
       >
         Save
       </button>

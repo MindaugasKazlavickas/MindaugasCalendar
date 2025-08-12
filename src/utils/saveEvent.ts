@@ -3,8 +3,8 @@ import { displayEvents, clearEvents } from "./displayEvents";
 import { StoredEvent } from "../consts/types";
 import { SERVER_URL } from "../consts/consts";
 import apiRequest from "./sendAPIRequest";
-
-async function saveEvent(currentDate: Date): Promise<void> {
+async function saveEvent(reduxDate: string): Promise<void> {
+  const currentDate = new Date(reduxDate);
   const inputStartDate = document.getElementById(
     "startDate"
   ) as HTMLInputElement;
@@ -21,20 +21,15 @@ async function saveEvent(currentDate: Date): Promise<void> {
   ) as HTMLInputElement;
 
   const startDate = new Date(inputStartDate.value);
-  let endDate = new Date(inputEndDate.value)
-    ? new Date(inputEndDate.value)
-    : startDate;
+  let endDate = new Date(inputEndDate.value);
   const startTime = inputStartTime.value;
   const endTime = inputEndTime.value;
   const title = inputTitle.value;
-
+  console.log({ endDate });
   const isTitleEntered = title === "";
 
   const areDatesEntered =
-    startDate == null ||
-    endDate == null ||
-    startTime == null ||
-    endTime == null;
+    startDate == null || startTime == null || endTime == null;
 
   const isEndAfterStart =
     startDate > endDate || !(startDate === endDate && startTime > endTime);
@@ -45,9 +40,12 @@ async function saveEvent(currentDate: Date): Promise<void> {
   } else if (areDatesEntered) {
     alert("Make sure to enter start and end time and date.");
     return;
-  } else if (isEndAfterStart) {
+  } else if (!isEndAfterStart) {
     alert("End time of event can not be before the start time.");
     return;
+  }
+  if (endDate.toString() === "Invalid Date") {
+    endDate = startDate;
   }
   const newEvent: StoredEvent = {
     id: Date.now(),

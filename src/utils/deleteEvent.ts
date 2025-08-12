@@ -2,7 +2,8 @@ import { SERVER_URL } from "../consts/consts";
 import apiRequest from "./sendAPIRequest";
 import { clearEvents, displayEvents } from "./displayEvents";
 import { eventViewTrigger } from "./handleEventForm";
-async function deleteEvent(currentDate: Date): Promise<void> {
+async function deleteEvent(reduxDate: string): Promise<void> {
+  const currentDate = new Date(reduxDate);
   const imgWithId = document
     .getElementById("event")
     ?.getElementsByTagName("img")[0];

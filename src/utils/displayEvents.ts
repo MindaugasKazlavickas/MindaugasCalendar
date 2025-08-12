@@ -57,6 +57,7 @@ export async function displayEvents(currentDate: Date) {
       renderLessThan24Hours(event, eventDuration[i]);
     }
   }
+
   checkOverlappingEvents(events, eventDuration);
 }
 export function clearEvents() {
