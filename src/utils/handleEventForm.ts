@@ -18,6 +18,7 @@ function resetEventCreationForm() {
     .getElementById("event")
     ?.getElementsByTagName("img")[0];
   imgWithId?.removeAttribute("id");
+  document.getElementById("endDate")?.classList.add("notDisplayed");
 }
 
 export function openEditEventWindow(event: StoredEvent, id: string) {
@@ -38,6 +39,9 @@ export function openEditEventWindow(event: StoredEvent, id: string) {
       }
     }
   }
+
+  document.getElementById("endDate")?.classList.remove("notDisplayed");
+
   const idImgHolder = document
     .getElementById("event")
     ?.getElementsByTagName("img")[0];
