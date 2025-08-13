@@ -1,4 +1,4 @@
-import { eventViewTrigger } from "./handleEventForm";
+import { eventViewTrigger } from "../utils/handleEventForm";
 import { displayEvents, clearEvents } from "./displayEvents";
 import { StoredEvent } from "../consts/types";
 import { SERVER_URL } from "../consts/consts";

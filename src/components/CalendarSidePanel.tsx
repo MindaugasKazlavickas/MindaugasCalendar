@@ -1,7 +1,7 @@
 import { WeekDays } from "../consts/consts";
 import { useEffect } from "react";
 import { eventViewTrigger } from "../utils/handleEventForm";
-import { sideCalendarMonth } from "../timeframeUpdaters/displayTimeframeDate";
+import { sideCalendarMonth } from "../utils/displayTimeframeDate";
 import { useDispatch, useSelector } from "react-redux";
 import { shiftMonthView } from "../reduxDateManagement";
 import { AppDispatch, RootState } from "../store";

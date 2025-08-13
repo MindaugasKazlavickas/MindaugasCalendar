@@ -1,6 +1,6 @@
 import { eventViewTrigger } from "../utils/handleEventForm";
-import saveEvent from "../utils/saveEvent";
-import deleteEvent from "../utils/deleteEvent";
+import saveEvent from "../api/saveEvent";
+import deleteEvent from "../api/deleteEvent";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
 
