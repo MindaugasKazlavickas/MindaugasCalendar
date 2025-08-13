@@ -18,7 +18,7 @@ function WeekviewTable() {
   return (
     <tbody>
       {tableRows.map((i) => (
-        <tr key={i}>
+        <tr className="weekViewGridRow" key={i}>
           <td className="weekViewGridBox timeColumn">
             {getDateTimeText(i + 1)}
           </td>
