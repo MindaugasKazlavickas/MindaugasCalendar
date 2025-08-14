@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { eventViewTrigger } from "../../../src/utils/handleEventForm";
 import { sideCalendarMonth } from "../../../src/utils/displayTimeframeDate";
 import { useDispatch, useSelector } from "react-redux";
-import { shiftMonthView } from "../../../src/reduxDateManagement";
+import { shiftMonthView } from "../../../src/features/currentDate";
 import { AppDispatch, RootState } from "../../../src/store";
 import MonthCalendar from "./CalendarSidePanel/MonthCalendar";
 function CalendarPanel() {

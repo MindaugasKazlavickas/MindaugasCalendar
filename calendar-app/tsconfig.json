@@ -30,6 +30,6 @@
     "pages/calendar/MainContent/WeekViewTimeframe.tsx",
     "pages/calendar/RightSideTrigger.tsx",
     "pages/App.tsx",
-    "pages/index.tsx"
+    "src/index.tsx"
   ]
 }
