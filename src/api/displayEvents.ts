@@ -148,6 +148,8 @@ function checkOverlappingEvents(
           firstEvent
         ) {
           overlap++;
+
+          //Colors are based on --primary-blue
           if (isLonger()) {
             secondEvent.style.width = `${95 - overlap * 10}%`;
             secondEvent.style.backgroundColor = `rgb(21,${
