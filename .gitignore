@@ -1,26 +1,26 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
-/.pnp
-.pnp.js
+calendar-app/node_modules
+calendar-app/.pnp
+calendar-app/.pnp.js
 
 # testing
-/coverage
+calendar-app/coverage
 
 # production
-/build
+calendar-app/build
 
-/package-lock.json
-data/node_modules
-data/package-lock.json
-data/db.json
+calendar-app/package-lock.json
+calendar-server/node_modules
+calendar-server/package-lock.json
+calendar-server/db.json
 # misc
 .DS_Store
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+calendar-app/.env.local
+calendar-app/.env.development.local
+calendar-app/.env.test.local
+calendar-app/.env.production.local
 
 npm-debug.log*
 yarn-debug.log*
