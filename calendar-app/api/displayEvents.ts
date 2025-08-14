@@ -1,9 +1,8 @@
-import { SERVER_URL } from "../consts/consts";
+import { SERVER_URL, minToPxRatio } from "../pages/calendar/MainContent/consts";
 import apiRequest from "./sendAPIRequest";
-import { StoredEvent } from "../consts/types";
-import createDOMElement from "../utils/createDOMElement";
-import { openEditEventWindow } from "../utils/handleEventForm";
-import { minToPxRatio } from "../consts/consts";
+import { StoredEvent } from "../src/utils/types";
+import createDOMElement from "../src/utils/createDOMElement";
+import { openEditEventWindow } from "../src/utils/handleEventForm";
 export async function displayEvents(currentDate: Date) {
   const startOfWeekTime: Date = new Date(currentDate.toString());
   startOfWeekTime.setDate(startOfWeekTime.getDate() - startOfWeekTime.getDay());

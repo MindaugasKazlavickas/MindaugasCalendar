@@ -1,5 +1,5 @@
-import { chevronLeftSrc, chevronRightSrc } from "../consts/consts";
-import adjustMainDisplay from "./renderers/setupPanelTriggers";
+import { chevronLeftSrc, chevronRightSrc } from "./MainContent/consts";
+import adjustMainDisplay from "./MainContent/setupPanelTriggers";
 function RightSideTrigger() {
   return (
     <div className="rightPanelTriggerContainer" id="rightPanelTriggerContainer">

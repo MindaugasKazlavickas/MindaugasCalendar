@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CurrentDateState } from "./consts/types";
+import { CurrentDateState } from "./utils/types";
 
 export const initialState: CurrentDateState = {
   currentDate: new Date().toISOString(),

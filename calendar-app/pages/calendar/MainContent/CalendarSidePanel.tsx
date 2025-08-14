@@ -1,11 +1,11 @@
-import { WeekDays } from "../consts/consts";
+import { WeekDays } from "./consts";
 import { useEffect } from "react";
-import { eventViewTrigger } from "../utils/handleEventForm";
-import { sideCalendarMonth } from "../utils/displayTimeframeDate";
+import { eventViewTrigger } from "../../../src/utils/handleEventForm";
+import { sideCalendarMonth } from "../../../src/utils/displayTimeframeDate";
 import { useDispatch, useSelector } from "react-redux";
-import { shiftMonthView } from "../reduxDateManagement";
-import { AppDispatch, RootState } from "../store";
-import MonthCalendar from "./renderers/MonthCalendar";
+import { shiftMonthView } from "../../../src/reduxDateManagement";
+import { AppDispatch, RootState } from "../../../src/store";
+import MonthCalendar from "./CalendarSidePanel/MonthCalendar";
 function CalendarPanel() {
   const dispatch = useDispatch<AppDispatch>();
   const monthViewDateStr = useSelector(
