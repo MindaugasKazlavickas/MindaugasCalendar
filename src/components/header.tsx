@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import adjustMainDisplay from "./renderers/setupPanelTriggers";
-import displayDropdown from "./renderers/displayDropdown";
+import displayDropdown from "../utils/displayDropdown";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store";
 import {
