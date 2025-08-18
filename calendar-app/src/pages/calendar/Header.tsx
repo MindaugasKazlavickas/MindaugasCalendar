@@ -1,17 +1,25 @@
-import adjustMainDisplay from "./MainContent/setupPanelTriggers";
-import displayDropdown from "../../src/utils/displayDropdown";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../src/store";
+import { AppDispatch, RootState } from "../../store";
 import {
   resetToToday,
   shiftMonthView,
   shiftWeek,
-} from "../../src/features/currentDate";
-function Header() {
+} from "../../features/currentDate";
+function Header({
+  calendarPanelState,
+  setCalendarPanelDisplay,
+}: {
+  calendarPanelState: boolean;
+  setCalendarPanelDisplay: (
+    value: boolean | ((prevVar: boolean) => boolean)
+  ) => void;
+}) {
   const dispatch = useDispatch<AppDispatch>();
+
   const currentDateStr = useSelector(
     (state: RootState) => state.currentDate.currentDate
   );
+
   return (
     <header className="header">
       <div className="headerLeft">
@@ -19,10 +27,7 @@ function Header() {
           className="iconButton headerLeftCollapse"
           id="closeSidePanel"
           onClick={() => {
-            document
-              .getElementById("calendarSideView")
-              ?.classList.toggle("notDisplayed");
-            adjustMainDisplay();
+            setCalendarPanelDisplay(!calendarPanelState);
           }}
         >
           <img src="./media/burger.svg" alt="Closes and opens calendar view" />
@@ -103,11 +108,7 @@ function Header() {
             />
           </button>
           <div className="settingsDropdown">
-            <button
-              className="iconButton"
-              id="settings"
-              onMouseOver={() => displayDropdown("dropdownSettings")}
-            >
+            <button className="iconButton" id="settings">
               <img
                 src="./media/settings.svg"
                 alt="Button to open settings menu"
@@ -124,11 +125,10 @@ function Header() {
             </div>
           </div>
 
-          <div id="timeframeSelect">
+          <div className="timeframeSelect" id="timeframeSelect">
             <button
               id="timeframeSelectButton"
               className="roundedCornerButton dropdownButton"
-              onClick={() => displayDropdown("dropdownContent")}
             >
               <span>Week</span>
               <img
@@ -143,16 +143,20 @@ function Header() {
               className="dropdownContent notDisplayed"
             >
               <div className="dropdownItem">
-                <p>First option</p>
-                <p>AB</p>
+                <p>Day</p>
+                <p>D</p>
               </div>
               <div className="dropdownItem">
-                <p>Second option</p>
-                <p>B2</p>
+                <p>Week</p>
+                <p>W</p>
               </div>
               <div className="dropdownItem">
-                <p>Final option</p>
-                <p>CA</p>
+                <p>Month</p>
+                <p>M</p>
+              </div>
+              <div className="dropdownItem">
+                <p>Year</p>
+                <p>Y</p>
               </div>
             </div>
           </div>

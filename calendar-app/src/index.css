@@ -166,6 +166,7 @@ code {
   --dropdown: 2;
   --above-all: 3;
   --marker-width: 100%;
+  --content-grid: 256px 1fr 56px;
 }
 
 .header {
@@ -371,7 +372,7 @@ code {
 
 .content {
   display: grid;
-  grid-template-columns: 256px 1fr 56px;
+  grid-template-columns: var(--contentGrid);
 }
 
 .rightSideMenu {
@@ -752,13 +753,13 @@ td.timeColumn {
   margin: auto;
   padding-block: 12px;
   line-height: 24px;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
 }
 
 .dropdownIcon {
   margin: auto;
 }
-.dropdownContent {
+.timeframeSelect:hover .dropdownContent {
   display: flex;
   position: absolute;
   background-color: var(--primary-background);
@@ -770,7 +771,7 @@ td.timeColumn {
   z-index: var(--dropdown);
 }
 
-.dropdownSettings {
+.settingsDropdown:hover .dropdownSettings {
   display: flex;
   position: absolute;
   background-color: var(--primary-background);
@@ -791,12 +792,13 @@ td.timeColumn {
   height: 100%;
   text-align: left;
   padding: 16px 8px;
-  font-size: 1rem;
+  font-size: 0.8rem;
 }
 .dropdownItem {
   display: inline-flex;
   justify-content: space-between;
   padding: 16px 8px;
+  font-size: 0.8rem;
 }
 
 .dropdownItem:hover,

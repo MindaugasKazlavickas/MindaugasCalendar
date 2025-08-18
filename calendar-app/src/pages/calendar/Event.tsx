@@ -1,37 +1,71 @@
-import { eventViewTrigger } from "../../src/utils/handleEventForm";
 import saveEvent from "../../api/saveEvent";
 import deleteEvent from "../../api/deleteEvent";
 import { useSelector } from "react-redux";
-import { RootState } from "../../src/store";
+import { RootState } from "../../store";
+import { ChangeEvent, useEffect, useState } from "react";
+import { StoredEvent } from "../../utils/types";
 
-function Event() {
+export class Form implements StoredEvent {
+  id = 0;
+  title = "";
+  startTime = "";
+  startDate = "";
+  endTime = "";
+  endDate = "";
+  guests? = "";
+  location? = "";
+  description? = "";
+  [key: string]: string | number | undefined;
+}
+
+function Event({
+  eventWindow,
+  triggerEventWindow,
+}: {
+  eventWindow: boolean;
+  triggerEventWindow: (
+    value: boolean | ((prevVar: boolean) => boolean)
+  ) => void;
+}) {
+  const [form, setForm] = useState<Form>(new Form());
+  const [isEndDateField, setEndDateField] = useState(false);
   const currentDateStr = useSelector(
     (state: RootState) => state.currentDate.currentDate
   );
+
   function handleShowEndDate() {
-    const endTime = document.getElementById("endTime") as HTMLInputElement;
-    const startTime = document.getElementById("startTime") as HTMLInputElement;
-    const endDate = document.getElementById("endDate") as HTMLInputElement;
-    const startDate = document.getElementById("startDate") as HTMLInputElement;
-
-    const areDatesEntered = startTime.value !== "" && endTime.value !== "";
+    const areTimesEntered = form.startTime !== "" && form.endTime !== "";
     const isEventEndAfterStart =
-      endTime.value < startTime.value && startDate.value > endDate.value;
-    const isEndDateNeeded =
-      endDate.value === "" && startTime.value > endDate.value;
+      form.endTime < form.startTime &&
+      (form.startDate < form.endDate || form.endDate === "");
 
-    if (areDatesEntered && isEventEndAfterStart) {
-      endDate?.classList.toggle("notDisplayed");
+    const isEndDateNeeded =
+      form.endDate === "" && form.startTime < form.endTime;
+    if (areTimesEntered && isEventEndAfterStart) {
+      setEndDateField(true);
     } else if (
-      !endDate?.classList.contains("notDisplayed") &&
-      isEndDateNeeded
+      areTimesEntered &&
+      !isEndDateNeeded &&
+      isEndDateField &&
+      form.endDate === ""
     ) {
-      endDate?.classList.toggle("notDisplayed");
-      endDate.value = "";
+      setEndDateField(false);
+    } else if (form.endDate === "") {
+      setEndDateField(false);
     }
   }
+
+  function handleChange(e: ChangeEvent<HTMLInputElement>, fieldType: string) {
+    setForm({
+      ...form,
+      [fieldType]: e.target.value,
+    });
+  }
+  useEffect(() => {
+    handleShowEndDate();
+  }, [form.startTime, form.endTime]);
   return (
-    <div id="event" tabIndex={-1} className="eventContainer notDisplayed">
+    <div id="event" tabIndex={-1} className="eventContainer">
       {/*Header row*/}
       <img
         className="iconButton"
@@ -42,14 +76,17 @@ function Event() {
         <button
           id="deleteEventButton"
           className="iconButton"
-          onClick={() => deleteEvent(currentDateStr)}
+          onClick={() => {
+            triggerEventWindow(!eventWindow);
+            deleteEvent(currentDateStr);
+          }}
         >
           <img src="./media/delete.svg" alt="Delete event" />
         </button>
         <button
           id="dialogCloseButton"
           className="iconButton"
-          onClick={() => eventViewTrigger()}
+          onClick={() => triggerEventWindow(!eventWindow)}
         >
           <img src="./media/close.svg" alt="Close the event creation menu" />
         </button>
@@ -62,6 +99,8 @@ function Event() {
           type="text"
           className="eventNameInput"
           placeholder="Add title"
+          value={form.title}
+          onChange={(event) => handleChange(event, "title")}
         />
       </div>
       {/*Event type row*/}
@@ -77,25 +116,37 @@ function Event() {
       {/*Datepicker row*/}
       <img className="icon" src="./media/schedule_watch.svg" alt="Watch icon" />
       <div className="eventTimePickerContainer">
-        <input className="datepickerInput" type="date" id="startDate" />
+        <input
+          className="datepickerInput"
+          type="date"
+          id="startDate"
+          value={form.startDate}
+          onChange={(event) => handleChange(event, "startDate")}
+        />
         <input
           className="datepickerInput"
           type="time"
           id="startTime"
-          onChange={handleShowEndDate}
+          value={form.startTime}
+          onChange={(event) => handleChange(event, "startTime")}
         />
         <p className="datepickerDash">-</p>
         <input
           className="datepickerInput"
           type="time"
           id="endTime"
-          onChange={handleShowEndDate}
+          value={form.endTime}
+          onChange={(event) => handleChange(event, "endTime")}
         />
-        <input
-          className="datepickerInput notDisplayed"
-          type="date"
-          id="endDate"
-        />
+        {isEndDateField && (
+          <input
+            className="datepickerInput"
+            type="date"
+            id="endDate"
+            value={!isEndDateField ? "" : form.endDate}
+            onChange={(event) => handleChange(event, "endDate")}
+          />
+        )}
       </div>
       {/*Guests row*/}
       <img className="icon" src="./media/contacts.svg" alt="Add guests" />
@@ -104,6 +155,8 @@ function Event() {
         type="text"
         className="eventOtherInput"
         placeholder="Add guests"
+        value={form.guests}
+        onChange={(event) => handleChange(event, "guests")}
       />
       {/*Location row*/}
       <img className="icon" src="./media/location.svg" alt="Add a location" />
@@ -112,6 +165,8 @@ function Event() {
         type="text"
         className="eventOtherInput"
         placeholder="Add location"
+        value={form.location}
+        onChange={(event) => handleChange(event, "location")}
       />
       {/*Description row*/}
       <img className="icon" src="./media/notes.svg" alt="Add a description" />
@@ -120,12 +175,14 @@ function Event() {
         type="text"
         className="eventOtherInput"
         placeholder="Add description"
+        value={form.description}
+        onChange={(event) => handleChange(event, "description")}
       />
       <div className="gap"></div>
       <button
         id="eventSaveButton"
         className="eventSaveButton"
-        onClick={() => saveEvent(currentDateStr)}
+        onClick={() => saveEvent(currentDateStr, form)}
       >
         Save
       </button>

@@ -1,7 +1,7 @@
 import { WeekDays } from "./consts";
 import { useEffect, useRef } from "react";
 import WeekviewTable from "./WeekViewTimeframe/WeekViewTable";
-import getGMT from "../../../src/utils/getGMT";
+import getGMT from "../../../utils/getGMT";
 import { minToPxRatio } from "./consts";
 function WeekViewTable() {
   useEffect(() => {

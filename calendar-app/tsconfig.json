@@ -21,15 +21,15 @@
   },
   "include": [
     "src",
-    "pages/calendar/Header.tsx",
-    "pages/calendar/Event.tsx",
-    "pages/calendar/MainContent.tsx",
-    "pages/calendar/MainContent/consts.ts",
-    "pages/calendar/MainContent/CalendarSidePanel/MonthCalendar.tsx",
-    "pages/calendar/MainContent/setupPanelTriggers.ts",
-    "pages/calendar/MainContent/WeekViewTimeframe.tsx",
-    "pages/calendar/RightSideTrigger.tsx",
-    "pages/App.tsx",
+    "src/pages/calendar/Header.tsx",
+    "src/pages/calendar/Event.tsx",
+    "src/pages/calendar/MainContent.tsx",
+    "src/pages/calendar/MainContent/consts.ts",
+    "src/pages/calendar/MainContent/CalendarSidePanel/MonthCalendar.tsx",
+    "src/pages/calendar/MainContent/setupPanelTriggers.ts",
+    "src/pages/calendar/MainContent/WeekViewTimeframe.tsx",
+    "src/pages/calendar/RightSidePanel.tsx",
+    "src/pages/App.tsx",
     "src/index.tsx"
   ]
 }

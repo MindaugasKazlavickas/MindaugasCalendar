@@ -1,7 +1,7 @@
-import { SERVER_URL } from "../consts/consts";
+import { SERVER_URL } from "../pages/calendar/MainContent/consts";
 import apiRequest from "./sendAPIRequest";
 import { clearEvents, displayEvents } from "./displayEvents";
-import { eventViewTrigger } from "../utils/handleEventForm";
+
 async function deleteEvent(reduxDate: string): Promise<void> {
   const currentDate = new Date(reduxDate);
   const imgWithId = document
@@ -25,6 +25,5 @@ async function deleteEvent(reduxDate: string): Promise<void> {
   console.log("Successfully deleted event with ID: ", idToDelete);
   clearEvents();
   displayEvents(currentDate);
-  eventViewTrigger();
 }
 export default deleteEvent;

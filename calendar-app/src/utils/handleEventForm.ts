@@ -1,28 +1,7 @@
-import { formInputFieldList } from "../../pages/calendar/MainContent/consts";
+import { formInputFieldList } from "../pages/calendar/MainContent/consts";
 import { StoredEvent } from "./types";
 
-export function eventViewTrigger() {
-  resetEventCreationForm();
-  const eventView = document.getElementById("event");
-  eventView?.classList.toggle("notDisplayed");
-  const eventInputTitle = document.getElementById("title");
-  eventInputTitle?.focus();
-}
-
-function resetEventCreationForm() {
-  formInputFieldList.forEach((formField: string) => {
-    const inputField = document.getElementById(formField) as HTMLInputElement;
-    inputField.value = "";
-  });
-  const imgWithId = document
-    .getElementById("event")
-    ?.getElementsByTagName("img")[0];
-  imgWithId?.removeAttribute("id");
-  document.getElementById("endDate")?.classList.add("notDisplayed");
-}
-
 export function openEditEventWindow(event: StoredEvent, id: string) {
-  eventViewTrigger();
   for (let i = 0; i < formInputFieldList.length; i++) {
     const key = formInputFieldList[i] as keyof StoredEvent;
     if (event[key]) {

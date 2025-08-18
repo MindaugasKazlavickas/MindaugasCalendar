@@ -1,7 +1,4 @@
-import {
-  monthsShort,
-  monthsLong,
-} from "../../pages/calendar/MainContent/consts";
+import { monthsShort, monthsLong } from "../pages/calendar/MainContent/consts";
 export function headerTimeframeDate(currentDate: Date) {
   const getWeekStartDate = (): Date => {
     return new Date(

@@ -18,3 +18,6 @@ export interface CurrentDateState {
   currentDate: string;
   monthViewDate: string;
 }
+export interface EventDisplayState {
+  isDisplayed: boolean;
+}

@@ -1,12 +1,20 @@
 import { WeekDays } from "./consts";
 import { useEffect } from "react";
-import { eventViewTrigger } from "../../../src/utils/handleEventForm";
-import { sideCalendarMonth } from "../../../src/utils/displayTimeframeDate";
+
+import { sideCalendarMonth } from "../../../utils/displayTimeframeDate";
 import { useDispatch, useSelector } from "react-redux";
-import { shiftMonthView } from "../../../src/features/currentDate";
-import { AppDispatch, RootState } from "../../../src/store";
+import { shiftMonthView } from "../../../features/currentDate";
+import { AppDispatch, RootState } from "../../../store";
 import MonthCalendar from "./CalendarSidePanel/MonthCalendar";
-function CalendarPanel() {
+function CalendarPanel({
+  eventWindow,
+  triggerEventWindow,
+}: {
+  eventWindow: boolean;
+  triggerEventWindow: (
+    value: boolean | ((prevVar: boolean) => boolean)
+  ) => void;
+}) {
   const dispatch = useDispatch<AppDispatch>();
   const monthViewDateStr = useSelector(
     (state: RootState) => state.currentDate.monthViewDate
@@ -21,7 +29,7 @@ function CalendarPanel() {
       <button
         className="eventTrigger"
         id="eventWindowButton"
-        onClick={() => eventViewTrigger()}
+        onClick={() => triggerEventWindow(!eventWindow)}
       >
         <img
           className="icon"

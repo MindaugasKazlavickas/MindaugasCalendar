@@ -1,4 +1,4 @@
-import { WeekDays } from "../../consts/consts";
+import { WeekDays } from "../consts";
 import { useMemo } from "react";
 function WeekviewTable() {
   const getDateTimeText = (hour: number): string => {
