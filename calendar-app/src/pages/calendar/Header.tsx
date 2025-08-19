@@ -5,6 +5,7 @@ import {
   shiftMonthView,
   shiftWeek,
 } from "../../features/currentDate";
+import { monthsLong, monthsShort } from "./MainContent/consts";
 function Header({
   calendarPanelState,
   setCalendarPanelDisplay,
@@ -19,7 +20,8 @@ function Header({
   const currentDateStr = useSelector(
     (state: RootState) => state.currentDate.currentDate
   );
-
+  const currentDate = new Date(currentDateStr);
+  let headerTimeframeDate = getHeaderTimeframeDate(currentDate);
   return (
     <header className="header">
       <div className="headerLeft">
@@ -93,7 +95,7 @@ function Header({
             <img src="./media/chevron_right.svg" alt="Go forward a month" />
           </button>
           <p className="headerCenterLeftHeading" id="monthDisplay">
-            2025
+            {headerTimeframeDate}
           </p>
         </div>
 
@@ -175,3 +177,30 @@ function Header({
   );
 }
 export default Header;
+
+function getHeaderTimeframeDate(currentDate: Date): string {
+  const getWeekStartDate = (): Date => {
+    return new Date(
+      new Date(currentDate.toString()).setDate(
+        currentDate.getDate() - currentDate.getDay()
+      )
+    );
+  };
+
+  const getMonthNames = () => {
+    let weekStartDate = getWeekStartDate();
+    let weekEndDate = new Date(
+      getWeekStartDate().setDate(weekStartDate.getDate() + 6)
+    );
+
+    return weekStartDate.getDate() > weekEndDate.getDate()
+      ? monthsShort[weekStartDate.getMonth()] +
+          " - " +
+          monthsShort[weekStartDate.getMonth() + 1]
+      : monthsLong[currentDate.getMonth()];
+  };
+  let headerDateDisplay = `${
+    getMonthNames() + ", " + currentDate.getFullYear()
+  }`;
+  return headerDateDisplay;
+}

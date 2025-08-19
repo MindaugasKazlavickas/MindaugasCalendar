@@ -166,7 +166,6 @@ code {
   --dropdown: 2;
   --above-all: 3;
   --marker-width: 100%;
-  --content-grid: 256px 1fr 56px;
 }
 
 .header {
@@ -372,7 +371,6 @@ code {
 
 .content {
   display: grid;
-  grid-template-columns: var(--contentGrid);
 }
 
 .rightSideMenu {
@@ -505,6 +503,7 @@ td.timeColumn {
 }
 
 .weekViewGridRow {
+  overflow: none;
   margin-top: 128px;
 }
 
@@ -661,6 +660,10 @@ td.timeColumn {
   position: absolute;
 }
 
+.meeting:hover {
+  cursor: pointer;
+}
+
 .overlappingShorterEvent {
   border: 1px solid white;
   text-align: right;
@@ -785,6 +788,11 @@ td.timeColumn {
 .settingsDropdown {
   margin: auto;
 }
+
+.basicButton:hover,
+.dropdownContent:hover {
+  cursor: pointer;
+}
 .basicButton {
   border: none;
   background-color: inherit;
@@ -880,9 +888,10 @@ td.timeColumn {
 .timeframeMarker {
   position: absolute;
   z-index: var(--tableTop);
-  display: none;
+  display: flex;
   align-items: center;
   height: 12px;
+  width: 100%;
 }
 .redDot {
   border-radius: 50%;

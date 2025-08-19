@@ -10,9 +10,6 @@ const currentDateSlice = createSlice({
   name: "currentDate",
   initialState,
   reducers: {
-    setCurrentDate(state, action: PayloadAction<string>) {
-      state.currentDate = action.payload;
-    },
     resetToToday(state) {
       const today = new Date().toISOString();
       state.currentDate = today;
@@ -38,7 +35,6 @@ const currentDateSlice = createSlice({
 });
 
 export const {
-  setCurrentDate,
   resetToToday,
   shiftWeek,
   shiftMonthView,

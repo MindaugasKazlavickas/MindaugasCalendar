@@ -1,7 +1,5 @@
 import { WeekDays } from "./consts";
-import { useEffect } from "react";
-
-import { sideCalendarMonth } from "../../../utils/displayTimeframeDate";
+import { monthsLong } from "./consts";
 import { useDispatch, useSelector } from "react-redux";
 import { shiftMonthView } from "../../../features/currentDate";
 import { AppDispatch, RootState } from "../../../store";
@@ -19,11 +17,6 @@ function CalendarPanel({
   const monthViewDateStr = useSelector(
     (state: RootState) => state.currentDate.monthViewDate
   );
-
-  useEffect(() => {
-    const monthViewdate = new Date(monthViewDateStr);
-    sideCalendarMonth(monthViewdate);
-  }, [monthViewDateStr]);
   return (
     <aside id="calendarSideView" className="calendarSidePanel">
       <button
@@ -46,7 +39,9 @@ function CalendarPanel({
 
       <div className="calendarHeader">
         <p id="calendarMonthDisplay" className="calendarMonth">
-          November, 2025
+          {monthsLong[new Date(monthViewDateStr).getMonth()] +
+            ", " +
+            new Date(monthViewDateStr).getFullYear()}
         </p>
         <div className="calendarSideViewButtons">
           <button

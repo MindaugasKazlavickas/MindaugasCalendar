@@ -1,9 +1,12 @@
-import { displayEvents, clearEvents } from "./displayEvents";
 import { StoredEvent } from "../utils/types";
 import { SERVER_URL } from "../pages/calendar/MainContent/consts";
 import apiRequest from "./sendAPIRequest";
 
-async function saveEvent(reduxDate: string, form: StoredEvent): Promise<void> {
+async function saveEvent(
+  reduxDate: string,
+  form: StoredEvent,
+  id?: number
+): Promise<void> {
   const currentDate = new Date(reduxDate);
   const isTitleEntered = form.title === "";
 
@@ -40,14 +43,10 @@ async function saveEvent(reduxDate: string, form: StoredEvent): Promise<void> {
     description: form.description,
   };
 
-  const idImgHolder = document
-    .getElementById("event")
-    ?.getElementsByTagName("img")[0];
   let result;
-  const existingEventId = idImgHolder?.getAttribute("id");
-  if (idImgHolder?.getAttribute("id")) {
+  if (id) {
     result = await apiRequest<StoredEvent>(
-      `${SERVER_URL}/${existingEventId}`,
+      `${SERVER_URL}/${id}`,
       "PUT",
       newEvent
     );
@@ -63,7 +62,7 @@ async function saveEvent(reduxDate: string, form: StoredEvent): Promise<void> {
     console.log(result.data);
   }
   console.log(newEvent);
-  clearEvents();
-  displayEvents(currentDate);
+  /*clearEvents();
+  displayEvents(currentDate);*/
 }
 export default saveEvent;

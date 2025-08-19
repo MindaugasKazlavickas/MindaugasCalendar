@@ -1,6 +1,13 @@
-import { WeekDays } from "../consts";
-import { useMemo } from "react";
-function WeekviewTable() {
+import { minToPxRatio, WeekDays } from "../consts";
+import { useEffect, useMemo, useRef } from "react";
+import {} from "../../../../api/displayEvents";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../store";
+function WeekviewTable({ isToday }: { isToday: boolean }) {
+  const currentWeekEvents = useSelector(
+    (state: RootState) => state.actualEvents.actualEvents
+  );
+  console.log(currentWeekEvents);
   const getDateTimeText = (hour: number): string => {
     switch (true) {
       case hour < 12:
@@ -14,7 +21,8 @@ function WeekviewTable() {
     }
   };
   const tableRows = useMemo(() => Array.from({ length: 24 }, (_, i) => i), []);
-
+  const today = new Date();
+  useEffect(() => {});
   return (
     <tbody>
       {tableRows.map((i) => (
@@ -27,7 +35,21 @@ function WeekviewTable() {
               className="weekViewGridBox"
               id={j + "_" + (+i + +1)}
               key={i + weekDay}
-            ></td>
+              style={{
+                position:
+                  isToday && today.getDay() === j && today.getHours() === i
+                    ? "relative"
+                    : "static",
+                overflow:
+                  isToday && today.getDay() === j && today.getHours() === i
+                    ? "inherit"
+                    : "none",
+              }}
+            >
+              {isToday && today.getDay() === j && today.getHours() === i && (
+                <TimeframeMarker />
+              )}
+            </td>
           ))}
         </tr>
       ))}
@@ -35,3 +57,24 @@ function WeekviewTable() {
   );
 }
 export default WeekviewTable;
+
+function TimeframeMarker() {
+  const footerRef = useRef<null | HTMLDivElement>(null);
+  useEffect(() => {
+    if (footerRef && footerRef.current) {
+      footerRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  });
+  const offsetTop = new Date().getMinutes() / minToPxRatio - 6;
+  return (
+    <div
+      className="timeframeMarker"
+      id="timeframeMarker"
+      ref={footerRef}
+      style={{ marginTop: `${offsetTop}px` }}
+    >
+      <span className="redDot"></span>
+      <hr className="redLine" />
+    </div>
+  );
+}

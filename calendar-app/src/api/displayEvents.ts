@@ -1,10 +1,11 @@
 import { SERVER_URL, minToPxRatio } from "../pages/calendar/MainContent/consts";
 import apiRequest from "./sendAPIRequest";
 import { StoredEvent } from "../utils/types";
-import createDOMElement from "../utils/createDOMElement";
-import { openEditEventWindow } from "../utils/handleEventForm";
-export async function displayEvents(currentDate: Date) {
-  const startOfWeekTime: Date = new Date(currentDate.toString());
+
+export async function retrieveEventsFromServer(
+  reduxDate: Date
+): Promise<StoredEvent[]> {
+  const startOfWeekTime: Date = new Date(reduxDate.toString());
   startOfWeekTime.setDate(startOfWeekTime.getDate() - startOfWeekTime.getDay());
   startOfWeekTime.setHours(0, 0, 0);
 
@@ -21,10 +22,13 @@ export async function displayEvents(currentDate: Date) {
 
   if (response.error || !response.data) {
     console.error("Error fetching events: ", response.error);
-    return;
+    return [];
   }
 
   const events = response.data;
+  return events;
+}
+/*export async function displayEvent(reduxDate: Date) {
   const eventDuration: number[] = [];
   for (let i = 0; i < events.length; i++) {
     const event = events[i];
@@ -50,21 +54,24 @@ export async function displayEvents(currentDate: Date) {
     };
     if (isSameDayEvent()) {
       eventDuration[i] = eventDuration[i] / minToPxRatio;
-      renderSameDayEvent(event, eventDuration[i]);
+      //renderSameDayEvent(event, eventDuration[i]);
     } else if (isLessThan24Hours()) {
       eventDuration[i] = (24 * 60 - eventDuration[i]) / minToPxRatio;
-      renderLessThan24Hours(event, eventDuration[i]);
+      //renderLessThan24Hours(event, eventDuration[i]);
     }
   }
 
-  checkOverlappingEvents(events, eventDuration);
-}
+  //checkOverlappingEvents(events, eventDuration);
+}*/
+
 export function clearEvents() {
   const displayedEvents = document.querySelectorAll<HTMLDivElement>(".meeting");
   displayedEvents.forEach((event) => {
     event.remove();
   });
 }
+
+/*
 function renderSameDayEvent(event: StoredEvent, eventDuration: number) {
   const item = createDOMElement("div", ["meeting"], "");
   item.setAttribute("id", event.id.toString());
@@ -168,3 +175,4 @@ function checkOverlappingEvents(
     }
   }
 }
+*/
