@@ -20,5 +20,5 @@ export interface CurrentDateState {
 }
 export interface EventDisplayState {
   isDisplayed: boolean;
-  actualEvents: [string: StoredEvent];
+  actualEvents: Record<string, StoredEvent>;
 }

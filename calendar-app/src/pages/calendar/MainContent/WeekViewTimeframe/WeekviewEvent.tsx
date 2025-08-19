@@ -1,39 +1,122 @@
 import { StoredEvent } from "../../../../utils/types";
 import { minToPxRatio } from "../consts";
-function DisplayEvent(event: StoredEvent) {
-  //eventDuration: number[] = [];
+function BuiltEventCell({ day, hour, events, onEdit }: any) {
+  const cellEvents = events.filter(
+    (e) => e.day === day && e.startHour === hour
+  );
+  const styledEvents = setupOverlaps(cellEvents);
 
-  const startDate = new Date(event.startDate.toString());
-  const endDate = new Date(event.endDate.toString());
-  const startTime = event.startTime;
-  const endTime = event.endTime;
+  return (
+    <>
+      {styledEvents.map((e) => (
+        <EventCell
+          key={e.event.id + "_" + e.day + "_" + e.startHour}
+          event={e.event}
+          durationInMinutes={e.durationInMinutes}
+          startMin={+e.event.startTime.slice(3, 5)}
+          width={e.width}
+          backgroundColor={e.backgroundColor}
+          onEdit={onEdit}
+        />
+      ))}
+    </>
+  );
+}
+export default BuiltEventCell;
+function preprocessEvents(events: StoredEvent[]) {
+  const setupEvent: {
+    event: StoredEvent;
+    day: number;
+    startHour: number;
+    durationInMinutes: number;
+  }[] = [];
 
-  const eventDuration =
-    Math.abs(+endTime.slice(0, 2) - +startTime.slice(0, 2)) * 60 +
-    Math.abs(+endTime.slice(3, 5) - +startTime.slice(3, 5));
-  const isSameDayEvent = (): boolean => {
-    return startDate.getDate() === endDate.getDate();
-  };
-  const isLessThan24Hours = (): boolean => {
-    const lastDayOfMonth = new Date(endDate.toString());
-    lastDayOfMonth.setDate(0);
-    return (
-      (endDate.getDate() === startDate.getDate() + 1 &&
-        endDate.getMonth() === startDate.getMonth()) ||
-      startDate.getDate() === lastDayOfMonth.getDate()
-    );
-  };
-  /*
-  if (isSameDayEvent()) {
-    eventDuration = eventDuration / minToPxRatio;
-    //renderSameDayEvent(event, eventDuration[i]);
-  } else if (isLessThan24Hours()) {
-    eventDuration[i] = (24 * 60 - eventDuration[i]) / minToPxRatio;
-    //renderLessThan24Hours(event, eventDuration[i]);
-  }*/
+  events.forEach((event) => {
+    const startDate = new Date(event.startDate);
+    const endDate = new Date(event.endDate);
+    const startHour = +event.startTime.slice(0, 2);
+    const startMin = +event.startTime.slice(3, 5);
+    const endHour = +event.endTime.slice(0, 2);
+    const endMin = +event.endTime.slice(3, 5);
 
-  //checkOverlappingEvents(events, eventDuration);
-  return null;
+    const durationInMinutes = (endHour - startHour) * 60 + (endMin - startMin);
+
+    if (startDate.toString() === endDate.toString()) {
+      setupEvent.push({
+        event,
+        day: startDate.getDay(),
+        startHour,
+        durationInMinutes,
+      });
+    } else {
+      const firstDayMins = 24 * 60 - (startHour * 60 + startMin);
+      setupEvent.push({
+        event,
+        day: startDate.getDay(),
+        startHour,
+        durationInMinutes: firstDayMins,
+      });
+      const secondDayMins = durationInMinutes - firstDayMins;
+      setupEvent.push({
+        event,
+        day: endDate.getDay(),
+        startHour: 0,
+        durationInMinutes: secondDayMins,
+      });
+    }
+  });
+  return setupEvent;
 }
 
-export default DisplayEvent;
+function setupOverlaps(eventsInCell: (typeof preprocessEvents)[0][]) {
+  return eventsInCell.map((event, id, array) => {
+    let overlap = 0;
+    array.forEach((item, i) => {
+      if (id !== i) {
+        const start1 = event.startHour * 60;
+        const end1 = event.startHour * 60 + event.durationInMinutes;
+        const start2 = item.startHour * 60;
+        const end2 = item.startHour * 60 + item.durationInMinutes;
+        if (end1 > start2 && start1 < end2) {
+          overlap++;
+        }
+      }
+    });
+    const width = 95 - overlap * 10;
+    const backgroundColor = `rgb(21, ${150 - overlap * 15}, ${
+      227 - overlap * 30
+    })`;
+    return { ...event, width, backgroundColor };
+  });
+}
+
+type EventCellProps = {
+  event: StoredEvent;
+  durationInMinutes: number;
+  width?: number;
+  backgroundColor?: string;
+  startMin?: number;
+  onEdit: (event: StoredEvent) => void;
+};
+
+const EventCell: React.FC<EventCellProps> = ({
+  event,
+  durationInMinutes,
+  width = 95,
+  backgroundColor = "var(--primary-event",
+  startMin = 0,
+  onEdit,
+}) => (
+  <div
+    className="meeting"
+    style={{
+      height: `${durationInMinutes / minToPxRatio}px`,
+      marginTop: `${startMin / minToPxRatio}px`,
+      width: `${width}px`,
+      backgroundColor: backgroundColor,
+    }}
+    onClick={() => onEdit(event)}
+  >
+    {`${event.startTime} - ${event.endTime} ${event.title}`}
+  </div>
+);

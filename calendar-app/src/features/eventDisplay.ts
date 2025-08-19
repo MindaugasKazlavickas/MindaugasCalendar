@@ -3,7 +3,7 @@ import { EventDisplayState } from "../utils/types";
 import { StoredEvent } from "../utils/types";
 export const initialState: EventDisplayState = {
   isDisplayed: false,
-  actualEvents: [],
+  actualEvents: {},
 };
 
 const eventDisplaySlice = createSlice({
@@ -13,12 +13,12 @@ const eventDisplaySlice = createSlice({
     triggerEventWindow(state, action: PayloadAction<boolean>) {
       state.isDisplayed = action.payload;
     },
-    getEvents(state, action: PayloadAction<[string: StoredEvent]>) {
+    setEvents(state, action: PayloadAction<Record<string, StoredEvent>>) {
       state.actualEvents = action.payload;
     },
   },
 });
 
-export const { triggerEventWindow, getEvents } = eventDisplaySlice.actions;
+export const { triggerEventWindow, setEvents } = eventDisplaySlice.actions;
 
 export default eventDisplaySlice.reducer;

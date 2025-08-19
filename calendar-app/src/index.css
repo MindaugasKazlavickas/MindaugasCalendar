@@ -892,6 +892,7 @@ td.timeColumn {
   align-items: center;
   height: 12px;
   width: 100%;
+  left: 0;
 }
 .redDot {
   border-radius: 50%;

@@ -78,10 +78,9 @@ function WeekViewTable() {
           </tr>
         </tbody>
       </table>
-      <table className="weekViewGrid" id="weekGrid">
-        {isMarked < 8 ? (markerIsShown = true) : (markerIsShown = false)}
-        <WeekviewTable isToday={markerIsShown} />
-      </table>
+
+      {isMarked < 8 ? (markerIsShown = true) : (markerIsShown = false)}
+      <WeekviewTable isToday={markerIsShown} />
     </main>
   );
 }

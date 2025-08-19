@@ -1,4 +1,4 @@
-import { SERVER_URL, minToPxRatio } from "../pages/calendar/MainContent/consts";
+import { SERVER_URL } from "../pages/calendar/MainContent/consts";
 import apiRequest from "./sendAPIRequest";
 import { StoredEvent } from "../utils/types";
 
