@@ -22,3 +22,17 @@ export interface EventDisplayState {
   isDisplayed: boolean;
   actualEvents: Record<string, StoredEvent>;
 }
+
+export interface PreprocessedEvent {
+  event: StoredEvent;
+  day: number;
+  startHour: number;
+  startMin: number;
+  durationInMinutes: number;
+}
+export interface BuiltEventCellProps {
+  day: number;
+  hour: number;
+  events: PreprocessedEvent[];
+  onEdit: (event: StoredEvent) => void;
+}

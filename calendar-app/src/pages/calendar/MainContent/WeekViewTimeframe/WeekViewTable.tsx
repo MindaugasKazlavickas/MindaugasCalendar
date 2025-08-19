@@ -3,7 +3,9 @@ import { useMemo } from "react";
 import {} from "../../../../api/displayEvents";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../store";
-
+import BuiltEventCell from "./WeekviewEvent";
+import { preprocessEvents } from "./WeekviewEvent";
+import { StoredEvent } from "../../../../utils/types";
 function WeekviewTable({ isToday }: { isToday: boolean }) {
   const tableRows = useMemo(() => Array.from({ length: 24 }, (_, i) => i), []);
   const today = new Date();
@@ -11,7 +13,11 @@ function WeekviewTable({ isToday }: { isToday: boolean }) {
   const currentWeekEvents = useSelector(
     (state: RootState) => state.actualEvents.actualEvents
   );
-  console.log(currentWeekEvents);
+
+  const preprocessedEvents = useMemo(
+    () => preprocessEvents(Object.values(currentWeekEvents)),
+    [currentWeekEvents]
+  );
   const getDateTimeText = (hour: number): string => {
     switch (true) {
       case hour < 12:
@@ -25,6 +31,9 @@ function WeekviewTable({ isToday }: { isToday: boolean }) {
     }
   };
 
+  const handleEdit = (event: StoredEvent) => {
+    console.log("Edit event", event);
+  };
   return (
     <table className="weekViewGrid" id="weekGrid">
       <tbody>
@@ -45,6 +54,13 @@ function WeekviewTable({ isToday }: { isToday: boolean }) {
                 {isToday && today.getDay() === j && today.getHours() === i && (
                   <TimeframeMarker />
                 )}
+
+                <BuiltEventCell
+                  day={j}
+                  hour={i}
+                  events={preprocessedEvents}
+                  onEdit={handleEdit}
+                />
               </td>
             ))}
           </tr>

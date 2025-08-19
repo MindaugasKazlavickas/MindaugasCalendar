@@ -1,8 +1,16 @@
-import { StoredEvent } from "../../../../utils/types";
 import { minToPxRatio } from "../consts";
-function BuiltEventCell({ day, hour, events, onEdit }: any) {
-  const cellEvents = events.filter(
-    (e) => e.day === day && e.startHour === hour
+import {
+  PreprocessedEvent,
+  BuiltEventCellProps,
+  StoredEvent,
+} from "../../../../utils/types";
+
+function BuiltEventCell({ day, hour, events, onEdit }: BuiltEventCellProps) {
+  const cellEvents = preprocessedEvents.filter(
+    (e) =>
+      e.day === day &&
+      hour * 60 < e.startHour * 60 + e.durationInMinutes &&
+      hour * 60 + 60 > e.startHour * 60
   );
   const styledEvents = setupOverlaps(cellEvents);
 
@@ -23,13 +31,9 @@ function BuiltEventCell({ day, hour, events, onEdit }: any) {
   );
 }
 export default BuiltEventCell;
-function preprocessEvents(events: StoredEvent[]) {
-  const setupEvent: {
-    event: StoredEvent;
-    day: number;
-    startHour: number;
-    durationInMinutes: number;
-  }[] = [];
+
+export function preprocessEvents(events: StoredEvent[]): PreprocessedEvent[] {
+  const setupEvent: PreprocessedEvent[] = [];
 
   events.forEach((event) => {
     const startDate = new Date(event.startDate);
@@ -46,6 +50,7 @@ function preprocessEvents(events: StoredEvent[]) {
         event,
         day: startDate.getDay(),
         startHour,
+        startMin,
         durationInMinutes,
       });
     } else {
@@ -54,6 +59,7 @@ function preprocessEvents(events: StoredEvent[]) {
         event,
         day: startDate.getDay(),
         startHour,
+        startMin,
         durationInMinutes: firstDayMins,
       });
       const secondDayMins = durationInMinutes - firstDayMins;
@@ -61,6 +67,7 @@ function preprocessEvents(events: StoredEvent[]) {
         event,
         day: endDate.getDay(),
         startHour: 0,
+        startMin: 0,
         durationInMinutes: secondDayMins,
       });
     }
@@ -68,15 +75,15 @@ function preprocessEvents(events: StoredEvent[]) {
   return setupEvent;
 }
 
-function setupOverlaps(eventsInCell: (typeof preprocessEvents)[0][]) {
+function setupOverlaps(eventsInCell: PreprocessedEvent[]) {
   return eventsInCell.map((event, id, array) => {
     let overlap = 0;
     array.forEach((item, i) => {
       if (id !== i) {
-        const start1 = event.startHour * 60;
-        const end1 = event.startHour * 60 + event.durationInMinutes;
-        const start2 = item.startHour * 60;
-        const end2 = item.startHour * 60 + item.durationInMinutes;
+        const start1 = event.startHour * 60 + event.startMin;
+        const end1 = start1 + event.durationInMinutes;
+        const start2 = item.startHour * 60 + item.startMin;
+        const end2 = start2 + item.durationInMinutes;
         if (end1 > start2 && start1 < end2) {
           overlap++;
         }
