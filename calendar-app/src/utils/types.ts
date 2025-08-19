@@ -27,7 +27,6 @@ export interface PreprocessedEvent {
   event: StoredEvent;
   day: number;
   startHour: number;
-  startMin: number;
   durationInMinutes: number;
 }
 export interface BuiltEventCellProps {

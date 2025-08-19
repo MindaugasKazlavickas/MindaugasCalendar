@@ -6,11 +6,8 @@ import {
 } from "../../../../utils/types";
 
 function BuiltEventCell({ day, hour, events, onEdit }: BuiltEventCellProps) {
-  const cellEvents = preprocessedEvents.filter(
-    (e) =>
-      e.day === day &&
-      hour * 60 < e.startHour * 60 + e.durationInMinutes &&
-      hour * 60 + 60 > e.startHour * 60
+  const cellEvents = events.filter(
+    (e) => e.day === day && e.startHour === hour
   );
   const styledEvents = setupOverlaps(cellEvents);
 
@@ -34,7 +31,6 @@ export default BuiltEventCell;
 
 export function preprocessEvents(events: StoredEvent[]): PreprocessedEvent[] {
   const setupEvent: PreprocessedEvent[] = [];
-
   events.forEach((event) => {
     const startDate = new Date(event.startDate);
     const endDate = new Date(event.endDate);
@@ -50,7 +46,6 @@ export function preprocessEvents(events: StoredEvent[]): PreprocessedEvent[] {
         event,
         day: startDate.getDay(),
         startHour,
-        startMin,
         durationInMinutes,
       });
     } else {
@@ -59,7 +54,6 @@ export function preprocessEvents(events: StoredEvent[]): PreprocessedEvent[] {
         event,
         day: startDate.getDay(),
         startHour,
-        startMin,
         durationInMinutes: firstDayMins,
       });
       const secondDayMins = durationInMinutes - firstDayMins;
@@ -67,7 +61,6 @@ export function preprocessEvents(events: StoredEvent[]): PreprocessedEvent[] {
         event,
         day: endDate.getDay(),
         startHour: 0,
-        startMin: 0,
         durationInMinutes: secondDayMins,
       });
     }
@@ -80,10 +73,10 @@ function setupOverlaps(eventsInCell: PreprocessedEvent[]) {
     let overlap = 0;
     array.forEach((item, i) => {
       if (id !== i) {
-        const start1 = event.startHour * 60 + event.startMin;
-        const end1 = start1 + event.durationInMinutes;
-        const start2 = item.startHour * 60 + item.startMin;
-        const end2 = start2 + item.durationInMinutes;
+        const start1 = event.startHour * 60;
+        const end1 = event.startHour * 60 + event.durationInMinutes;
+        const start2 = item.startHour * 60;
+        const end2 = item.startHour * 60 + item.durationInMinutes;
         if (end1 > start2 && start1 < end2) {
           overlap++;
         }
