@@ -6,9 +6,15 @@ import {
 } from "../../../../utils/types";
 
 function BuiltEventCell({ day, hour, events, onEdit }: BuiltEventCellProps) {
-  const cellEvents = events.filter(
-    (e) => e.day === day && e.startHour === hour
-  );
+  const cellEvents = events.filter((e) => {
+    const start =
+      e.startHour * 60 +
+      (e.event.startTime ? +e.event.startTime.slice(3, 5) : 0);
+    const end = start + e.durationInMinutes;
+    const cellStart = hour * 60;
+    const cellEnd = cellStart + 60;
+    return e.day === day && end > cellStart && start < cellEnd;
+  });
   const styledEvents = setupOverlaps(cellEvents);
 
   return (
@@ -41,7 +47,11 @@ export function preprocessEvents(events: StoredEvent[]): PreprocessedEvent[] {
 
     const durationInMinutes = (endHour - startHour) * 60 + (endMin - startMin);
 
-    if (startDate.toString() === endDate.toString()) {
+    const isSameDayEvent =
+      startDate.getFullYear() === endDate.getFullYear() &&
+      startDate.getMonth() === endDate.getMonth() &&
+      startDate.getDate() === endDate.getDate();
+    if (isSameDayEvent) {
       setupEvent.push({
         event,
         day: startDate.getDay(),
@@ -103,7 +113,7 @@ const EventCell: React.FC<EventCellProps> = ({
   event,
   durationInMinutes,
   width = 95,
-  backgroundColor = "var(--primary-event",
+  backgroundColor = "var(--primary-event)",
   startMin = 0,
   onEdit,
 }) => (
@@ -112,7 +122,7 @@ const EventCell: React.FC<EventCellProps> = ({
     style={{
       height: `${durationInMinutes / minToPxRatio}px`,
       marginTop: `${startMin / minToPxRatio}px`,
-      width: `${width}px`,
+      width: `${width}%`,
       backgroundColor: backgroundColor,
     }}
     onClick={() => onEdit(event)}
