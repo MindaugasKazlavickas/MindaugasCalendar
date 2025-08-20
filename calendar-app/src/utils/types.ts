@@ -45,3 +45,10 @@ export interface EventCellProps {
   startMin?: number;
   onEdit: (event: StoredEvent) => void;
 }
+
+export type StyledEvent = PreprocessedEvent & {
+  overlapLevel: number;
+  width: number;
+  leftOffset: number;
+  backgroundColor: string;
+};
