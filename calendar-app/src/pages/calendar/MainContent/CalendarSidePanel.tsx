@@ -9,9 +9,7 @@ function CalendarPanel({
   triggerEventWindow,
 }: {
   eventWindow: boolean;
-  triggerEventWindow: (
-    value: boolean | ((prevVar: boolean) => boolean)
-  ) => void;
+  triggerEventWindow: (value: boolean) => void;
 }) {
   const dispatch = useDispatch<AppDispatch>();
   const monthViewDateStr = useSelector(

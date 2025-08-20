@@ -18,9 +18,7 @@ function Content({
     value: boolean | ((prevVar: boolean) => boolean)
   ) => void;
   eventWindow: boolean;
-  triggerEventWindow: (
-    value: boolean | ((prevVar: boolean) => boolean)
-  ) => void;
+  triggerEventWindow: (value: boolean) => void;
 }) {
   return (
     <>

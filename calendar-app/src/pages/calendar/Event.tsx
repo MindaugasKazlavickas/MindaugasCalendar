@@ -4,7 +4,6 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { ChangeEvent, useEffect, useState } from "react";
 import { StoredEvent } from "../../utils/types";
-import { useEventContext } from "../../utils/EventContext";
 
 export class Form implements StoredEvent {
   id = 0;
@@ -19,15 +18,15 @@ export class Form implements StoredEvent {
   [key: string]: string | number | undefined;
 }
 
+// triggerEventWindow: (value: boolean | ((prevVar: boolean) => boolean)) => void;
+
 function Event({
   eventWindow,
   triggerEventWindow,
   initialEvent,
 }: {
   eventWindow: boolean;
-  triggerEventWindow: (
-    value: boolean | ((prevVar: boolean) => boolean)
-  ) => void;
+  triggerEventWindow: (value: boolean) => void;
   initialEvent?: StoredEvent;
 }) {
   const [form, setForm] = useState<Form>(

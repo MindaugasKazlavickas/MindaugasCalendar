@@ -5,10 +5,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../../store";
 import BuiltEventCell from "./WeekviewEvent";
 import { preprocessEvents } from "./WeekviewEvent";
-import { StoredEvent } from "../../../../utils/types";
-import { useEventContext } from "../../../../utils/EventContext";
 function WeekviewTable({ isToday }: { isToday: boolean }) {
-  const { setEventWindow, setSelectedEvent } = useEventContext();
   const tableRows = useMemo(() => Array.from({ length: 24 }, (_, i) => i), []);
   const today = new Date();
 
@@ -32,8 +29,6 @@ function WeekviewTable({ isToday }: { isToday: boolean }) {
         return "";
     }
   };
-
-  console.log(preprocessedEvents);
   return (
     <table className="weekViewGrid" id="weekGrid">
       <tbody>
@@ -54,8 +49,13 @@ function WeekviewTable({ isToday }: { isToday: boolean }) {
                 {isToday && today.getDay() === j && today.getHours() === i && (
                   <TimeframeMarker />
                 )}
-
-                <BuiltEventCell day={j} hour={i} events={preprocessedEvents} />
+                {BuiltEventCell && (
+                  <BuiltEventCell
+                    day={j}
+                    hour={i}
+                    events={preprocessedEvents}
+                  />
+                )}
               </td>
             ))}
           </tr>
