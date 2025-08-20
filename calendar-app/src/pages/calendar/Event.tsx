@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { ChangeEvent, useEffect, useState } from "react";
 import { StoredEvent } from "../../utils/types";
+import { useEventContext } from "../../utils/EventContext";
 
 export class Form implements StoredEvent {
   id = 0;
@@ -21,17 +22,29 @@ export class Form implements StoredEvent {
 function Event({
   eventWindow,
   triggerEventWindow,
+  initialEvent,
 }: {
   eventWindow: boolean;
   triggerEventWindow: (
     value: boolean | ((prevVar: boolean) => boolean)
   ) => void;
+  initialEvent?: StoredEvent;
 }) {
-  const [form, setForm] = useState<Form>(new Form());
+  const { isEventWindow, setEventWindow, selectedEvent, setSelectedEvent } =
+    useEventContext();
+  const [form, setForm] = useState<Form>(
+    initialEvent ? { ...initialEvent } : new Form()
+  );
   const [isEndDateField, setEndDateField] = useState(false);
   const currentDateStr = useSelector(
     (state: RootState) => state.currentDate.currentDate
   );
+
+  useEffect(() => {
+    setForm(selectedEvent);
+  }, [selectedEvent]);
+
+  if (!isEventWindow) return null;
 
   function handleShowEndDate() {
     const areTimesEntered = form.startTime !== "" && form.endTime !== "";

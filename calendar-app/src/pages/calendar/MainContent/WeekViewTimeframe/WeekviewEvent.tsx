@@ -6,7 +6,8 @@ import {
   EventCellProps,
   StyledEvent,
 } from "../../../../utils/types";
-function BuiltEventCell({ day, hour, events, onEdit }: BuiltEventCellProps) {
+import { useEventContext } from "../../../../utils/EventContext";
+function BuiltEventCell({ day, hour, events }: BuiltEventCellProps) {
   const dayEvents = events.filter((e) => e.day === day);
   const styledEvents = setupOverlaps(dayEvents);
 
@@ -23,7 +24,6 @@ function BuiltEventCell({ day, hour, events, onEdit }: BuiltEventCellProps) {
           width={e.width}
           leftOffset={e.leftOffset}
           backgroundColor={e.backgroundColor}
-          onEdit={onEdit}
         />
       ))}
     </>
@@ -139,20 +139,28 @@ const EventCell: React.FC<EventCellProps> = ({
   leftOffset = 0,
   backgroundColor = "var(--primary-event)",
   startMin = 0,
-  onEdit,
-}) => (
-  <div
-    className="meeting"
-    style={{
-      position: "absolute",
-      height: `${durationInMinutes / minToPxRatio}px`,
-      marginTop: `${startMin / minToPxRatio}px`,
-      width: `${width}%`,
-      left: `${leftOffset}%`,
-      backgroundColor: backgroundColor,
-    }}
-    onClick={() => onEdit(event)}
-  >
-    {`${event.startTime} - ${event.endTime} ${event.title}`}
-  </div>
-);
+}) => {
+  const { setEventWindow, setSelectedEvent } = useEventContext();
+
+  const handleClick = () => {
+    setSelectedEvent(event);
+    setEventWindow(true);
+  };
+
+  return (
+    <div
+      className="meeting"
+      style={{
+        position: "absolute",
+        height: `${durationInMinutes / minToPxRatio}px`,
+        marginTop: `${startMin / minToPxRatio}px`,
+        width: `${width}%`,
+        left: `${leftOffset}%`,
+        backgroundColor: backgroundColor,
+      }}
+      onClick={handleClick}
+    >
+      {`${event.startTime} - ${event.endTime} ${event.title}`}
+    </div>
+  );
+};

@@ -6,7 +6,9 @@ import { RootState } from "../../../../store";
 import BuiltEventCell from "./WeekviewEvent";
 import { preprocessEvents } from "./WeekviewEvent";
 import { StoredEvent } from "../../../../utils/types";
+import { useEventContext } from "../../../../utils/EventContext";
 function WeekviewTable({ isToday }: { isToday: boolean }) {
+  const { setEventWindow, setSelectedEvent } = useEventContext();
   const tableRows = useMemo(() => Array.from({ length: 24 }, (_, i) => i), []);
   const today = new Date();
 
@@ -31,10 +33,6 @@ function WeekviewTable({ isToday }: { isToday: boolean }) {
     }
   };
 
-  const handleEdit = (event: StoredEvent) => {
-    console.log("Edit event", event);
-  };
-
   console.log(preprocessedEvents);
   return (
     <table className="weekViewGrid" id="weekGrid">
@@ -57,12 +55,7 @@ function WeekviewTable({ isToday }: { isToday: boolean }) {
                   <TimeframeMarker />
                 )}
 
-                <BuiltEventCell
-                  day={j}
-                  hour={i}
-                  events={preprocessedEvents}
-                  onEdit={handleEdit}
-                />
+                <BuiltEventCell day={j} hour={i} events={preprocessedEvents} />
               </td>
             ))}
           </tr>

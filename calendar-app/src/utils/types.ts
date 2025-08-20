@@ -34,7 +34,6 @@ export interface BuiltEventCellProps {
   day: number;
   hour: number;
   events: PreprocessedEvent[];
-  onEdit: (event: StoredEvent) => void;
 }
 
 export interface EventCellProps {
@@ -44,7 +43,6 @@ export interface EventCellProps {
   leftOffset: number;
   backgroundColor?: string;
   startMin?: number;
-  onEdit: (event: StoredEvent) => void;
 }
 
 export type StyledEvent = PreprocessedEvent & {
@@ -52,4 +50,11 @@ export type StyledEvent = PreprocessedEvent & {
   width: number;
   leftOffset: number;
   backgroundColor: string;
+};
+
+export type EventContextType = {
+  isEventWindow: boolean;
+  setEventWindow: (value: boolean) => void;
+  selectedEvent: StoredEvent | null;
+  setSelectedEvent: (event: StoredEvent | null) => void;
 };
