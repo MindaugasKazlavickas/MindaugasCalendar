@@ -1,4 +1,4 @@
-import saveEvent from "../../api/saveEvent";
+import saveEvent from "../../api/saveAndEditEvent";
 import deleteEvent from "../../api/deleteEvent";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
@@ -28,9 +28,7 @@ function Event({
   triggerEventWindow: (value: boolean) => void;
   initialEvent?: StoredEvent | null;
 }) {
-  const [form, setForm] = useState<Form>(
-    initialEvent ? { ...initialEvent } : new Form()
-  );
+  const [form, setForm] = useState<Form>(new Form());
 
   useEffect(() => {
     if (initialEvent) {
@@ -90,7 +88,7 @@ function Event({
           className="iconButton"
           onClick={() => {
             triggerEventWindow(!eventWindow);
-            deleteEvent(currentDateStr);
+            deleteEvent(currentDateStr, initialEvent ? initialEvent.id : 0);
           }}
         >
           <img src="./media/delete.svg" alt="Delete event" />

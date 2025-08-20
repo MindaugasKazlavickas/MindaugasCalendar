@@ -4,6 +4,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { shiftMonthView } from "../../../features/currentDate";
 import { AppDispatch, RootState } from "../../../store";
 import MonthCalendar from "./CalendarSidePanel/MonthCalendar";
+import { StoredEvent } from "../../../utils/types";
+import { useState } from "react";
+import { useEventContext } from "../../../utils/EventContext";
 function CalendarPanel({
   eventWindow,
   triggerEventWindow,
@@ -11,6 +14,12 @@ function CalendarPanel({
   eventWindow: boolean;
   triggerEventWindow: (value: boolean) => void;
 }) {
+  const { setEventWindow, setSelectedEvent } = useEventContext();
+
+  const openNewEventForm = () => {
+    setSelectedEvent(null);
+    setEventWindow(true);
+  };
   const dispatch = useDispatch<AppDispatch>();
   const monthViewDateStr = useSelector(
     (state: RootState) => state.currentDate.monthViewDate
@@ -20,7 +29,7 @@ function CalendarPanel({
       <button
         className="eventTrigger"
         id="eventWindowButton"
-        onClick={() => triggerEventWindow(!eventWindow)}
+        onClick={openNewEventForm}
       >
         <img
           className="icon"
