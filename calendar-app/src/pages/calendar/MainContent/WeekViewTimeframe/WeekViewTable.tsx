@@ -1,6 +1,6 @@
 import { minToPxRatio, WeekDays } from "../consts";
 import { useMemo } from "react";
-import {} from "../../../../api/displayEvents";
+import {} from "../../../../api/getEvents";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../store";
 import BuiltEventCell from "./WeekviewEvent";

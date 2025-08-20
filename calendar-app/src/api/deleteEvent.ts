@@ -1,6 +1,5 @@
 import { SERVER_URL } from "../pages/calendar/MainContent/consts";
 import apiRequest from "./sendAPIRequest";
-import { clearEvents } from "./displayEvents";
 
 async function deleteEvent(reduxDate: string): Promise<void> {
   const currentDate = new Date(reduxDate);
@@ -23,7 +22,7 @@ async function deleteEvent(reduxDate: string): Promise<void> {
     return;
   }
   console.log("Successfully deleted event with ID: ", idToDelete);
-  clearEvents();
+  //clearEvents();
   //displayEvents(currentDate);
 }
 export default deleteEvent;

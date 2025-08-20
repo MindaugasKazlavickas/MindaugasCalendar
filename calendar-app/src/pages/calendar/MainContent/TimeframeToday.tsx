@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import timeframeUpdate from "../../../utils/updateTimeframe";
 
 import { setEvents } from "../../../features/eventDisplay";
-import { retrieveEventsFromServer } from "../../../api/displayEvents";
+import { retrieveEventsFromServer } from "../../../api/getEvents";
 import { StoredEvent } from "../../../utils/types";
 export default function TimeframeToday() {
   const dispatch = useDispatch();
