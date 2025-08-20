@@ -1,8 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../store";
 import { useEffect } from "react";
-import timeframeUpdate from "../../../utils/updateTimeframe";
-
 import { setEvents } from "../../../features/eventDisplay";
 import { retrieveEventsFromServer } from "../../../api/getEvents";
 import { StoredEvent } from "../../../utils/types";
@@ -13,7 +11,6 @@ export default function TimeframeToday() {
   );
   useEffect(() => {
     const currentDate = new Date(currentDateStr);
-    timeframeUpdate(currentDate);
 
     const weekKey = getWeekKey(currentDate);
 
@@ -30,8 +27,8 @@ export default function TimeframeToday() {
         const startDate = new Date(event.startDate);
         const dayOfWeek = startDate.getDay();
         const hour = +event.startTime.slice(0, 2);
-        const eventKey = `${index}_${dayOfWeek}_${hour}`;
-        eventMap[eventKey] = event;
+        const eventKey = event.eventKey ?? `${index}_${dayOfWeek}_${hour}`;
+        eventMap[eventKey] = { ...event, eventKey };
       });
 
       sessionStorage.setItem(weekKey, JSON.stringify(eventMap));

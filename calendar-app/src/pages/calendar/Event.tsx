@@ -16,6 +16,7 @@ export class Form implements StoredEvent {
   location? = "";
   description? = "";
   [key: string]: string | number | undefined;
+  eventKey = "";
 }
 
 function Event({
@@ -32,11 +33,9 @@ function Event({
   );
 
   useEffect(() => {
-    console.log(initialEvent);
     if (initialEvent) {
       setEndDateField(true);
       setForm({ ...initialEvent });
-      console.log("FORM SEt");
     } else {
       setForm(new Form());
     }
@@ -195,7 +194,10 @@ function Event({
       <button
         id="eventSaveButton"
         className="eventSaveButton"
-        onClick={() => saveEvent(currentDateStr, form)}
+        onClick={() => {
+          saveEvent(currentDateStr, form);
+          triggerEventWindow(false);
+        }}
       >
         Save
       </button>

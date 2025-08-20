@@ -1,13 +1,14 @@
 import { StoredEvent } from "../utils/types";
 import { SERVER_URL } from "../pages/calendar/MainContent/consts";
 import apiRequest from "./sendAPIRequest";
+import { addEvent, updateEvent } from "../features/eventDisplay";
+import { store } from "../store";
 
 async function saveEvent(
   reduxDate: string,
   form: StoredEvent,
   id?: number
 ): Promise<void> {
-  const currentDate = new Date(reduxDate);
   const isTitleEntered = form.title === "";
 
   const areDatesEntered =
@@ -41,6 +42,7 @@ async function saveEvent(
     guests: form.guests,
     location: form.location,
     description: form.description,
+    eventKey: "",
   };
 
   let result;
@@ -50,8 +52,10 @@ async function saveEvent(
       "PUT",
       newEvent
     );
+    store.dispatch(updateEvent(newEvent));
   } else {
     result = await apiRequest<StoredEvent>(SERVER_URL, "POST", newEvent);
+    store.dispatch(addEvent(newEvent));
   }
 
   if (result.error) {
@@ -62,7 +66,5 @@ async function saveEvent(
     console.log(result.data);
   }
   console.log(newEvent);
-  /*clearEvents();
-  displayEvents(currentDate);*/
 }
 export default saveEvent;

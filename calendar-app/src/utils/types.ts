@@ -8,6 +8,7 @@ export interface StoredEvent {
   guests?: string;
   location?: string;
   description?: string;
+  eventKey: string;
 }
 export interface APIResponse<T> {
   status: number;
