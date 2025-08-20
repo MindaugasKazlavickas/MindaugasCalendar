@@ -34,6 +34,8 @@ function WeekviewTable({ isToday }: { isToday: boolean }) {
   const handleEdit = (event: StoredEvent) => {
     console.log("Edit event", event);
   };
+
+  console.log(preprocessedEvents);
   return (
     <table className="weekViewGrid" id="weekGrid">
       <tbody>

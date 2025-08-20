@@ -27,11 +27,21 @@ export interface PreprocessedEvent {
   event: StoredEvent;
   day: number;
   startHour: number;
+  startMin: number;
   durationInMinutes: number;
 }
 export interface BuiltEventCellProps {
   day: number;
   hour: number;
   events: PreprocessedEvent[];
+  onEdit: (event: StoredEvent) => void;
+}
+
+export interface EventCellProps {
+  event: StoredEvent;
+  durationInMinutes: number;
+  width?: number;
+  backgroundColor?: string;
+  startMin?: number;
   onEdit: (event: StoredEvent) => void;
 }

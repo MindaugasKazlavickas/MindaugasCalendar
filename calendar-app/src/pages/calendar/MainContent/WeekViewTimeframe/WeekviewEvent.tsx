@@ -3,18 +3,19 @@ import {
   PreprocessedEvent,
   BuiltEventCellProps,
   StoredEvent,
+  EventCellProps,
 } from "../../../../utils/types";
-
 function BuiltEventCell({ day, hour, events, onEdit }: BuiltEventCellProps) {
-  const cellEvents = events.filter((e) => {
-    const start =
+  const cellEvents = events.filter(
+    (e) => e.day === day && e.startHour === hour
+    /*const start =
       e.startHour * 60 +
       (e.event.startTime ? +e.event.startTime.slice(3, 5) : 0);
     const end = start + e.durationInMinutes;
     const cellStart = hour * 60;
     const cellEnd = cellStart + 60;
-    return e.day === day && end > cellStart && start < cellEnd;
-  });
+    return e.day === day && end > cellStart && start < cellEnd;*/
+  );
   const styledEvents = setupOverlaps(cellEvents);
 
   return (
@@ -24,7 +25,7 @@ function BuiltEventCell({ day, hour, events, onEdit }: BuiltEventCellProps) {
           key={e.event.id + "_" + e.day + "_" + e.startHour}
           event={e.event}
           durationInMinutes={e.durationInMinutes}
-          startMin={+e.event.startTime.slice(3, 5)}
+          startMin={+e.startMin}
           width={e.width}
           backgroundColor={e.backgroundColor}
           onEdit={onEdit}
@@ -45,32 +46,36 @@ export function preprocessEvents(events: StoredEvent[]): PreprocessedEvent[] {
     const endHour = +event.endTime.slice(0, 2);
     const endMin = +event.endTime.slice(3, 5);
 
-    const durationInMinutes = (endHour - startHour) * 60 + (endMin - startMin);
-
     const isSameDayEvent =
       startDate.getFullYear() === endDate.getFullYear() &&
       startDate.getMonth() === endDate.getMonth() &&
       startDate.getDate() === endDate.getDate();
     if (isSameDayEvent) {
+      const durationInMinutes =
+        (endHour - startHour) * 60 + (endMin - startMin);
       setupEvent.push({
         event,
         day: startDate.getDay(),
         startHour,
+        startMin,
         durationInMinutes,
       });
     } else {
       const firstDayMins = 24 * 60 - (startHour * 60 + startMin);
+      const secondDayMins = endHour * 60 + endMin;
       setupEvent.push({
         event,
         day: startDate.getDay(),
         startHour,
+        startMin,
         durationInMinutes: firstDayMins,
       });
-      const secondDayMins = durationInMinutes - firstDayMins;
+
       setupEvent.push({
         event,
         day: endDate.getDay(),
         startHour: 0,
+        startMin: 0,
         durationInMinutes: secondDayMins,
       });
     }
@@ -99,15 +104,6 @@ function setupOverlaps(eventsInCell: PreprocessedEvent[]) {
     return { ...event, width, backgroundColor };
   });
 }
-
-type EventCellProps = {
-  event: StoredEvent;
-  durationInMinutes: number;
-  width?: number;
-  backgroundColor?: string;
-  startMin?: number;
-  onEdit: (event: StoredEvent) => void;
-};
 
 const EventCell: React.FC<EventCellProps> = ({
   event,
