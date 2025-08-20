@@ -30,22 +30,14 @@ function Event({
   ) => void;
   initialEvent?: StoredEvent;
 }) {
-  const { isEventWindow, setEventWindow, selectedEvent, setSelectedEvent } =
-    useEventContext();
   const [form, setForm] = useState<Form>(
     initialEvent ? { ...initialEvent } : new Form()
   );
+
   const [isEndDateField, setEndDateField] = useState(false);
   const currentDateStr = useSelector(
     (state: RootState) => state.currentDate.currentDate
   );
-
-  useEffect(() => {
-    setForm(selectedEvent);
-  }, [selectedEvent]);
-
-  if (!isEventWindow) return null;
-
   function handleShowEndDate() {
     const areTimesEntered = form.startTime !== "" && form.endTime !== "";
     const isEventEndAfterStart =
