@@ -14,11 +14,11 @@ export default function TimeframeToday() {
 
     const weekKey = getWeekKey(currentDate);
 
-    const cached = sessionStorage.getItem(weekKey);
+    /*const cached = sessionStorage.getItem(weekKey);
     if (cached) {
       dispatch(setEvents(JSON.parse(cached)));
       return;
-    }
+    }*/
 
     retrieveEventsFromServer(currentDate).then((events) => {
       const eventMap: Record<string, StoredEvent> = {};
@@ -31,14 +31,14 @@ export default function TimeframeToday() {
         eventMap[eventKey] = { ...event, eventKey };
       });
 
-      sessionStorage.setItem(weekKey, JSON.stringify(eventMap));
+      //sessionStorage.setItem(weekKey, JSON.stringify(eventMap));
       dispatch(setEvents(eventMap));
     });
   }, [currentDateStr]);
   return null;
 }
 
-function getWeekKey(currentWeekDate: Date): string {
+export function getWeekKey(currentWeekDate: Date): string {
   const saveDate = new Date(currentWeekDate);
 
   const day = saveDate.getDay();

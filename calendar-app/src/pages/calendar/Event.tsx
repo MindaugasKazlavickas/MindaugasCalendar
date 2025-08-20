@@ -1,9 +1,10 @@
 import saveEvent from "../../api/saveAndEditEvent";
 import deleteEvent from "../../api/deleteEvent";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { ChangeEvent, useEffect, useState } from "react";
 import { StoredEvent } from "../../utils/types";
+import { removeEvent } from "../../features/eventDisplay";
 
 export class Form implements StoredEvent {
   id = 0;
@@ -28,6 +29,7 @@ function Event({
   triggerEventWindow: (value: boolean) => void;
   initialEvent?: StoredEvent | null;
 }) {
+  const dispatch = useDispatch();
   const [form, setForm] = useState<Form>(new Form());
 
   useEffect(() => {
@@ -86,9 +88,18 @@ function Event({
         <button
           id="deleteEventButton"
           className="iconButton"
-          onClick={() => {
-            triggerEventWindow(!eventWindow);
-            deleteEvent(currentDateStr, initialEvent ? initialEvent.id : 0);
+          onClick={async () => {
+            if (!initialEvent) {
+              return;
+            } else {
+              const result = await deleteEvent(initialEvent, initialEvent.id);
+              if (result.success) {
+                dispatch(removeEvent(initialEvent));
+                triggerEventWindow(!eventWindow);
+              } else {
+                console.error(result.error);
+              }
+            }
           }}
         >
           <img src="./media/delete.svg" alt="Delete event" />
@@ -193,7 +204,7 @@ function Event({
         id="eventSaveButton"
         className="eventSaveButton"
         onClick={async () => {
-          const result = await saveEvent(currentDateStr, form, form.id);
+          const result = await saveEvent(form, form.id);
           if (result.success) {
             triggerEventWindow(false);
           } else {

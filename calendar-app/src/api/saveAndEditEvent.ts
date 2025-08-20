@@ -1,14 +1,13 @@
-import { StoredEvent, SaveResult } from "../utils/types";
+import { StoredEvent, RequestResult } from "../utils/types";
 import { SERVER_URL } from "../pages/calendar/MainContent/consts";
 import apiRequest from "./sendAPIRequest";
 import { addEvent, updateEvent } from "../features/eventDisplay";
 import { store } from "../store";
 
 async function saveEvent(
-  reduxDate: string,
   form: StoredEvent,
   id?: number
-): Promise<SaveResult> {
+): Promise<RequestResult> {
   const isTitleEntered = !form.title || form.title.trim() === "";
 
   const areDatesEntered = !form.startDate || !form.startTime || !form.endTime;
