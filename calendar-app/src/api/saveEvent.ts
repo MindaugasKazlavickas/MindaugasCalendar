@@ -1,4 +1,4 @@
-import { StoredEvent } from "../utils/types";
+import { StoredEvent, SaveResult } from "../utils/types";
 import { SERVER_URL } from "../pages/calendar/MainContent/consts";
 import apiRequest from "./sendAPIRequest";
 import { addEvent, updateEvent } from "../features/eventDisplay";
@@ -8,11 +8,10 @@ async function saveEvent(
   reduxDate: string,
   form: StoredEvent,
   id?: number
-): Promise<void> {
-  const isTitleEntered = form.title === "";
+): Promise<SaveResult> {
+  const isTitleEntered = !form.title || form.title.trim() === "";
 
-  const areDatesEntered =
-    form.startDate == null || form.startTime == null || form.endTime == null;
+  const areDatesEntered = !form.startDate || !form.startTime || !form.endTime;
 
   const isEndAfterStart =
     form.startDate > form.endDate ||
@@ -20,17 +19,24 @@ async function saveEvent(
 
   if (isTitleEntered) {
     alert("Title is mandatory.");
-    return;
+    return { success: false, error: "Title is mandatory." };
   } else if (areDatesEntered) {
     alert("Make sure to enter start and end time and date.");
-    return;
+    return {
+      success: false,
+      error: "Make sure to enter start and end time and date.",
+    };
   } else if (!isEndAfterStart) {
     alert("End time of event can not be before the start time.");
-    return;
+    return {
+      success: false,
+      error: "End time of event can not be before the start time.",
+    };
   }
   if (form.endDate.toString() === "Invalid Date" || form.endDate === "") {
     form.endDate = form.startDate;
   }
+
   const newEvent: StoredEvent = {
     id: Date.now(),
     title: form.title,
@@ -42,7 +48,7 @@ async function saveEvent(
     guests: form.guests,
     location: form.location,
     description: form.description,
-    eventKey: "",
+    eventKey: form.eventKey ?? "",
   };
 
   let result;
@@ -60,11 +66,18 @@ async function saveEvent(
 
   if (result.error) {
     console.log("Error saving event: " + result.error);
-    return;
+    return {
+      success: false,
+      error: result.error,
+    };
   } else {
     console.log("Event saved with ID: ", newEvent.id);
     console.log(result.data);
   }
   console.log(newEvent);
+  return {
+    success: true,
+    event: newEvent,
+  };
 }
 export default saveEvent;

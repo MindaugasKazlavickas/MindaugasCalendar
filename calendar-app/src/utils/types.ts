@@ -59,3 +59,7 @@ export type EventContextType = {
   selectedEvent: StoredEvent | null;
   setSelectedEvent: (event: StoredEvent | null) => void;
 };
+
+export type SaveResult =
+  | { success: true; event: StoredEvent }
+  | { success: false; error: string };

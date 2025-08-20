@@ -17,7 +17,7 @@ const eventDisplaySlice = createSlice({
       state.actualEvents[action.payload.id] = action.payload;
     },
     updateEvent(state, action: PayloadAction<StoredEvent>) {
-      const id = action.payload.id;
+      const id = action.payload.eventKey;
       if (state.actualEvents[id]) {
         state.actualEvents[id] = action.payload;
       } else {

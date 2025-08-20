@@ -194,9 +194,13 @@ function Event({
       <button
         id="eventSaveButton"
         className="eventSaveButton"
-        onClick={() => {
-          saveEvent(currentDateStr, form);
-          triggerEventWindow(false);
+        onClick={async () => {
+          const result = await saveEvent(currentDateStr, form, form.id);
+          if (result.success) {
+            triggerEventWindow(false);
+          } else {
+            console.error(result.error);
+          }
         }}
       >
         Save
