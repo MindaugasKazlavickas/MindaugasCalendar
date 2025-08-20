@@ -8,6 +8,7 @@ function App() {
   const [isRightSidePanel, setRightSidePanel] = useState(true);
   //const [isEventWindow, setEventWindow] = useState(false);
   const { isEventWindow, setEventWindow } = useEventContext();
+  const { selectedEvent } = useEventContext();
   return (
     <div className="App">
       <Header
@@ -25,6 +26,7 @@ function App() {
         <Event
           eventWindow={isEventWindow}
           triggerEventWindow={setEventWindow}
+          initialEvent={selectedEvent}
         />
       )}
     </div>

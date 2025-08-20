@@ -18,8 +18,6 @@ export class Form implements StoredEvent {
   [key: string]: string | number | undefined;
 }
 
-// triggerEventWindow: (value: boolean | ((prevVar: boolean) => boolean)) => void;
-
 function Event({
   eventWindow,
   triggerEventWindow,
@@ -27,13 +25,24 @@ function Event({
 }: {
   eventWindow: boolean;
   triggerEventWindow: (value: boolean) => void;
-  initialEvent?: StoredEvent;
+  initialEvent?: StoredEvent | null;
 }) {
   const [form, setForm] = useState<Form>(
     initialEvent ? { ...initialEvent } : new Form()
   );
 
+  useEffect(() => {
+    console.log(initialEvent);
+    if (initialEvent) {
+      setEndDateField(true);
+      setForm({ ...initialEvent });
+      console.log("FORM SEt");
+    } else {
+      setForm(new Form());
+    }
+  }, [initialEvent]);
   const [isEndDateField, setEndDateField] = useState(false);
+
   const currentDateStr = useSelector(
     (state: RootState) => state.currentDate.currentDate
   );
