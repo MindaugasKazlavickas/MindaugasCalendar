@@ -41,6 +41,7 @@ export interface EventCellProps {
   event: StoredEvent;
   durationInMinutes: number;
   width?: number;
+  leftOffset: number;
   backgroundColor?: string;
   startMin?: number;
   onEdit: (event: StoredEvent) => void;

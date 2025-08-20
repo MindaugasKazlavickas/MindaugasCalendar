@@ -21,6 +21,7 @@ function BuiltEventCell({ day, hour, events, onEdit }: BuiltEventCellProps) {
           durationInMinutes={e.durationInMinutes}
           startMin={+e.startMin}
           width={e.width}
+          leftOffset={e.leftOffset}
           backgroundColor={e.backgroundColor}
           onEdit={onEdit}
         />
@@ -135,6 +136,7 @@ const EventCell: React.FC<EventCellProps> = ({
   event,
   durationInMinutes,
   width = 95,
+  leftOffset = 0,
   backgroundColor = "var(--primary-event)",
   startMin = 0,
   onEdit,
@@ -142,9 +144,11 @@ const EventCell: React.FC<EventCellProps> = ({
   <div
     className="meeting"
     style={{
+      position: "absolute",
       height: `${durationInMinutes / minToPxRatio}px`,
       marginTop: `${startMin / minToPxRatio}px`,
       width: `${width}%`,
+      left: `${leftOffset}%`,
       backgroundColor: backgroundColor,
     }}
     onClick={() => onEdit(event)}
