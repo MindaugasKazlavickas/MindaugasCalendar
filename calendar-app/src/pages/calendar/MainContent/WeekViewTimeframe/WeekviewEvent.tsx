@@ -6,21 +6,14 @@ import {
   EventCellProps,
 } from "../../../../utils/types";
 function BuiltEventCell({ day, hour, events, onEdit }: BuiltEventCellProps) {
-  const cellEvents = events.filter(
-    (e) => e.day === day && e.startHour === hour
-    /*const start =
-      e.startHour * 60 +
-      (e.event.startTime ? +e.event.startTime.slice(3, 5) : 0);
-    const end = start + e.durationInMinutes;
-    const cellStart = hour * 60;
-    const cellEnd = cellStart + 60;
-    return e.day === day && end > cellStart && start < cellEnd;*/
-  );
-  const styledEvents = setupOverlaps(cellEvents);
+  const dayEvents = events.filter((e) => e.day === day);
+  const styledEvents = setupOverlaps(dayEvents);
+
+  const cellEvents = styledEvents.filter((e) => e.startHour === hour);
 
   return (
     <>
-      {styledEvents.map((e) => (
+      {cellEvents.map((e) => (
         <EventCell
           key={e.event.id + "_" + e.day + "_" + e.startHour}
           event={e.event}
@@ -83,26 +76,42 @@ export function preprocessEvents(events: StoredEvent[]): PreprocessedEvent[] {
   return setupEvent;
 }
 
-function setupOverlaps(eventsInCell: PreprocessedEvent[]) {
-  return eventsInCell.map((event, id, array) => {
-    let overlap = 0;
-    array.forEach((item, i) => {
-      if (id !== i) {
-        const start1 = event.startHour * 60;
-        const end1 = event.startHour * 60 + event.durationInMinutes;
-        const start2 = item.startHour * 60;
-        const end2 = item.startHour * 60 + item.durationInMinutes;
-        if (end1 > start2 && start1 < end2) {
-          overlap++;
-        }
-      }
+function setupOverlaps(dayEvents: PreprocessedEvent[]) {
+  const sortedEvents = [...dayEvents].sort(
+    (a, b) => a.startHour * 60 + a.startMin - (b.startHour * 60 + b.startMin)
+  );
+
+  const results: (PreprocessedEvent & {
+    width: number;
+    backgroundColor: string;
+  })[] = [];
+
+  sortedEvents.forEach((sortedEvent, i) => {
+    const start1 = sortedEvent.startHour * 60 + sortedEvent.startMin;
+    const end1 = start1 + sortedEvent.durationInMinutes;
+
+    const overlappingEvents = sortedEvents.filter((otherEvent) => {
+      const start2 = otherEvent.startHour * 60 + otherEvent.startMin;
+      const end2 = start2 + otherEvent.durationInMinutes;
+      const eventOverlapsAnother = end1 > start2 && start1 < end2;
+      return eventOverlapsAnother;
     });
-    const width = 95 - overlap * 10;
-    const backgroundColor = `rgb(21, ${150 - overlap * 15}, ${
-      227 - overlap * 30
+    const overlapCount = overlappingEvents.length;
+    const position = overlappingEvents.findIndex(
+      (index) => index === sortedEvent
+    );
+    const width = 95 - overlapCount * 10;
+    const backgroundColor = `rgb(21, ${150 - overlapCount * 15}, ${
+      227 - overlapCount * 30
     })`;
-    return { ...event, width, backgroundColor };
+    results.push({
+      ...sortedEvent,
+      width,
+      backgroundColor,
+    });
   });
+
+  return results;
 }
 
 const EventCell: React.FC<EventCellProps> = ({
