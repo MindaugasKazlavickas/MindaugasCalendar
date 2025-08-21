@@ -54,15 +54,29 @@ const eventDisplaySlice = createSlice({
     },
     addEvent(state, action: PayloadAction<StoredEvent>) {
       const eventDate: Date = new Date(action.payload.startDate.toString());
-      saveToSessionStorage(action.payload, getWeekKey(eventDate));
-      /*return {
-        ...state,
-          actualEvents[action.payload.id]: action.payload,
-      };*/
+      const allEvents = Object.values(state.actualEvents);
+      const eventWeekKey = getWeekKey(eventDate);
+      const thisWeekKey = getWeekKey(new Date(allEvents[0]?.startDate));
+      saveToSessionStorage(action.payload, eventWeekKey);
+      getWeekKey(eventDate);
+
+      console.log(state.actualEvents.startDate);
+      switch (eventWeekKey === thisWeekKey) {
+        case true: {
+          return {
+            ...state,
+            actualEvents: {
+              ...state.actualEvents,
+              [action.payload.id]: action.payload,
+            },
+          };
+        }
+        default: {
+          return state;
+        }
+      }
     },
     updateEvent(state, action: PayloadAction<StoredEvent>) {
-      state.actualEvents[action.payload.id] = action.payload;
-
       const eventDate: Date = new Date(action.payload.startDate.toString());
       console.log(
         getWeekKey(eventDate),
@@ -75,11 +89,22 @@ const eventDisplaySlice = createSlice({
         getWeekKey(eventDate),
         action.payload.id
       );
+      return {
+        ...state,
+        actualEvents: {
+          ...state.actualEvents,
+          [action.payload.id]: action.payload,
+        },
+      };
     },
     removeEvent(state, action: PayloadAction<StoredEvent>) {
       const eventDate: Date = new Date(action.payload.startDate.toString());
       removeFromSessionStorage(action.payload, getWeekKey(eventDate));
-      delete state.actualEvents[action.payload.id];
+      const { [action.payload.id]: _, ...rest } = state.actualEvents;
+      return {
+        ...state,
+        actualEvents: rest,
+      };
     },
   },
 });
