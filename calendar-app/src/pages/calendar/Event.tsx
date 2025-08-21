@@ -111,6 +111,7 @@ function Event({
       <div className="gap"></div>
       <div className="inputFieldDiv">
         <input
+          autoFocus
           id="title"
           type="text"
           className="eventNameInput"

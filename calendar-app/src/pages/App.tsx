@@ -3,11 +3,13 @@ import Content from "./calendar/MainContent";
 import Event from "./calendar/Event";
 import { useState } from "react";
 import { useEventContext } from "../utils/EventContext";
+import React from "react";
 function App() {
-  const [isCalendarPanel, setCalendarPanel] = useState(true);
+  const [isCalendarPanel, setCalendarPanel] = React.useState(true);
   const [isRightSidePanel, setRightSidePanel] = useState(true);
   //const [isEventWindow, setEventWindow] = useState(false);
   const { isEventWindow, setEventWindow } = useEventContext();
+  //const { isEventWindow, setEventWindow } = React.useEventContext();
   const { selectedEvent } = useEventContext();
   return (
     <div className="App">
