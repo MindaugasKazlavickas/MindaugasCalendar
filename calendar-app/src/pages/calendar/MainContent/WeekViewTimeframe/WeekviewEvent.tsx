@@ -7,6 +7,7 @@ import {
   StyledEvent,
 } from "../../../../utils/types";
 import { useEventContext } from "../../../../utils/EventContext";
+
 function BuiltEventCell({ day, hour, events }: BuiltEventCellProps) {
   const dayEvents = events.filter((e) => e.day === day);
   const styledEvents = setupOverlaps(dayEvents);
@@ -45,6 +46,7 @@ export function preprocessEvents(events: StoredEvent[]): PreprocessedEvent[] {
       startDate.getFullYear() === endDate.getFullYear() &&
       startDate.getMonth() === endDate.getMonth() &&
       startDate.getDate() === endDate.getDate();
+
     if (isSameDayEvent) {
       const durationInMinutes =
         (endHour - startHour) * 60 + (endMin - startMin);

@@ -4,8 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { shiftMonthView } from "../../../features/currentDate";
 import { AppDispatch, RootState } from "../../../store";
 import MonthCalendar from "./CalendarSidePanel/MonthCalendar";
-import { StoredEvent } from "../../../utils/types";
-import { useState } from "react";
 import { useEventContext } from "../../../utils/EventContext";
 function CalendarPanel({
   eventWindow,
