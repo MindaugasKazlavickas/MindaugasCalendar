@@ -887,7 +887,7 @@ td.timeColumn {
 
 .timeframeMarker {
   position: absolute;
-  z-index: var(--tableTop);
+  z-index: var(--dropdown);
   display: flex;
   align-items: center;
   height: 12px;

@@ -1,7 +1,6 @@
 import saveEvent from "../../api/saveAndEditEvent";
 import deleteEvent from "../../api/deleteEvent";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../store";
+import { useDispatch } from "react-redux";
 import { ChangeEvent, useEffect, useState } from "react";
 import { StoredEvent } from "../../utils/types";
 import { removeEvent } from "../../features/eventDisplay";
@@ -41,10 +40,6 @@ function Event({
     }
   }, [initialEvent]);
   const [isEndDateField, setEndDateField] = useState(false);
-
-  const currentDateStr = useSelector(
-    (state: RootState) => state.currentDate.currentDate
-  );
   function handleShowEndDate() {
     const areTimesEntered = form.startTime !== "" && form.endTime !== "";
     const isEventEndAfterStart =

@@ -14,24 +14,26 @@ export default function TimeframeToday() {
 
     const weekKey = getWeekKey(currentDate);
 
-    /*const cached = sessionStorage.getItem(weekKey);
+    const cached = sessionStorage.getItem(weekKey);
     if (cached) {
       dispatch(setEvents(JSON.parse(cached)));
       return;
-    }*/
+    }
 
     retrieveEventsFromServer(currentDate).then((events) => {
-      const eventMap: Record<string, StoredEvent> = {};
+      const eventMap: Record<number, StoredEvent> = {};
 
       events.forEach((event, index) => {
         const startDate = new Date(event.startDate);
         const dayOfWeek = startDate.getDay();
         const hour = +event.startTime.slice(0, 2);
         const eventKey = event.eventKey ?? `${index}_${dayOfWeek}_${hour}`;
-        eventMap[eventKey] = { ...event, eventKey };
+        event.eventKey = eventKey;
+        const eventId = event.id;
+        eventMap[eventId] = { ...event };
       });
 
-      //sessionStorage.setItem(weekKey, JSON.stringify(eventMap));
+      sessionStorage.setItem(weekKey, JSON.stringify(eventMap));
       dispatch(setEvents(eventMap));
     });
   }, [currentDateStr]);
@@ -49,5 +51,5 @@ export function getWeekKey(currentWeekDate: Date): string {
   const startOfYear = new Date(startOfWeek.getFullYear(), 0, 1);
   const days = Math.floor((+startOfWeek - +startOfYear) / 86400000);
   const week = Math.ceil((days + startOfYear.getDay() + 1) / 7);
-  return `events_${startOfWeek.getFullYear()}-week${week}`;
+  return `events_${startOfWeek.getFullYear()}_week${week}`;
 }

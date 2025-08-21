@@ -35,9 +35,13 @@ async function saveEvent(
   if (form.endDate.toString() === "Invalid Date" || form.endDate === "") {
     form.endDate = form.startDate;
   }
+  form.eventKey = `${new Date(form.startDate).getDay()}_${form.startTime.slice(
+    0,
+    2
+  )}`;
 
   const newEvent: StoredEvent = {
-    id: Date.now(),
+    id: form.id ?? "",
     title: form.title,
     startDate: form.startDate,
     startTime: form.startTime,
@@ -47,7 +51,7 @@ async function saveEvent(
     guests: form.guests,
     location: form.location,
     description: form.description,
-    eventKey: form.eventKey ?? "",
+    eventKey: form.eventKey,
   };
 
   let result;
@@ -59,6 +63,7 @@ async function saveEvent(
     );
     store.dispatch(updateEvent(newEvent));
   } else {
+    newEvent.id = Date.now();
     result = await apiRequest<StoredEvent>(SERVER_URL, "POST", newEvent);
     store.dispatch(addEvent(newEvent));
   }
