@@ -52,8 +52,8 @@ test("toggles the calendar panel", () => {
   const setState = jest.fn();
   jest
     .spyOn(React, "useState")
-    .mockImplementationOnce((initState) => [initState, setState]);
-  render(<CalendarPanel />);
+    .mockImplementationOnce((initState: any) => [initState: any, setState: any]);
+  render(<CalendarPanel eventWindow={false} triggerEventWindow={}/>);
 });
 describe("EventCreation", () => {
   render(
