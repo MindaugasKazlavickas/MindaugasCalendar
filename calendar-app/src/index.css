@@ -371,7 +371,6 @@ code {
 
 .content {
   display: grid;
-  grid-template-columns: 256px 1fr 56px;
 }
 
 .rightSideMenu {
@@ -504,6 +503,7 @@ td.timeColumn {
 }
 
 .weekViewGridRow {
+  overflow: none;
   margin-top: 128px;
 }
 
@@ -660,6 +660,10 @@ td.timeColumn {
   position: absolute;
 }
 
+.meeting:hover {
+  cursor: pointer;
+}
+
 .overlappingShorterEvent {
   border: 1px solid white;
   text-align: right;
@@ -752,13 +756,13 @@ td.timeColumn {
   margin: auto;
   padding-block: 12px;
   line-height: 24px;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
 }
 
 .dropdownIcon {
   margin: auto;
 }
-.dropdownContent {
+.timeframeSelect:hover .dropdownContent {
   display: flex;
   position: absolute;
   background-color: var(--primary-background);
@@ -770,7 +774,7 @@ td.timeColumn {
   z-index: var(--dropdown);
 }
 
-.dropdownSettings {
+.settingsDropdown:hover .dropdownSettings {
   display: flex;
   position: absolute;
   background-color: var(--primary-background);
@@ -784,6 +788,11 @@ td.timeColumn {
 .settingsDropdown {
   margin: auto;
 }
+
+.basicButton:hover,
+.dropdownContent:hover {
+  cursor: pointer;
+}
 .basicButton {
   border: none;
   background-color: inherit;
@@ -791,12 +800,13 @@ td.timeColumn {
   height: 100%;
   text-align: left;
   padding: 16px 8px;
-  font-size: 1rem;
+  font-size: 0.8rem;
 }
 .dropdownItem {
   display: inline-flex;
   justify-content: space-between;
   padding: 16px 8px;
+  font-size: 0.8rem;
 }
 
 .dropdownItem:hover,
@@ -877,10 +887,12 @@ td.timeColumn {
 
 .timeframeMarker {
   position: absolute;
-  z-index: var(--tableTop);
-  display: none;
+  z-index: var(--dropdown);
+  display: flex;
   align-items: center;
   height: 12px;
+  width: 100%;
+  left: 0;
 }
 .redDot {
   border-radius: 50%;

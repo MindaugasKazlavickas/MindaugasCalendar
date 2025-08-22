@@ -1,17 +1,27 @@
-import adjustMainDisplay from "./MainContent/setupPanelTriggers";
-import displayDropdown from "../../src/utils/displayDropdown";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../src/store";
+import { AppDispatch, RootState } from "../../store";
 import {
   resetToToday,
   shiftMonthView,
   shiftWeek,
-} from "../../src/features/currentDate";
-function Header() {
+} from "../../features/currentDate";
+import { monthsLong, monthsShort } from "./MainContent/consts";
+function Header({
+  calendarPanelState,
+  setCalendarPanelDisplay,
+}: {
+  calendarPanelState: boolean;
+  setCalendarPanelDisplay: (
+    value: boolean | ((prevVar: boolean) => boolean)
+  ) => void;
+}) {
   const dispatch = useDispatch<AppDispatch>();
+
   const currentDateStr = useSelector(
     (state: RootState) => state.currentDate.currentDate
   );
+  const currentDate = new Date(currentDateStr);
+  let headerTimeframeDate = getHeaderTimeframeDate(currentDate);
   return (
     <header className="header">
       <div className="headerLeft">
@@ -19,10 +29,7 @@ function Header() {
           className="iconButton headerLeftCollapse"
           id="closeSidePanel"
           onClick={() => {
-            document
-              .getElementById("calendarSideView")
-              ?.classList.toggle("notDisplayed");
-            adjustMainDisplay();
+            setCalendarPanelDisplay(!calendarPanelState);
           }}
         >
           <img src="./media/burger.svg" alt="Closes and opens calendar view" />
@@ -88,7 +95,7 @@ function Header() {
             <img src="./media/chevron_right.svg" alt="Go forward a month" />
           </button>
           <p className="headerCenterLeftHeading" id="monthDisplay">
-            2025
+            {headerTimeframeDate}
           </p>
         </div>
 
@@ -103,11 +110,7 @@ function Header() {
             />
           </button>
           <div className="settingsDropdown">
-            <button
-              className="iconButton"
-              id="settings"
-              onMouseOver={() => displayDropdown("dropdownSettings")}
-            >
+            <button className="iconButton" id="settings">
               <img
                 src="./media/settings.svg"
                 alt="Button to open settings menu"
@@ -124,11 +127,10 @@ function Header() {
             </div>
           </div>
 
-          <div id="timeframeSelect">
+          <div className="timeframeSelect" id="timeframeSelect">
             <button
               id="timeframeSelectButton"
               className="roundedCornerButton dropdownButton"
-              onClick={() => displayDropdown("dropdownContent")}
             >
               <span>Week</span>
               <img
@@ -143,16 +145,20 @@ function Header() {
               className="dropdownContent notDisplayed"
             >
               <div className="dropdownItem">
-                <p>First option</p>
-                <p>AB</p>
+                <p>Day</p>
+                <p>D</p>
               </div>
               <div className="dropdownItem">
-                <p>Second option</p>
-                <p>B2</p>
+                <p>Week</p>
+                <p>W</p>
               </div>
               <div className="dropdownItem">
-                <p>Final option</p>
-                <p>CA</p>
+                <p>Month</p>
+                <p>M</p>
+              </div>
+              <div className="dropdownItem">
+                <p>Year</p>
+                <p>Y</p>
               </div>
             </div>
           </div>
@@ -171,3 +177,30 @@ function Header() {
   );
 }
 export default Header;
+
+function getHeaderTimeframeDate(currentDate: Date): string {
+  const getWeekStartDate = (): Date => {
+    return new Date(
+      new Date(currentDate.toString()).setDate(
+        currentDate.getDate() - currentDate.getDay()
+      )
+    );
+  };
+
+  const getMonthNames = () => {
+    let weekStartDate = getWeekStartDate();
+    let weekEndDate = new Date(
+      getWeekStartDate().setDate(weekStartDate.getDate() + 6)
+    );
+
+    return weekStartDate.getDate() > weekEndDate.getDate()
+      ? monthsShort[weekStartDate.getMonth()] +
+          " - " +
+          monthsShort[weekStartDate.getMonth() + 1]
+      : monthsLong[currentDate.getMonth()];
+  };
+  let headerDateDisplay = `${
+    getMonthNames() + ", " + currentDate.getFullYear()
+  }`;
+  return headerDateDisplay;
+}

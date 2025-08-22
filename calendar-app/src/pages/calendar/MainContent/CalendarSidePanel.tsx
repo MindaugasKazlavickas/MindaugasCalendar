@@ -1,27 +1,33 @@
 import { WeekDays } from "./consts";
-import { useEffect } from "react";
-import { eventViewTrigger } from "../../../src/utils/handleEventForm";
-import { sideCalendarMonth } from "../../../src/utils/displayTimeframeDate";
+import { monthsLong } from "./consts";
 import { useDispatch, useSelector } from "react-redux";
-import { shiftMonthView } from "../../../src/features/currentDate";
-import { AppDispatch, RootState } from "../../../src/store";
+import { shiftMonthView } from "../../../features/currentDate";
+import { AppDispatch, RootState } from "../../../store";
 import MonthCalendar from "./CalendarSidePanel/MonthCalendar";
-function CalendarPanel() {
+import { useEventContext } from "../../../utils/EventContext";
+function CalendarPanel({
+  eventWindow,
+  triggerEventWindow,
+}: {
+  eventWindow: boolean;
+  triggerEventWindow: (value: boolean) => void;
+}) {
+  const { setEventWindow, setSelectedEvent } = useEventContext();
+
+  const openNewEventForm = () => {
+    setSelectedEvent(null);
+    setEventWindow(true);
+  };
   const dispatch = useDispatch<AppDispatch>();
   const monthViewDateStr = useSelector(
     (state: RootState) => state.currentDate.monthViewDate
   );
-
-  useEffect(() => {
-    const monthViewdate = new Date(monthViewDateStr);
-    sideCalendarMonth(monthViewdate);
-  }, [monthViewDateStr]);
   return (
     <aside id="calendarSideView" className="calendarSidePanel">
       <button
         className="eventTrigger"
         id="eventWindowButton"
-        onClick={() => eventViewTrigger()}
+        onClick={openNewEventForm}
       >
         <img
           className="icon"
@@ -38,7 +44,9 @@ function CalendarPanel() {
 
       <div className="calendarHeader">
         <p id="calendarMonthDisplay" className="calendarMonth">
-          November, 2025
+          {monthsLong[new Date(monthViewDateStr).getMonth()] +
+            ", " +
+            new Date(monthViewDateStr).getFullYear()}
         </p>
         <div className="calendarSideViewButtons">
           <button

@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../../../../src/store";
-import { jumpToDate } from "../../../../src/features/currentDate";
+import { RootState } from "../../../../store";
+import { jumpToDate } from "../../../../features/currentDate";
 
 function MonthCalendar() {
   const dispatch = useDispatch();
