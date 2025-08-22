@@ -126,6 +126,11 @@
   border-radius: 50%;
   color: white;
 }
+.calendarDayRowElementHighlighted {
+  background-color: var(--primary-highlight);
+  border-radius: 50%;
+  color: black;
+}
 
 .calendarDayRowElementSelected:hover {
   cursor: pointer;
@@ -179,6 +184,23 @@
 
 .calendarSideViewButtons {
   margin-left: auto;
+}
+.eventWindowOpeningButton {
+  display: flex;
+  flex-direction: row;
+  margin: 4px 20px 4px 0;
+  border: none;
+  box-shadow: var(--box-shadow);
+  border-radius: 16px;
+  padding: 12px 12px;
+  text-align: center;
+  background-color: white;
+  align-items: center;
+  font-size: 0.9rem;
+}
+.eventWindowOpeningButton:hover {
+  background-color: var(--primary-highlight);
+  cursor: pointer;
 }
 
 .smallIconButton:hover {
@@ -295,7 +317,7 @@ td.timeColumn {
 
 .calendarMonth {
   margin: auto auto auto 0;
-  font-size: 1rem;
+  font-size: 0.8rem;
 }
 
 #calendarSideView {
@@ -326,9 +348,10 @@ td.timeColumn {
   position: sticky;
   top: 0;
   border-radius: 30px 30px 0 0;
+}
+#weekGridHeader {
   z-index: 1;
 }
-
 .weekViewGrid {
   border-radius: 0 0 30px 30px;
   overflow: hidden;
@@ -442,13 +465,9 @@ td.timeColumn {
   margin-right: 0;
   margin-left: auto;
 }
-.overlapped {
-  /* prevents adding overlap class to elements*/
-}
 
 .eventContainer {
   width: 700px;
-  display: grid;
   grid-template-columns: 1fr 9fr;
   gap: 12px 0;
   background-color: var(--primary-background);
@@ -466,10 +485,6 @@ td.timeColumn {
   margin-right: 0;
 }
 
-#event {
-  display: none;
-}
-
 .eventNameInput {
   line-height: 40px;
   font-size: 1.2rem;
@@ -478,8 +493,12 @@ td.timeColumn {
   padding-left: 16px;
   border: none;
   border-bottom: 1px solid var(--primary-black);
+  position: relative;
   outline: none;
   margin-bottom: 16px;
+  box-sizing: border-box;
+  width: 100%;
+  max-height: 42px;
 }
 
 .eventNameInput::placeholder {
@@ -498,6 +517,7 @@ td.timeColumn {
   border: none;
   outline: none;
   padding: 12px 12px;
+  border-bottom: 3px solid transparent;
 }
 
 .eventOtherInput::placeholder {
@@ -510,7 +530,6 @@ td.timeColumn {
   border-radius: 8px;
 }
 
-.dropdown,
 .eventButton,
 .eventSaveButton {
   position: relative;
@@ -521,22 +540,31 @@ td.timeColumn {
   border-radius: 32px;
   background-color: #f9f9f9;
 }
-
-.dropdown:hover {
-  background-color: #c9c9c9;
+.dropdownButton {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  text-align: center;
+  margin: auto;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  line-height: 24px;
+  font-size: 0.9rem;
 }
 
+.dropdownIcon {
+  margin: auto;
+}
 .dropdownContent {
   display: none;
   position: absolute;
-  background-color: rgb(227, 227, 227);
+  background-color: var(--primary-background);
   min-width: 200px;
   box-shadow: var(--box-shadow);
   text-align: left;
-  padding-top: 8px;
   flex-direction: column;
-  right: 0;
-  top: 50px;
+  right: 120px;
+  z-index: 2;
 }
 
 .dropdownItem {
@@ -547,13 +575,11 @@ td.timeColumn {
   padding-left: 8px;
   padding-right: 8px;
 }
-
 .dropdownItem:hover,
 .eventButton:hover {
   background-color: #c9c9c9;
 }
 
-.dropdown:hover .dropdownContent,
 .eventButton:hover .dropdownContent {
   display: flex;
   z-index: 2;
@@ -605,4 +631,10 @@ td.timeColumn {
 }
 .displayedInlineFlex {
   display: inline-flex;
+}
+.displayedFlex {
+  display: flex;
+}
+.displayedGrid {
+  display: grid;
 }
