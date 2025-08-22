@@ -1,21 +1,423 @@
+document.addEventListener("DOMContentLoaded", () => {
+  const currentDay = new Date();
 
-document.addEventListener('DOMContentLoaded', () => {
-    let headerButton = "calendar active";
+  const calendarSideView = document.getElementById("calendarSideView");
+  const weekView = document.getElementById("content");
+  const closeCalendarButton = document.getElementById("closeCalendarButton");
 
-    const calendarSideView = document.getElementById('calendarSideView');
-    const weekView = document.getElementById('weekView');
-    const collapseButton = document.getElementById('collapseButton');
+  const eventWindowButton = document.getElementById("eventWindowButton");
+  eventWindowButton.addEventListener("click", () => {
+    document.getElementById("event").style.display = "grid";
+  });
 
-    collapseButton.addEventListener('click', () => {
-        if (headerButton === "calendar active") {
-            calendarSideView.style.display = 'none';
-            weekView.style.width = '100%';
-            headerButton = null;
-        } else {
-            calendarSideView.style.display = 'inline';
-            weekView.style.width = '80%';
-            headerButton = "calendar active";
+  document.getElementById("logoText").innerText = currentDay.getDate();
+
+  const headerDateDisplay =
+    monthsLong[currentDay.getMonth()] + ", " + currentDay.getFullYear();
+  document.getElementById("monthDisplay").innerText = headerDateDisplay;
+  document.getElementById("calendarMonthDisplay").innerText = headerDateDisplay;
+
+  document.getElementById("timezone").innerText = setTimezone();
+
+  displayTable();
+
+  /* CURRENTLY ONLY FOR CURRENT WEEK */
+  fillOutWeekDays(currentDay);
+  fillOutMonthDays(currentDay);
+
+  const eventSaveToStorage = document.getElementById("eventSaveButton");
+  eventSaveToStorage.addEventListener("click", () => saveEvent());
+
+  const dialogCloseButton = document.getElementById("dialogCloseButton");
+  dialogCloseButton.addEventListener("click", () => resetEventCreationForm());
+
+  const righSideMenuButton = document.getElementById("rightSideButtonChevron");
+  const rightSideMenuButtonContainer = document.getElementById(
+    "rightSideMenuButtonContainer"
+  );
+  righSideMenuButton.addEventListener("click", () => {
+    let y = document
+      .getElementById("rightSideView")
+      .classList.contains("notDisplayed")
+      ? " 56px"
+      : "";
+    let x = document
+      .getElementById("calendarSideView")
+      .classList.contains("notDisplayed")
+      ? ""
+      : "256px ";
+    adjustDisplay("rightSideView", x, y);
+
+    if (
+      righSideMenuButton.src.substr(righSideMenuButton.src.lastIndexOf("/")) ==
+      "/chevron_right.svg"
+    ) {
+      righSideMenuButton.src = "./media/chevron_left.svg";
+      rightSideMenuButtonContainer.classList.add("rightSideMenuClosed");
+    } else {
+      righSideMenuButton.src = "./media/chevron_right.svg";
+      rightSideMenuButtonContainer.classList.remove("rightSideMenuClosed");
+    }
+  });
+
+  closeCalendarButton.addEventListener("click", () => {
+    let y = document
+      .getElementById("rightSideView")
+      .classList.contains("notDisplayed")
+      ? ""
+      : " 56px";
+    let x = document
+      .getElementById("calendarSideView")
+      .classList.contains("notDisplayed")
+      ? "256px "
+      : "";
+    adjustDisplay("calendarSideView", x, y);
+  });
+
+  displayEvents();
+});
+
+function adjustDisplay(elementToHide, x, y) {
+  let element = document.getElementById(elementToHide);
+
+  let sideAdjuster;
+  if (elementToHide != "calendarSideView") {
+    sideAdjuster = "displayedInlineFlex";
+  } else {
+    sideAdjuster = "displayedBlock";
+  }
+  if (element.classList.contains("notDisplayed")) {
+    element.classList.add(sideAdjuster);
+    element.classList.remove("notDisplayed");
+  } else {
+    element.classList.add("notDisplayed");
+    element.classList.remove(sideAdjuster);
+  }
+  document.getElementById("content").style.gridTemplateColumns = x + "1fr" + y;
+}
+
+const monthsShort = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
+const monthsLong = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+const weekViewDisplayDates = [
+  "weekDisplayDate1",
+  "weekDisplayDate2",
+  "weekDisplayDate3",
+  "weekDisplayDate4",
+  "weekDisplayDate5",
+  "weekDisplayDate6",
+  "weekDisplayDate7",
+];
+const formInputFieldList = [
+  "title",
+  "startTime",
+  "startDate",
+  "endTime",
+  "endDate",
+  "eventGuests",
+  "eventLocation",
+  "eventDescription",
+];
+
+function createDOMElement(type, classes, text) {
+  const newElement = document.createElement(type);
+  if (classes != "") {
+    classes.forEach((elem) => {
+      newElement.classList.add(elem);
+    });
+  }
+  if (text) {
+    newElement.innerText = text;
+  }
+  return newElement;
+}
+
+function fillOutWeekDays(currentDay) {
+  let startOfWeek = currentDay.getDate() - currentDay.getDay();
+
+  for (let i = 0; i < 7; i++) {
+    document.getElementById(weekViewDisplayDates[i]).innerText =
+      startOfWeek + i;
+  }
+
+  document
+    .getElementById(weekViewDisplayDates[currentDay.getDay()])
+    .parentElement.classList.add("weekViewGridHeaderMarked");
+}
+
+function fillOutMonthDays(currentDay) {
+  const parentContainer = document.getElementById("calendarContainer");
+  const saveDate = new Date(currentDay);
+  let workingDate = new Date(currentDay.setDate(1));
+  let valueDiff = -currentDay.getDay() + 1;
+  workingDate.setDate(valueDiff);
+  valueDiff = workingDate.getDate();
+  let workingMonth = workingDate.getMonth();
+
+  for (let i = 0; i < 6; i++) {
+    const calendarRow = createDOMElement("div", ["calendarDayRow"]);
+    for (let j = 0; j < 7; j++) {
+      let dayElement = createDOMElement(
+        "span",
+        ["calendarDayRowElement"],
+        workingDate.getDate()
+      );
+
+      if (workingDate.getDate() == saveDate.getDate()) {
+        dayElement.classList.add("calendarDayRowElementSelected");
+      }
+
+      if (workingDate.getMonth() > workingMonth) {
+        valueDiff = 1;
+        workingMonth++;
+      }
+
+      valueDiff++;
+      workingDate.setDate(valueDiff);
+      calendarRow.appendChild(dayElement);
+    }
+    parentContainer.appendChild(calendarRow);
+  }
+}
+
+function saveEvent() {
+  const eventIdentifier = "event " + Date.now();
+  const startDate = new Date(document.getElementById("startDate").value);
+  const endDate = new Date(document.getElementById("endDate").value);
+  const startTime = document.getElementById("startTime").value;
+  const endTime = document.getElementById("endTime").value;
+  const title = document.getElementById("title").value;
+  if (title) {
+    alert("Title is mandatory.");
+    return;
+  } else if (startDate || endDate || startTime || endTime) {
+    alert("Make sure to enter start and end time and date.");
+    return;
+  } else if (
+    startDate > endDate ||
+    (startDate == endDate && startTime > endTime)
+  ) {
+    alert("End time of event can not be before the start time.");
+    return;
+  }
+  let newEvent = {
+    identifier: Date.now(),
+    title,
+    startDate,
+
+    startTime,
+    endDate,
+    endTime,
+
+    guests: document.getElementById("eventGuests").value,
+    location: document.getElementById("eventLocation").value,
+    description: document.getElementById("eventDescription").value,
+  };
+
+  localStorage.setItem(eventIdentifier, JSON.stringify(newEvent));
+  alert(localStorage.getItem(eventIdentifier, newEvent.location));
+}
+
+function resetEventCreationForm() {
+  formInputFieldList.forEach((elem) => {
+    document.getElementById(elem).value = "";
+  });
+  document.getElementById("event").style.display = "none";
+}
+
+function displayTable() {
+  const parentElement = document
+    .getElementById("weekGrid")
+    .getElementsByTagName("tbody")[0];
+
+  for (let i = 0; i < 24; i++) {
+    const tableRow = createDOMElement("tr", ["weekViewGridRow"]);
+    let dayTimeText;
+    if (i == 11) {
+      dayTimeText = i + 1 + " PM";
+    } else if (i == 23) {
+      dayTimeText = "";
+    } else if (i < 12) {
+      dayTimeText = i + 1 + " AM";
+    } else {
+      dayTimeText = i + 1 - 12 + " PM";
+    }
+    const dayTime = createDOMElement(
+      "td",
+      ["weekViewGridBox", "timeColumn"],
+      dayTimeText
+    );
+    tableRow.appendChild(dayTime);
+    const gap = createDOMElement("td", ["weekViewGridBoxLeftMost"]);
+    tableRow.appendChild(gap);
+    for (let j = 0; j < 7; j++) {
+      const tableElement = createDOMElement("td", ["weekViewGridBox"]);
+      tableElement.setAttribute("id", j + "_" + i);
+      tableRow.appendChild(tableElement);
+    }
+    parentElement.appendChild(tableRow);
+  }
+}
+
+function setTimezone() {
+  let timezone = Math.abs(new Date().getTimezoneOffset()) / 60;
+  if (timezone < 10) {
+    timezone = "0" + timezone;
+  }
+  const sign = timezone > 0 ? "+" : "-";
+
+  if (timezone === 0) {
+    return "GMT";
+  } else {
+    return `GMT ${sign}${timezone}`;
+  }
+}
+
+/* TODO
+
+    Event starts on day n and end on day n+1 but event time is <24h
+    Event lasts longer than 2 days
+    Events overlap
+    Event is very short -> adjust displayed long text
+    Get all events in storage
+    Atidaryti "event viewer" ir atnaujinti info
+*/
+function displayEvents() {
+  const keys = Object.keys(localStorage);
+
+  for (let i = 0; i < keys.length; i++) {
+    let event = JSON.parse(localStorage.getItem(keys[i]));
+    let startDate = new Date(event.startDate);
+    let endDate = new Date(event.endDate);
+    let startTime = event.startTime;
+    let endTime = event.endTime;
+    let diff;
+    if (startDate == endDate) {
+      diff =
+        (+endTime.substr(0, 2) - +startTime.substr(0, 2)) * 60 +
+        (+endTime.substr(3, 2) - +startTime.substr(3, 2));
+    } else if (endDate.getDate() > startDate.getDate()) {
+      let dateDiff = endDate.getDate() - startDate.getDate();
+      console.log(startDate, endDate);
+      console.log("Date difference is: " + dateDiff);
+      diff =
+        (+endTime.substr(0, 2) + -+startTime.substr(0, 2) + 24 * dateDiff) *
+          60 +
+        (+endTime.substr(3, 2) - +startTime.substr(3, 2));
+      console.log(diff);
+    } else {
+      let dateDiff = startDate.getDate() - endDate.getDate();
+      console.log(startDate, endDate);
+      console.log("Date difference is: " + dateDiff);
+      diff =
+        (+endTime.substr(0, 2) + -+startTime.substr(0, 2) + 24 * dateDiff) *
+          60 +
+        (+endTime.substr(3, 2) - +startTime.substr(3, 2));
+      console.log(diff);
+    }
+
+    if (endDate.getDate() - startDate.getDate() == 0 && diff < 1440) {
+      console.log("Same day event: " + keys[i] + " " + diff);
+      sameDayEventRender(keys[i], diff / 1.25);
+    } else if (endDate.getDate() - startDate.getDate() < 2 && diff < 1440) {
+      console.log("Less than 24h event: " + keys[i] + " " + diff);
+    } else {
+      console.log("Multi-day event: " + keys[i] + " " + diff);
+    }
+  }
+  checkOverlappingEvents();
+}
+
+function sameDayEventRender(identifier, eventDuration) {
+  const event = JSON.parse(localStorage.getItem(identifier));
+  const startTime = event.startTime;
+  const endTime = event.endTime;
+  const startDate = new Date(event.startDate);
+  const endDate = new Date(event.endDate);
+  const item = createDOMElement("div", ["meeting"], "");
+  item.setAttribute("id", identifier);
+  let height = eventDuration;
+  item.innerText = startTime + "-" + endTime + " " + event.title;
+  item.style.height = height + "px";
+  let target = document.getElementById(
+    startDate.getDay() + "_" + startTime.substr(0, 2)
+  );
+  target.style.overflow = "visible";
+  target.style.position = "relative";
+  target.appendChild(item);
+}
+
+function checkOverlappingEvents() {
+  const keys = Object.keys(localStorage);
+  for (let i = 0; i < keys.length; i++) {
+    if (document.getElementById(keys[i])) {
+      let elementToCheck = document
+        .getElementById(keys[i])
+        .getBoundingClientRect();
+      console.log(keys[i], " tarpas ", elementToCheck);
+      for (let j = 0; j < keys.length - 1; j++) {
+        console.log(keys[i], keys[j]);
+        if (keys[i] != keys[j] && document.getElementById(keys[j])) {
+          let checkElement = document
+            .getElementById(keys[j])
+            .getBoundingClientRect();
+          if (
+            elementToCheck.top < checkElement.bottom &&
+            elementToCheck.bottom > checkElement.top &&
+            elementToCheck.left < checkElement.right &&
+            elementToCheck.right > checkElement.left
+          ) {
+            if (
+              !document
+                .getElementById(keys[j])
+                .classList.contains("overlappingEvent") &&
+              !document
+                .getElementById(keys[j])
+                .classList.contains("overlapped") &&
+              elementToCheck.bottom - elementToCheck.top >
+                checkElement.bottom - checkElement.top
+            ) {
+              document
+                .getElementById(keys[j])
+                .classList.add("overlappingEvent");
+              document.getElementById([keys[i]]).classList.add("overlapped");
+            } else if (
+              elementToCheck.bottom - elementToCheck.top <
+              checkElement.bottom - checkElement.top
+            ) {
+              document
+                .getElementById(keys[i])
+                .classList.add("overlappingEvent");
+              document.getElementById([keys[j]]).classList.add("overlapped");
+            }
+          }
         }
-    })
-
-})
+      }
+    }
+  }
+}

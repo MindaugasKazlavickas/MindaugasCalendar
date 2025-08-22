@@ -1,210 +1,318 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>EpiCalendar</title>
-        <link rel="stylesheet" href="./reset.css">
-        <link rel="stylesheet" href="./style.css">
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Zain:ital,wght@0,200;0,300;0,400;0,700;0,800;0,900;1,300;1,400&display=swap" rel="stylesheet">
-        <script src="index.js" defer></script>
-    </head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calendar</title>
+    <link rel="stylesheet" href="./reset.css" />
+    <link rel="stylesheet" href="./style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap"
+      rel="stylesheet"
+    />
+    <script src="index.js" defer></script>
+  </head>
 
-    <body>
-        <div id="root">
-            <header>
-                <div class="hideCalendarHeader">
-                    <button id="collapseButton">
-                        <img class="arrowButton burger" src="./media/burger-icon.png" alt="Go back a month">
-                    </button></div>
-                <div class="calendarName"><h1>EpiCalendar</h1></div>
-                <div class="weekScroll">
-                    <div>
-                        <button id="calendarLeft" class="week left"><img class="arrowButton left" src="./media/scroll-arrow.png" alt="Go back a month"></button>
-                        <button id="calendarRight" class="week right"><img class="arrowButton right" src="./media/scroll-arrow.png" alt="Go forward a month"></button>
-                    </div>                    
-                    <div class="currentDateNumber">Jun-Jul, 2025</div>
-                </div>
-                <div class="displaySelector">
-                    <div class="dropdown"><button id="viewSelection">Week \/</button>
-                        <div class="dropdownContent">
-                            <div class="dropdownItem">
-                                <p>text</p>
-                                <p>AB</p>
-                            </div>
-                            <div class="dropdownItem">
-                                <p>Moar Text</p>
-                                <p>B2</p>
-                            </div>
-                            <div class="dropdownItem">
-                                <p>Even Moar text_here</p>
-                                <p>CA</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </header>
-            <div class="lowerFlex">
-                <div id="calendarSideView" class="calendarView">
-                    <div class="eventButton">
-                        <button class="eventButtonButton" onclick="getElementById('event').style.display = 'flex';">Create Event</button>
-                        <div class="dropdownContent">
-                            <div class="dropdownItem">
-                                <p>Event</p>
-                            </div>
-                            <div class="dropdownItem">
-                                <p>Task</p>
-                            </div>
-                            <div class="dropdownItem">
-                                <p>Schedule</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="calendarContainer">
-                        <div class="calendarHeader">
-                            <div class="calendarMonth">November, 2025</div>
-                            <div class="weekScroll">
-                                <button id="calendarLeft" class="week left"><img class="arrowButton left" src="./media/scroll-arrow.png" alt="Go back a month"></button>
-                                <button id="calendarLight" class="week right"><img class="arrowButton right" src="./media/scroll-arrow.png" alt="Go forward a month"></button>
-                            </div>
-                        </div>
-                        <div class="calendarDayRow">
-                            <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
-                        </div>
-                        <div class="calendarDayRow">
-                            <div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div>
-                        </div>
-                        <div class="calendarDayRow">
-                            <div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div>
-                        </div>
-                        <div class="calendarDayRow">
-                            <div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div>
-                        </div>
-                        <div class="calendarDayRow">
-                            <div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div>
-                        </div>
-                        <div class="calendarDayRow">
-                            <div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div>
-                        </div>
-                        <div class="calendarDayRow">
-                            <div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div>
-                        </div>
-                    </div>
-                </div>
-                <div id="weekView" class="weekView">
-                        <div class = "topline">
-                            <div><h5>Gmt +3</h5></div>
-                            <div><h3>Sun</h3><h3 class = "toplineNumber">30</h3></div>
-                            <div><h3>Mon</h3><h3 class = "toplineNumber">1</h3></div>
-                            <div><h3>Tue</h3><h3 class = "toplineNumber">2</h3></div>
-                            <div><h3>Wed</h3><h3 class = "toplineNumber">3</h3></div>
-                            <div><h3>Thu</h3><h3 class = "toplineNumber">4</h3></div>
-                            <div><h3>Fri</h3><h3 class = "toplineNumber">5</h3></div>
-                            <div><h3>Sat</h3><h3 class = "toplineNumber">6</h3></div>
-                        </div>
-                        <div class="timelineContainer">
-                        <div class = "timelineGrid">
-                            <div class="timeColumn">
-                                <div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div><div>8</div><div>9</div><div>10</div><div>11</div><div>12</div><div>13</div><div>14</div><div>15</div><div>16</div><div>17</div><div>18</div><div>19</div><div>20</div><div>21</div><div>22</div><div>23</div></div>
-                                <div class="timeColumn">
-                                    <div>.</div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-                                <div class="timeColumn">
-                                    <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-                                <div class="timeColumn">
-                                    <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div class = "sample">
-                                        <div class="meetingExample">
-                                            Team GG daily, 10am, Vilnius Sky Office.
-                                        </div>
-                                    </div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-                                <div class="timeColumn">
-                                    <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-                                <div class="timeColumn">
-                                    <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-                                <div class="timeColumn">
-                                    <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-                                <div class="timeColumn">
-                                    <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  <body>
+    <header class="header">
+      <div class="headerLeft">
+        <button id="closeCalendarButton" class="iconButton headerLeftCollapse">
+          <img src="./media/burger.svg" alt="Closes and opens calendar view" />
+        </button>
+        <span class="headerLeftLogo">
+          <img class="headerLeftLogoImg" src="./media/logo.png" />
+          <p id="logoText" class="headerLeftLogoText">31</p>
+        </span>
+        <p class="headerLeftHeading">Calendar</p>
+      </div>
 
-
-            <div id="event" class="eventContainer">
-                <div class="eventTopColumn">
-                <div class="eventIconColumn">
-                    <div class="eventCreationHeader">Event Creation</div>
-                </div>
-                <div class="eventContentColumn">
-                    <div class="eventHeader">
-                        <img class="eventCloseButton arrowButton close" onclick="getElementById('event').style.display = 'none';" src="./media/cross.png" alt="Close the event creation menu"></button>
-                    </div>
-                    <input id="eventName" class="eventNameInput" placeholder="Add title"/>
-                    <div class="eventTypeLine">
-                        <div class="eventTypeBox">
-                            Event
-                        </div>
-                        <div class="eventTypeBox">
-                            Task
-                        </div>
-                        <div class="eventTypeBox">
-                            Schedule
-                        </div>
-                    </div>
-                    <div class="eventTimePicker">
-                        <div class="eventDateBox">
-                            Datepicker
-                        </div>
-                        <div class="eventDateBox">
-                            From: xx:xx
-                        </div>
-                        <div class="eventDateBox">
-                            To: yy:yy
-                        </div>
-                    </div>
-                    <div class="eventExtraDateSelectors">
-                        <div class="checkboxHolder">
-                            <input id="isEventAllDay" type="checkbox" class="eventCheckbox">
-                            <div class="eventCheckboxLabel">All Day</div>
-                        </div>
-                        <div class="eventDateBox">Time Zone</div>
-                        <div class="eventDateBox">Repeat \/</div>
-                    </div>
-                    <input id="eventGuests" class="eventNameInput mini" placeholder="Add guests"/>
-                </div>
-                </div>
-                
-                <div class="separator"></div>
-                <div class="eventMidColumn">
-                    <div class="eventIconColumn">
-                        <img class="arrowButton location" src="./media/location.png" alt="Add a location">
-                        <img class="arrowButton location" src="./media/Document.png" alt="Add a description">
-                    </div>
-                    <div class="eventContentColumn">
-                        <input id="eventLocation" class="eventNameInput mini" placeholder="Add location"/>
-                        <input id="eventDescription" class="eventNameInput mini" placeholder="Add description"/>
-                    </div>
-                </div>
-
-                <div class="separator"></div>
-
-                <div class="eventBotColumn">
-                    <div class="eventIconColumn">
-                        <img class="arrowButton location" src="./media/Calendar.png" alt="Schedule a reminder">
-                    </div>
-
-                    <div class="eventContentColumn">
-                        <div class="eventExtraDateSelectors">
-                            <div class="eventDateBox">Set Reminder</div>
-                        </div>
-                        <div class="eventTypeLine">
-                            <button id="eventSaveButton" class="eventSaveButton">Save</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      <div class="headerCenter">
+        <div class="headerCenterLeft">
+          <button id="headerToday" class="roundedCornerButton">Today</button>
+          <button id="calendarLeft" class="iconButton">
+            <img
+              class=""
+              src="./media/chevron_left.svg"
+              alt="Go back a month"
+            />
+          </button>
+          <button id="calendarRight" class="iconButton">
+            <img
+              class=""
+              src="./media/chevron_right.svg"
+              alt="Go forward a month"
+            />
+          </button>
+          <p class="headerCenterLeftHeading" id="monthDisplay">2025</p>
         </div>
-    </body>
+
+        <div class="headerCenterRight">
+          <button class="iconButton" id="search">
+            <img src="./media/search.svg" />
+          </button>
+          <button class="iconButton" id="support">
+            <img src="./media/help.svg" />
+          </button>
+          <button class="iconButton" id="settings">
+            <img src="./media/settings.svg" />
+          </button>
+          <div class="dropdown">
+            <button id="viewSelection" class="roundedCornerButton">
+              Week <span class="chevron bottom"></span>
+            </button>
+            <div class="dropdownContent">
+              <div class="dropdownItem">
+                <p>text</p>
+                <p>AB</p>
+              </div>
+              <div class="dropdownItem">
+                <p>More Text</p>
+                <p>B2</p>
+              </div>
+              <div class="dropdownItem">
+                <p>Even More text_here</p>
+                <p>CA</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="headerRight">
+        <button class="iconButton" id="apps">
+          <img src="./media/apps.svg" />
+        </button>
+        <button class="roundedCornerButton" id="account">Account</button>
+      </div>
+    </header>
+
+    <div class="content" id="content">
+      <aside id="calendarSideView">
+        <button class="roundedCornerButton" id="eventWindowButton">
+          Create Event
+        </button>
+
+        <div class="calendarHeader">
+          <p id="calendarMonthDisplay" class="calendarMonth">November, 2025</p>
+          <div class="calendarSideViewButtons">
+            <button id="calendarLeft" class="smallIconButton">
+              <img src="./media/chevron_left.svg" alt="Go back a month" />
+            </button>
+            <button id="calendarRight" class="smallIconButton">
+              <img src="./media/chevron_right.svg" alt="Go forward a month" />
+            </button>
+          </div>
+        </div>
+        <div class="calendarDayRow">
+          <p class="calendarDayRowElement">S</p>
+          <p class="calendarDayRowElement">M</p>
+          <p class="calendarDayRowElement">T</p>
+          <p class="calendarDayRowElement">W</p>
+          <p class="calendarDayRowElement">T</p>
+          <p class="calendarDayRowElement">F</p>
+          <p class="calendarDayRowElement">S</p>
+        </div>
+        <div id="calendarContainer" class="calendarContainer"></div>
+      </aside>
+
+      <main class="weekView">
+        <table class="topWeekViewGrid" id="weekGridHeader">
+          <tr>
+            <th class="weekViewGridHeader timeColumn" id="timezone">GMT +03</th>
+            <th class="weekViewGridHeaderLeftMost"></th>
+            <th class="weekViewGridHeader">
+              <p class="weekViewGridHeaderWeekday">SUN</p>
+              <p class="weekViewGridHeaderDate" id="weekDisplayDate1">1</p>
+            </th>
+            <th class="weekViewGridHeader">
+              <p class="weekViewGridHeaderWeekday">MON</p>
+              <p class="weekViewGridHeaderDate" id="weekDisplayDate2">2</p>
+            </th>
+            <th class="weekViewGridHeader">
+              <p class="weekViewGridHeaderWeekday">TUE</p>
+              <p class="weekViewGridHeaderDate" id="weekDisplayDate3">3</p>
+            </th>
+            <th class="weekViewGridHeader">
+              <p class="weekViewGridHeaderWeekday">WED</p>
+              <p class="weekViewGridHeaderDate" id="weekDisplayDate4">4</p>
+            </th>
+            <th class="weekViewGridHeader">
+              <p class="weekViewGridHeaderWeekday">THU</p>
+              <p class="weekViewGridHeaderDate" id="weekDisplayDate5">31</p>
+            </th>
+            <th class="weekViewGridHeader">
+              <p class="weekViewGridHeaderWeekday">FRI</p>
+              <p class="weekViewGridHeaderDate" id="weekDisplayDate6">19</p>
+            </th>
+            <th class="weekViewGridHeader">
+              <p class="weekViewGridHeaderWeekday">SAT</p>
+              <p class="weekViewGridHeaderDate" id="weekDisplayDate7">24</p>
+            </th>
+          </tr>
+          <tr class="weekViewGridRow">
+            <td class="weekViewGridBoxDivider timeColumn"></td>
+            <td class="weekViewGridBoxDividerLeftMost"></td>
+            <td class="weekViewGridBoxDivider"></td>
+            <td class="weekViewGridBoxDivider"></td>
+            <td class="weekViewGridBoxDivider"></td>
+            <td class="weekViewGridBoxDivider"></td>
+            <td class="weekViewGridBoxDivider"></td>
+            <td class="weekViewGridBoxDivider"></td>
+            <td class="weekViewGridBoxDivider"></td>
+          </tr>
+        </table>
+        <table class="weekViewGrid" id="weekGrid">
+          <tr class="gapRow">
+            <td class="weekViewGridBoxDivider timeColumn" id="timezone">
+              GMT +03
+            </td>
+            <td class="weekViewGridBoxDividerLeftMost"></td>
+            <td class="weekViewGridBoxDivider"></td>
+            <td class="weekViewGridBoxDivider"></td>
+            <td class="weekViewGridBoxDivider"></td>
+            <td class="weekViewGridBoxDivider"></td>
+            <td class="weekViewGridBoxDivider"></td>
+            <td class="weekViewGridBoxDivider"></td>
+            <td class="weekViewGridBoxDivider"></td>
+          </tr>
+        </table>
+      </main>
+
+      <aside id="rightSideView" class="rightSideMenu">
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://keep.google.com/"
+        >
+          <button class="asideIconButton">
+            <img src="./media/keep_colored.png" />
+          </button>
+        </a>
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://tasks.google.com/tasks/"
+        >
+          <button class="asideIconButton">
+            <img src="./media/tasks_colored.png" />
+          </button>
+        </a>
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://contacts.google.com/"
+        >
+          <button class="asideIconButton">
+            <img src="./media/contacts_colored.png" />
+          </button>
+        </a>
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://www.google.com/maps"
+        >
+          <button class="asideIconButton">
+            <img src="./media/maps_colored.png" />
+          </button>
+        </a>
+        <hr class="separator" />
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://www.zoom.com//"
+        >
+          <button class="asideIconButton">
+            <img src="./media/zoom_colored.png" />
+          </button>
+        </a>
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://developers.google.com/workspace/add-ons/overview"
+        >
+          <button class="asideIconButton"><img src="./media/add.svg" /></button>
+        </a>
+      </aside>
+    </div>
+    <div class="rightSideMenuButtonContainer" id="rightSideMenuButtonContainer">
+      <button class="rightSideMenuButton iconButton">
+        <img id="rightSideButtonChevron" src="./media/chevron_right.svg" />
+      </button>
+    </div>
+
+    <div id="event" class="eventContainer">
+      <!-- Header row -->
+      <img
+        class="iconButton"
+        src="./media/drag.svg"
+        alt="Drag the event creation menu"
+      />
+      <button id="dialogCloseButton" class="iconButton alignedRight">
+        <img src="./media/close.svg" alt="Close the event creation menu" />
+      </button>
+
+      <!-- Title row -->
+      <div class="gap"></div>
+      <input
+        id="title"
+        type="text"
+        class="eventNameInput"
+        placeholder="Add title"
+      />
+
+      <!-- Event type row -->
+      <div class="gap"></div>
+      <div class="eventTypeLine">
+        <p class="eventTypeBoxSelected">Event</p>
+        <p class="eventTypeBox">Task</p>
+        <p class="eventTypeBox">Out of office</p>
+        <p class="eventTypeBox">Focus time</p>
+        <p class="eventTypeBox">Working location</p>
+        <p class="eventTypeBox">Appointment schedule</p>
+      </div>
+
+      <!-- Datepicker row -->
+      <img class="icon" src="./media/schedule_watch.svg" alt="Watch icon" />
+      <div class="eventTimePickerContainer">
+        <input type="date" id="startDate" />
+        <input type="time" id="startTime" />
+        <input type="time" id="endTime" />
+        <input type="date" id="endDate" />
+      </div>
+
+      <!-- Guests row -->
+      <img class="icon" src="./media/contacts.svg" alt="Add guests" />
+      <input
+        id="eventGuests"
+        type="text"
+        class="eventOtherInput"
+        placeholder="Add guests"
+      />
+
+      <!-- Location row -->
+      <img class="icon" src="./media/location.svg" alt="Add a location" />
+      <input
+        id="eventLocation"
+        type="text"
+        class="eventOtherInput"
+        placeholder="Add location"
+      />
+
+      <!-- Description row -->
+      <img class="icon" src="./media/notes.svg" alt="Add a description" />
+      <input
+        id="eventDescription"
+        type="text"
+        class="eventOtherInput"
+        placeholder="Add description"
+      />
+
+      <div class="gap"></div>
+      <button id="eventSaveButton" type="text" class="eventSaveButton">
+        Save
+      </button>
+    </div>
+  </body>
 </html>
