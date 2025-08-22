@@ -1,24 +1,21 @@
-import React from "react";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import App from "./pages/App";
 import { EventProvider } from "./utils/EventContext";
 import { Provider } from "react-redux";
 import { store } from "./store";
 import getGMT from "./utils/getGMT";
-import { EventContextType } from "./utils/types";
-import { useEventContext } from "./utils/EventContext";
-import CalendarPanel from "./pages/calendar/MainContent/CalendarSidePanel";
+import Event from "./pages/calendar/Event";
 
+process.env["NODE_DEV"] = "TEST";
+let calendarSide = require("./pages/calendar/MainContent/CalendarSidePanel");
 describe("AppHeader", () => {
   it("renders the app, checks header text", () => {
     render(
-      <React.StrictMode>
-        <Provider store={store}>
-          <EventProvider>
-            <App />
-          </EventProvider>
-        </Provider>
-      </React.StrictMode>
+      <Provider store={store}>
+        <EventProvider>
+          <App />
+        </EventProvider>
+      </Provider>
     );
     expect(screen.getByText("Calendar")).toBeInTheDocument();
   });
@@ -34,49 +31,81 @@ describe("TimezoneGetter", () => {
     expect(getGMT()).toBe("GMT +03");
   });
 
-  /*
-  test("gets UTC timezone", () => {
+  test.skip("gets UTC timezone", () => {
     process.env.TZ = "UTC";
     jest.resetModules();
     expect(getGMT()).toBe("GMT +01");
   });
 
-  test("gets New York timezone", () => {
+  test.skip("gets New York timezone", () => {
     process.env.TZ = "America/New_York";
     jest.resetModules();
     expect(getGMT()).toBe("GMT -04");
-  });*/
+  });
 });
 
-test("toggles the calendar panel", () => {
-  const setState = jest.fn();
-  jest
-    .spyOn(React, "useState")
-    .mockImplementationOnce((initState: any) => [initState: any, setState: any]);
-  render(<CalendarPanel eventWindow={false} triggerEventWindow={}/>);
+describe("changes main content's display", () => {
+  //test after each{
+  test.skip("checks main content size", () => {
+    //click toggleRightPanel
+  });
+  //}
+
+  test.skip("toggles the calendar panel", () => {
+    //click toggleCalendarPanel
+  });
+
+  test.skip("toggles the right side panel", () => {
+    //click toggleRightPanel
+  });
 });
-describe("EventCreation", () => {
-  render(
-    <React.StrictMode>
+
+describe("EventCreationForm", () => {
+  test("gets button", () => {
+    render(
       <Provider store={store}>
         <EventProvider>
           <App />
         </EventProvider>
       </Provider>
-    </React.StrictMode>
-  );
-  const onClick = jest.fn();
-  const triggerFormButton = screen.getByAltText("Create event trigger");
-  it("should click the button create new event", () => {
-    expect(onClick).toHaveBeenCalledTimes(1);
+    );
+    const triggerFormButton = screen.getByTestId("eventTriggerId");
+    expect(triggerFormButton).toBeInTheDocument();
   });
-  /*it("should open event creation form", () => {
+
+  test("tests button", async () => {
+    render(
+      <Provider store={store}>
+        <EventProvider>
+          <App />
+        </EventProvider>
+      </Provider>
+    );
+    const theTrigger = jest.isMockFunction(calendarSide.eventTrigger());
+    const triggerFormButton = screen.getByTestId("eventTriggerId");
     fireEvent.click(triggerFormButton);
     render(
-      <EventProvider>
-        <App />
-      </EventProvider>
+      <Provider store={store}>
+        <EventProvider>
+          <App />
+        </EventProvider>
+      </Provider>
     );
-    expect isEvent
-  });*/
+    await act(() => {
+      expect(theTrigger).toHaveBeenCalled();
+    });
+  });
+  test.skip("checks focus", () => {
+    render(
+      <Event
+        eventWindow={false}
+        triggerEventWindow={function (value: boolean): void {
+          throw new Error("Function not implemented.");
+        }}
+      ></Event>
+    );
+    const titleInput = screen.getByPlaceholderText("Add title");
+    expect(titleInput).toBeInTheDocument();
+    expect(titleInput).toHaveFocus();
+  });
 });

@@ -32,26 +32,26 @@ async function saveEvent(
       error: "End time of event can not be before the start time.",
     };
   }
-  if (form.endDate.toString() === "Invalid Date" || form.endDate === "") {
-    form.endDate = form.startDate;
-  }
-  form.eventKey = `${new Date(form.startDate).getDay()}_${form.startTime.slice(
+
+  const eventKey = `${new Date(form.startDate).getDay()}_${form.startTime.slice(
     0,
     2
   )}`;
-
   const newEvent: StoredEvent = {
     id: form.id ?? "",
     title: form.title,
     startDate: form.startDate,
     startTime: form.startTime,
-    endDate: form.endDate,
+    endDate:
+      form.endDate.toString() === "Invalid Date" || form.endDate === ""
+        ? form.startDate
+        : form.endDate,
     endTime: form.endTime,
 
     guests: form.guests,
     location: form.location,
     description: form.description,
-    eventKey: form.eventKey,
+    eventKey,
   };
 
   let result;

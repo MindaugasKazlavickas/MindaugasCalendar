@@ -18,16 +18,23 @@ function CalendarPanel({
     setSelectedEvent(null);
     setEventWindow(true);
   };
+
   const dispatch = useDispatch<AppDispatch>();
   const monthViewDateStr = useSelector(
     (state: RootState) => state.currentDate.monthViewDate
   );
+
+  if (process.env["NODE_DEV"] === "TEST") {
+    module.exports.eventTrigger = openNewEventForm;
+  }
+
   return (
     <aside id="calendarSideView" className="calendarSidePanel">
       <button
         className="eventTrigger"
         id="eventWindowButton"
         onClick={openNewEventForm}
+        data-testid="eventTriggerId"
       >
         <img
           className="icon"
