@@ -34,18 +34,10 @@
             Today
           </button>
           <button id="previousTimeframe" class="iconButton">
-            <img
-              class=""
-              src="./media/chevron_left.svg"
-              alt="Go back a month"
-            />
+            <img src="./media/chevron_left.svg" alt="Go back a month" />
           </button>
           <button id="nextTimeframe" class="iconButton">
-            <img
-              class=""
-              src="./media/chevron_right.svg"
-              alt="Go forward a month"
-            />
+            <img src="./media/chevron_right.svg" alt="Go forward a month" />
           </button>
           <p class="headerCenterLeftHeading" id="monthDisplay">2025</p>
         </div>
@@ -136,7 +128,7 @@
           <p class="calendarCell">F</p>
           <p class="calendarCell">S</p>
         </div>
-        <table id="calendarContainer" class="calendarContainer"></table>
+        <table id="calendarTable" class="calendarTable"></table>
       </aside>
 
       <main class="weekView">
@@ -272,10 +264,14 @@
         src="./media/drag.svg"
         alt="Drag the event creation menu"
       />
-      <button id="dialogCloseButton" class="iconButton alignedRight">
-        <img src="./media/close.svg" alt="Close the event creation menu" />
-      </button>
-
+      <div class="alignedRight">
+        <button id="deleteEventButton" class="iconButton">
+          <img src="./media/delete.svg" alt="Delete event" />
+        </button>
+        <button id="dialogCloseButton" class="iconButton">
+          <img src="./media/close.svg" alt="Close the event creation menu" />
+        </button>
+      </div>
       <!-- Title row -->
       <div class="gap"></div>
       <div class="inputFieldDiv">

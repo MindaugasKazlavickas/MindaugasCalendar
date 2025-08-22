@@ -1,0 +1,26 @@
+{
+  "events": [
+    {
+      "id": 1753177207351,
+      "title": "Components Team Meeting",
+      "startTime": "12:39",
+      "startDate": "2025-07-23T00:00:00.000Z",
+      "endTime": "15:39",
+      "endDate": "2025-07-23T00:00:00.000Z",
+      "guests": "Mindaugas, Jonas, Antanas",
+      "location": "Sky Office",
+      "description": "Daug teksto"
+    },
+    {
+      "id": 1753799714457,
+      "title": "Naujas renginys",
+      "startDate": "Wed Jul 30 2025 03:00:00 GMT+0300 (Eastern European Summer Time)",
+      "startTime": "17:35",
+      "endDate": "Wed Jul 30 2025 03:00:00 GMT+0300 (Eastern European Summer Time)",
+      "endTime": "21:35",
+      "guests": "Mindaugas",
+      "location": "",
+      "description": ""
+    }
+  ]
+}
