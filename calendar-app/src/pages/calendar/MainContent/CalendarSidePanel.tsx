@@ -24,10 +24,6 @@ function CalendarPanel({
     (state: RootState) => state.currentDate.monthViewDate
   );
 
-  if (process.env["NODE_DEV"] === "TEST") {
-    module.exports.eventTrigger = openNewEventForm;
-  }
-
   return (
     <aside id="calendarSideView" className="calendarSidePanel">
       <button

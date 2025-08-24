@@ -1,7 +1,7 @@
 import WeekViewTable from "./MainContent/WeekViewTimeframe";
 import CalendarPanel from "./MainContent/CalendarSidePanel";
 import TimeframeToday from "./MainContent/TimeframeToday";
-import RightSidePanel from "./RightSidePanel";
+import RightSidePanel from "./MainContent/RightSidePanel";
 
 const calendarPanelWidth = "256px";
 const rightSidePanelWidth = "56px";

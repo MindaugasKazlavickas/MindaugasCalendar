@@ -29,7 +29,7 @@
     "src/pages/calendar/MainContent/CalendarSidePanel/MonthCalendar.tsx",
     "src/pages/calendar/MainContent/setupPanelTriggers.ts",
     "src/pages/calendar/MainContent/WeekViewTimeframe.tsx",
-    "src/pages/calendar/RightSidePanel.tsx",
+    "src/pages/calendar/MainContent/RightSidePanel.tsx",
     "src/pages/App.tsx",
     "src/index.tsx"
   ]

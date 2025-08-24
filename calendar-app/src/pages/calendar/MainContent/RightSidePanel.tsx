@@ -5,7 +5,7 @@ import {
   rightSideButtonAlt,
   rightSideButtonHref,
   rightSideButtonSrc,
-} from "./MainContent/consts";
+} from "./consts";
 function RightSidePanel({
   rightSidePanelState,
   setRightSidePanelDisplay,
