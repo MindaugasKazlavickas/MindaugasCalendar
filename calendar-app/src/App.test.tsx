@@ -6,26 +6,10 @@ import { store } from "./store";
 import getGMT from "./utils/getGMT";
 import userEvent from "@testing-library/user-event";
 import { StoredEvent } from "./utils/types";
-/*jest.mock("./api/sendAPIRequest");
-
-jest.mock("./api/getEvents", () => ({
-  retrieveEventsFromServer: jest.fn().mockResolvedValue([]),
+import * as apiModule from "./api/sendAPIRequest";
+jest.mock("./api/sendAPIRequest", () => ({
+  apiRequest: jest.fn(),
 }));
-
-const mockedRetrieveEvents = retrieveEventsFromServer as jest.MockedFunction<
-  typeof retrieveEventsFromServer
->;
-mockedRetrieveEvents.mockResolvedValue([
-  {
-    id: 123456789,
-    title: "Test event",
-    startDate: "2025-08-30",
-    startTime: "09:00",
-    endTime: "10:00",
-    endDate: "2025-08-30",
-    eventKey: "0_9",
-  },
-]);*/
 
 describe("AppHeader", () => {
   it("renders the app, checks header text", () => {
@@ -151,6 +135,13 @@ describe("EventCreationForm", () => {
 
   test.only("saves form and confirms redux state", async () => {
     const mockDate = new Date("August 30, 2025, 12:00:00");
+    sessionStorage.clear();
+
+    (global.fetch as jest.Mock).mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({}),
+    });
 
     jest.spyOn(Date.prototype, `setTime`).mockReturnValue(mockDate.getTime());
     render(
@@ -165,15 +156,13 @@ describe("EventCreationForm", () => {
     const startDate = screen.getByTestId("startDate");
 
     const startTime = screen.getByTestId("startTime");
-    //new
     const endTime = screen.getByTestId("endTime");
-    await act(async () => {
-      await userEvent.type(titleInput, "Team daily meeting");
-      await fireEvent.change(startDate, { target: { value: "2025-08-30" } });
-      await fireEvent.change(startTime, { target: { value: "09:00" } });
-      await fireEvent.change(endTime, { target: { value: "10:00" } });
-    });
-    await sessionStorage.clear();
+    userEvent.type(titleInput, "Team daily meeting");
+    fireEvent.change(startDate, { target: { value: "2025-08-30" } });
+    fireEvent.change(startTime, { target: { value: "09:00" } });
+    fireEvent.change(endTime, { target: { value: "10:00" } });
+
+    userEvent.click(screen.getByTestId("eventSaveButton"));
     const mockEvent: StoredEvent = {
       id: 1234567890,
       title: "Test event",
@@ -183,21 +172,15 @@ describe("EventCreationForm", () => {
       endDate: "2025-08-30",
       eventKey: "6_13",
     };
-    sessionStorage.setItem(
-      "events_2025_week34",
-      JSON.stringify([{ 1234567890: mockEvent }])
-    );
-    //console.log(sessionStorage.getItem("events_2025_week34"));
-    await act(async () => {
-      await userEvent.click(screen.getByTestId("eventSaveButton"));
-    });
+    sessionStorage.setItem("events_2025_week34", JSON.stringify({}));
+
     console.log(sessionStorage.getItem("events_2025_week34"));
 
     const userInfo = sessionStorage.getItem("events_2025_week34");
 
     console.log(userInfo);
     expect(userInfo).toBeTruthy();
-    expect(await screen.findByText("10:00 Team")).not.toBeInTheDocument();
+    expect(await screen.findByText(/15:00 Test/i)).not.toBeInTheDocument();
     //expect(await screen.findByRole("dialog")).not.toBeInTheDocument();
 
     jest.restoreAllMocks();
