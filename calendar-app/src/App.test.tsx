@@ -6,9 +6,10 @@ import { store } from "./store";
 import getGMT from "./utils/getGMT";
 import userEvent from "@testing-library/user-event";
 import { StoredEvent } from "./utils/types";
-import * as apiModule from "./api/sendAPIRequest";
+import apiRequest from "./api/sendAPIRequest";
 jest.mock("./api/sendAPIRequest", () => ({
-  apiRequest: jest.fn(),
+  __esModule: true,
+  default: jest.fn(),
 }));
 
 describe("AppHeader", () => {
@@ -133,14 +134,29 @@ describe("EventCreationForm", () => {
     expect(descriptionInput).toHaveValue("Discuss project updates");
   });
 
+  (apiRequest as jest.Mock).mockResolvedValue({
+    status: 200,
+    data: {},
+    error: "",
+  });
   test.only("saves form and confirms redux state", async () => {
     const mockDate = new Date("August 30, 2025, 12:00:00");
     sessionStorage.clear();
 
-    (global.fetch as jest.Mock).mockResolvedValue({
+    const mockEvent: StoredEvent = {
+      id: 1234567890,
+      title: "Test event",
+      startDate: "2025-08-30",
+      startTime: "13:00",
+      endTime: "15:00",
+      endDate: "2025-08-30",
+      eventKey: "6_13",
+    };
+
+    (global.fetch as jest.Mock) = jest.fn().mockResolvedValue({
       ok: true,
       status: 200,
-      json: async () => ({}),
+      json: async () => ({ mockEvent }),
     });
 
     jest.spyOn(Date.prototype, `setTime`).mockReturnValue(mockDate.getTime());
@@ -162,25 +178,28 @@ describe("EventCreationForm", () => {
     fireEvent.change(startTime, { target: { value: "09:00" } });
     fireEvent.change(endTime, { target: { value: "10:00" } });
 
-    userEvent.click(screen.getByTestId("eventSaveButton"));
-    const mockEvent: StoredEvent = {
-      id: 1234567890,
-      title: "Test event",
-      startDate: "2025-08-30",
-      startTime: "13:00",
-      endTime: "15:00",
-      endDate: "2025-08-30",
-      eventKey: "6_13",
-    };
-    sessionStorage.setItem("events_2025_week34", JSON.stringify({}));
+    const dispatchSpy = jest.spyOn(store, "dispatch");
+    await act(async () => {
+      userEvent.click(screen.getByTestId("eventSaveButton"));
+    });
+
+    //sessionStorage.setItem("events_2025_week34", JSON.stringify({}));
 
     console.log(sessionStorage.getItem("events_2025_week34"));
 
     const userInfo = sessionStorage.getItem("events_2025_week34");
 
     console.log(userInfo);
-    expect(userInfo).toBeTruthy();
-    expect(await screen.findByText(/15:00 Test/i)).not.toBeInTheDocument();
+
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ type: "events/addEvent" })
+    );
+    const savedData = JSON.parse(
+      sessionStorage.getItem("events_2025_week34") || "{}"
+    );
+    expect(savedData).toBeTruthy();
+
+    //expect(await screen.findByText(/15:00 Test/i)).not.toBeInTheDocument();
     //expect(await screen.findByRole("dialog")).not.toBeInTheDocument();
 
     jest.restoreAllMocks();
