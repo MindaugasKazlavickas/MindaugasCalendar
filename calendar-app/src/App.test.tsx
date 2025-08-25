@@ -165,7 +165,7 @@ describe("EventCreationForm", () => {
     const startDate = screen.getByTestId("startDate");
 
     const startTime = screen.getByTestId("startTime");
-
+    //new
     const endTime = screen.getByTestId("endTime");
     await act(async () => {
       await userEvent.type(titleInput, "Team daily meeting");
