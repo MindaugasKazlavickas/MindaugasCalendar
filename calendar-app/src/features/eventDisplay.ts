@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { EventDisplayState } from "../utils/types";
 import { StoredEvent } from "../utils/types";
 import { getWeekKey } from "../pages/calendar/MainContent/TimeframeToday";
+import { log } from "console";
 export const initialState: EventDisplayState = {
   isDisplayed: false,
   actualEvents: {},
@@ -24,6 +25,7 @@ const saveToSessionStorage = (newEvent: StoredEvent, weekKey: string) => {
   const newId = +new Date();
   newEvent.id = newId;
   data[newId] = newEvent;
+  console.log(data);
   sessionStorage.setItem(weekKey, JSON.stringify(data));
 };
 const removeFromSessionStorage = (newEvent: StoredEvent, weekKey: string) => {
@@ -55,12 +57,15 @@ const eventDisplaySlice = createSlice({
     addEvent(state, action: PayloadAction<StoredEvent>) {
       const eventDate: Date = new Date(action.payload.startDate.toString());
       const allEvents = Object.values(state.actualEvents);
-      const eventWeekKey = getWeekKey(eventDate);
-      const thisWeekKey = getWeekKey(new Date(allEvents[0]?.startDate));
+      let eventWeekKey = getWeekKey(eventDate);
+      let thisWeekKey = getWeekKey(new Date(allEvents[0]?.startDate));
+      console.debug(action.payload, eventWeekKey);
+      if (allEvents[0]) {
+        thisWeekKey = eventWeekKey;
+      }
+      console.debug(action.payload, eventWeekKey);
       saveToSessionStorage(action.payload, eventWeekKey);
-      getWeekKey(eventDate);
-
-      console.log(state.actualEvents.startDate);
+      console.log(sessionStorage.getItem(eventWeekKey));
       switch (eventWeekKey === thisWeekKey) {
         case true: {
           return {

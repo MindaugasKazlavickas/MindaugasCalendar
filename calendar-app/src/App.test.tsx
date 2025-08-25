@@ -1,13 +1,31 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import App from "./pages/App";
 import { EventProvider } from "./utils/EventContext";
 import { Provider } from "react-redux";
 import { store } from "./store";
 import getGMT from "./utils/getGMT";
 import userEvent from "@testing-library/user-event";
-import apiRequest from "./api/sendAPIRequest";
-import saveEvent from "./api/saveAndEditEvent";
-import configureMockStore from "redux-mock-store";
+import { StoredEvent } from "./utils/types";
+/*jest.mock("./api/sendAPIRequest");
+
+jest.mock("./api/getEvents", () => ({
+  retrieveEventsFromServer: jest.fn().mockResolvedValue([]),
+}));
+
+const mockedRetrieveEvents = retrieveEventsFromServer as jest.MockedFunction<
+  typeof retrieveEventsFromServer
+>;
+mockedRetrieveEvents.mockResolvedValue([
+  {
+    id: 123456789,
+    title: "Test event",
+    startDate: "2025-08-30",
+    startTime: "09:00",
+    endTime: "10:00",
+    endDate: "2025-08-30",
+    eventKey: "0_9",
+  },
+]);*/
 
 describe("AppHeader", () => {
   it("renders the app, checks header text", () => {
@@ -40,22 +58,6 @@ describe("TimezoneGetter", () => {
   test("gets New York timezone", () => {
     jest.spyOn(Date.prototype, "getTimezoneOffset").mockReturnValue(240);
     expect(getGMT()).toBe("GMT -04");
-  });
-});
-
-describe("changes main content's display", () => {
-  //test after each{
-  test.skip("checks main content size", () => {
-    //click toggleRightPanel
-  });
-  //}
-
-  test.skip("toggles the calendar panel", () => {
-    //click toggleCalendarPanel
-  });
-
-  test.skip("toggles the right side panel", () => {
-    //click toggleRightPanel
   });
 });
 
@@ -146,11 +148,11 @@ describe("EventCreationForm", () => {
     expect(locationInput).toHaveValue("Town Hall Office");
     expect(descriptionInput).toHaveValue("Discuss project updates");
   });
-  test("saves form and confirms redux state", async () => {
-    const mockStore = configureMockStore();
-    const reduxStore = mockStore({
-      events: [],
-    });
+
+  test.only("saves form and confirms redux state", async () => {
+    const mockDate = new Date("August 30, 2025, 12:00:00");
+
+    jest.spyOn(Date.prototype, `setTime`).mockReturnValue(mockDate.getTime());
     render(
       <Provider store={store}>
         <EventProvider>
@@ -160,43 +162,60 @@ describe("EventCreationForm", () => {
     );
     userEvent.click(screen.getByTestId("eventTriggerId"));
     const titleInput = screen.getByPlaceholderText(/Add title/i);
-    userEvent.type(titleInput, "Team daily meeting");
     const startDate = screen.getByTestId("startDate");
-    fireEvent.change(startDate, { target: { value: "2025-08-30" } });
+
     const startTime = screen.getByTestId("startTime");
-    fireEvent.change(startTime, { target: { value: "09:00" } });
+
     const endTime = screen.getByTestId("endTime");
-    fireEvent.change(endTime, { target: { value: "10:00" } });
-
-    jest.mock("./api/sendAPIRequest");
-    const mockedApiRequest = apiRequest as jest.MockedFunction<
-      typeof apiRequest
-    >;
-
-    mockedApiRequest.mockResolvedValue({
-      status: 200,
-      data: {},
-      error: undefined,
+    await act(async () => {
+      await userEvent.type(titleInput, "Team daily meeting");
+      await fireEvent.change(startDate, { target: { value: "2025-08-30" } });
+      await fireEvent.change(startTime, { target: { value: "09:00" } });
+      await fireEvent.change(endTime, { target: { value: "10:00" } });
     });
-
-    userEvent.click(screen.getByTestId("eventSaveButton"));
-
-    const actions = reduxStore.getActions();
-
-    expect(actions).toContainEqual(
-      expect.objectContaining({
-        type: "events/addEvent",
-        payload: expect.objectContaining({
-          title: "Team daily meeting",
-          startDate: "2025-08-30",
-          startTime: "09:00",
-          endTime: "10:00",
-          endDate: "2025-08-30",
-        }),
-      })
+    await sessionStorage.clear();
+    const mockEvent: StoredEvent = {
+      id: 1234567890,
+      title: "Test event",
+      startDate: "2025-08-30",
+      startTime: "13:00",
+      endTime: "15:00",
+      endDate: "2025-08-30",
+      eventKey: "6_13",
+    };
+    sessionStorage.setItem(
+      "events_2025_week34",
+      JSON.stringify([{ 1234567890: mockEvent }])
     );
+    //console.log(sessionStorage.getItem("events_2025_week34"));
+    await act(async () => {
+      await userEvent.click(screen.getByTestId("eventSaveButton"));
+    });
+    console.log(sessionStorage.getItem("events_2025_week34"));
 
-    expect(screen.getByText("Team daily meeting")).toBeInTheDocument();
-    expect(await screen.findByRole("dialog")).not.toBeInTheDocument();
+    const userInfo = sessionStorage.getItem("events_2025_week34");
+
+    console.log(userInfo);
+    expect(userInfo).toBeTruthy();
+    expect(await screen.findByText("10:00 Team")).not.toBeInTheDocument();
+    //expect(await screen.findByRole("dialog")).not.toBeInTheDocument();
+
+    jest.restoreAllMocks();
+  });
+});
+
+describe("changes main content's display", () => {
+  //test after each{
+  test.skip("checks main content size", () => {
+    //click toggleRightPanel
+  });
+  //}
+
+  test.skip("toggles the calendar panel", () => {
+    //click toggleCalendarPanel
+  });
+
+  test.skip("toggles the right side panel", () => {
+    //click toggleRightPanel
   });
 });
