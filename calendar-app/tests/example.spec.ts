@@ -30,7 +30,7 @@ test("saving, editing and deleting event user flow", async ({ page }) => {
   ).toBeVisible();
 
   //open existing event and edit it
-  await page.getByText(":00 - 10:30 Team meeting").click();
+  await page.getByRole("cell", { name: "10:00 - 10:30 Team meeting" }).click();
   await expect(page.getByRole("dialog")).toBeVisible();
   await expect(page.getByRole("textbox", { name: "Add title" })).toHaveValue(
     "Team meeting"
@@ -46,7 +46,9 @@ test("saving, editing and deleting event user flow", async ({ page }) => {
   ).toBeVisible();
 
   //open existing event and delete it
-  await page.getByText(":00 - 10:30 Team meeting updated").click();
+  await page
+    .getByRole("cell", { name: "10:00 - 10:30 Team meeting updated" })
+    .click();
   await expect(page.getByRole("dialog")).toBeVisible();
   await expect(page.getByRole("textbox", { name: "Add title" })).toHaveValue(
     "Team meeting updated"
