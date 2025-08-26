@@ -23,8 +23,8 @@ const saveToSessionStorage = (newEvent: StoredEvent, weekKey: string) => {
   const data = getSessionData(weekKey);
   if (!data) return;
   const newId = Date.now();
-  newEvent.id = newId;
-  data[newId] = newEvent;
+  const savedEvent = { ...newEvent, id: +new Date() };
+  data[savedEvent.id] = savedEvent;
   console.debug("this it hte key", weekKey);
   console.log(data);
   sessionStorage.setItem(weekKey, JSON.stringify(data));

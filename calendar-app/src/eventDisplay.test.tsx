@@ -10,8 +10,6 @@ import reducer, { addEvent } from "./features/eventDisplay";
 describe("SyncReduxAndStorage", () => {
   let store: Record<string, string>;
 
-  jest.spyOn(global.Date, "now").mockReturnValue(1756197020781);
-
   beforeEach(() => {
     store = {};
     (
@@ -33,11 +31,11 @@ describe("SyncReduxAndStorage", () => {
 
   afterEach(() => {
     jest.restoreAllMocks();
-    jest.clearAllMocks();
-    sessionStorage.clear();
   });
 
   test("add new event to redux and storage", () => {
+    jest.spyOn(global.Date, "now").mockReturnValue(1756197020781);
+
     const weekKey = "events_2025_week34";
     store[weekKey] = JSON.stringify({});
 
