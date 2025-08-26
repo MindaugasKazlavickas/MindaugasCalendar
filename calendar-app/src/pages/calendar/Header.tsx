@@ -31,6 +31,7 @@ function Header({
           onClick={() => {
             setCalendarPanelDisplay(!calendarPanelState);
           }}
+          data-testid="calendarPanelTrigger"
         >
           <img src="./media/burger.svg" alt="Closes and opens calendar view" />
         </button>

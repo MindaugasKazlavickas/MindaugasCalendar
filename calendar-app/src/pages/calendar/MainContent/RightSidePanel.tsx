@@ -26,6 +26,7 @@ function RightSidePanel({
           onClick={() => {
             setRightSidePanelDisplay(!rightSidePanelState);
           }}
+          data-testid="rightPanelTrigger"
         >
           <img
             id="rightPanelChevron"

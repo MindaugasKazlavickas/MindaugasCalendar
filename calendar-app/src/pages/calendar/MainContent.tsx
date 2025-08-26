@@ -26,6 +26,7 @@ function Content({
       <div
         className="content"
         id="content"
+        data-testid="weekView"
         style={
           {
             gridTemplateColumns: `${
