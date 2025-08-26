@@ -15,7 +15,15 @@ import reducer, { addEvent } from "./eventDisplay";
 
 describe("SyncReduxAndStorage", () => {
   let store: Record<string, string>;
+  const mockTime = 1756197020781;
 
+  beforeAll(() => {
+    jest.useFakeTimers();
+    jest.setSystemTime(new Date(mockTime));
+  });
+  afterAll(() => {
+    jest.useRealTimers();
+  });
   beforeEach(() => {
     store = {};
 
@@ -36,13 +44,11 @@ describe("SyncReduxAndStorage", () => {
   });
 
   test("add new event to redux and storage", () => {
-    jest.spyOn(global.Date, "now").mockReturnValue(1756197020781);
-
     const weekKey = "events_2025_week34";
     store[weekKey] = JSON.stringify({});
 
     const mockEvent: StoredEvent = {
-      id: 1756197020781,
+      id: mockTime,
       title: "Test event",
       startDate: "2025-08-30",
       startTime: "13:00",
@@ -59,9 +65,12 @@ describe("SyncReduxAndStorage", () => {
       addEvent(mockEvent)
     );
 
-    expect(state.actualEvents[1756197020781]).toEqual(mockEvent);
+    console.log("state after reduction:", state);
+    console.log("store contents:", store);
+    console.log("parsed store:", JSON.parse(store[weekKey]));
+    expect(state.actualEvents[mockTime]).toEqual(mockEvent);
 
     const stored = JSON.parse(store[weekKey]);
-    expect(stored[1756197020781]).toEqual({ ...mockEvent, id: 1756197020781 });
+    expect(stored[mockTime]).toEqual({ ...mockEvent, id: mockTime });
   });
 });
