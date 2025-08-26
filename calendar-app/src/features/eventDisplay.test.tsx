@@ -1,36 +1,38 @@
 /* eslint-disable import/first */
 
-jest.mock("./pages/calendar/MainContent/TimeframeToday", () => ({
-  getWeekKey: jest.fn().mockReturnValue("events_2025_week34"),
-}));
+jest.mock("../pages/calendar/MainContent/TimeframeToday", () => {
+  const actual = jest.requireActual(
+    "../pages/calendar/MainContent/TimeframeToday"
+  );
+  return {
+    __esModule: true,
+    getWeekKey: () => "events_2025_week34",
+  };
+});
 
-import { StoredEvent } from "./utils/types";
-import reducer, { addEvent } from "./features/eventDisplay";
+import { StoredEvent } from "../utils/types";
+import reducer, { addEvent } from "./eventDisplay";
 
 describe("SyncReduxAndStorage", () => {
   let store: Record<string, string>;
 
   beforeEach(() => {
     store = {};
-    (
-      jest.spyOn(window.sessionStorage.__proto__, "getItem") as jest.Mock
-    ).mockImplementation((key: string) => {
-      return store[key] ?? null;
-    });
-    (
-      jest.spyOn(window.sessionStorage.__proto__, "setItem") as jest.Mock
-    ).mockImplementation((key: string, value: string) => {
-      store[key] = value;
-    });
-    (
-      jest.spyOn(window.sessionStorage.__proto__, "removeItem") as jest.Mock
-    ).mockImplementation((key: string) => {
-      delete store[key];
-    });
-  });
 
-  afterEach(() => {
-    jest.restoreAllMocks();
+    jest.clearAllMocks();
+
+    Object.defineProperty(window, "sessionStorage", {
+      value: {
+        getItem: jest.fn((key) => store[key]),
+        setItem: jest.fn((key, value) => {
+          store[key] = value;
+        }),
+        removeItem: jest.fn((key) => {
+          delete store[key];
+        }),
+      },
+      writable: true,
+    });
   });
 
   test("add new event to redux and storage", () => {
