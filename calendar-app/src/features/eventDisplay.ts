@@ -58,14 +58,12 @@ const eventDisplaySlice = createSlice({
       const eventDate: Date = new Date(action.payload.startDate.toString());
       const allEvents = Object.values(state.actualEvents);
       let eventWeekKey = getWeekKey(eventDate);
-      let thisWeekKey = getWeekKey(new Date(allEvents[0]?.startDate));
-      console.debug(action.payload, eventWeekKey);
-      if (allEvents[0]) {
-        thisWeekKey = eventWeekKey;
-      }
+      let thisWeekKey = allEvents[0]
+        ? getWeekKey(new Date(allEvents[0]?.startDate))
+        : eventWeekKey;
       console.debug(action.payload, eventWeekKey);
       saveToSessionStorage(action.payload, eventWeekKey);
-      console.log(sessionStorage.getItem(eventWeekKey));
+      console.log(eventWeekKey, thisWeekKey);
       switch (eventWeekKey === thisWeekKey) {
         case true: {
           return {

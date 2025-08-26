@@ -8,21 +8,19 @@ import userEvent from "@testing-library/user-event";
 import { StoredEvent } from "./utils/types";
 import apiRequest from "./api/sendAPIRequest";
 import Event from "./pages/calendar/Event";
-import reducer, {
-  addEvent,
-  updateEvent,
-  removeEvent,
-  setEvents,
-} from "./features/eventDisplay";
+
+beforeEach(() => {
+  jest.restoreAllMocks();
+  jest.clearAllMocks();
+  sessionStorage.clear();
+});
 
 describe("AppHeader", () => {
   it("renders the app, checks header text", () => {
     render(
-      <Provider store={store}>
-        <EventProvider>
-          <App />
-        </EventProvider>
-      </Provider>
+      <EventProvider>
+        <App />
+      </EventProvider>
     );
     const calendar = screen.getAllByText("Calendar");
     expect(calendar[0]).toBeInTheDocument();
@@ -283,11 +281,18 @@ describe("CheckElementDisplay", () => {
   });
 });
 
-describe("SyncReduxAndStorage", () => {
-  jest.mock("./pages/calendar/MainContent/TimeframeToday", () => ({
-    getWeekKey: jest.fn().mockReturnValue("events_2025_week34"),
-  }));
+jest.mock("./pages/calendar/MainContent/TimeframeToday", () => ({
+  getWeekKey: jest.fn().mockReturnValue("events_2025_week34"),
+}));
 
+import reducer, {
+  addEvent,
+  updateEvent,
+  removeEvent,
+  setEvents,
+} from "./features/eventDisplay";
+
+describe("SyncReduxAndStorage", () => {
   let store: Record<string, string>;
 
   jest.spyOn(global.Date, "now").mockReturnValue(1756197020781);
@@ -310,16 +315,17 @@ describe("SyncReduxAndStorage", () => {
     });
   });
 
-  afterEach(() => {
+  beforeEach(() => {
     jest.restoreAllMocks();
+    jest.clearAllMocks();
+    sessionStorage.clear();
   });
   test("add new event to redux and storage", () => {
     const weekKey = "events_2025_week34";
-    sessionStorage.setItem("events_2025_week34", "");
     store[weekKey] = JSON.stringify({});
 
     const mockEvent: StoredEvent = {
-      id: 1234567890,
+      id: 1756197020781,
       title: "Test event",
       startDate: "2025-08-30",
       startTime: "13:00",
@@ -336,11 +342,9 @@ describe("SyncReduxAndStorage", () => {
       addEvent(mockEvent)
     );
 
-    expect(state.actualEvents[mockEvent.id]).toEqual(mockEvent);
+    expect(state.actualEvents[1756197020781]).toEqual(mockEvent);
 
     const stored = JSON.parse(store[weekKey]);
-    expect(
-      Object.values(stored).some((e: any) => e.title === "Test event")
-    ).toBe(true);
+    expect(stored[1756197020781]).toEqual({ ...mockEvent, id: 1756197020781 });
   });
 });
