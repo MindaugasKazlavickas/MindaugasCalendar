@@ -25,8 +25,6 @@ const saveToSessionStorage = (newEvent: StoredEvent, weekKey: string) => {
   const newId = Date.now();
   const savedEvent = { ...newEvent, id: +new Date() };
   data[savedEvent.id] = savedEvent;
-  console.debug("this it hte key", weekKey);
-  console.log(data);
   sessionStorage.setItem(weekKey, JSON.stringify(data));
 };
 const removeFromSessionStorage = (newEvent: StoredEvent, weekKey: string) => {
@@ -57,17 +55,12 @@ const eventDisplaySlice = createSlice({
     },
     addEvent(state, action: PayloadAction<StoredEvent>) {
       const eventDate: Date = new Date(action.payload.startDate.toString());
-      console.log(eventDate);
-      console.log(getWeekKey(new Date()));
       const allEvents = Object.values(state.actualEvents);
       let eventWeekKey = getWeekKey(eventDate);
-      console.log(getWeekKey(new Date(eventDate)));
       let thisWeekKey = allEvents[0]
         ? getWeekKey(new Date(allEvents[0].startDate))
         : eventWeekKey;
-      console.debug(action.payload, eventWeekKey);
       saveToSessionStorage(action.payload, eventWeekKey);
-      console.log(eventWeekKey, thisWeekKey);
       switch (eventWeekKey === thisWeekKey) {
         case true: {
           return {
@@ -85,11 +78,6 @@ const eventDisplaySlice = createSlice({
     },
     updateEvent(state, action: PayloadAction<StoredEvent>) {
       const eventDate: Date = new Date(action.payload.startDate.toString());
-      console.log(
-        getWeekKey(eventDate),
-        "also date",
-        new Date(action.payload.startDate.toString())
-      );
 
       updateSessionStorage(
         action.payload,

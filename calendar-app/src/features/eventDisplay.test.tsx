@@ -11,7 +11,7 @@ jest.mock("../pages/calendar/MainContent/TimeframeToday", () => {
 });
 
 import { StoredEvent } from "../utils/types";
-import reducer, { addEvent } from "./eventDisplay";
+import reducer, { addEvent, removeEvent, updateEvent } from "./eventDisplay";
 
 describe("SyncReduxAndStorage", () => {
   let store: Record<string, string>;
@@ -42,9 +42,8 @@ describe("SyncReduxAndStorage", () => {
       writable: true,
     });
   });
-
+  const weekKey = "events_2025_week34";
   test("add new event to redux and storage", () => {
-    const weekKey = "events_2025_week34";
     store[weekKey] = JSON.stringify({});
 
     const mockEvent: StoredEvent = {
@@ -64,13 +63,62 @@ describe("SyncReduxAndStorage", () => {
       },
       addEvent(mockEvent)
     );
-
-    console.log("state after reduction:", state);
-    console.log("store contents:", store);
-    console.log("parsed store:", JSON.parse(store[weekKey]));
     expect(state.actualEvents[mockTime]).toEqual(mockEvent);
 
     const stored = JSON.parse(store[weekKey]);
     expect(stored[mockTime]).toEqual({ ...mockEvent, id: mockTime });
+  });
+
+  test("update an existing event in redux and storage", () => {
+    const initialEvent: StoredEvent = {
+      id: mockTime,
+      title: "Initial event",
+      startDate: "2025-08-30",
+      startTime: "15:00",
+      endTime: "17:00",
+      endDate: "2025-08-30",
+      eventKey: "6_13",
+    };
+    store[weekKey] = JSON.stringify({ [mockTime]: initialEvent });
+
+    const updatedEvent: StoredEvent = {
+      ...initialEvent,
+      title: "Updated Event",
+    };
+    const state = reducer(
+      {
+        isDisplayed: false,
+        actualEvents: { [mockTime]: initialEvent },
+      },
+      updateEvent(updatedEvent)
+    );
+    expect(state.actualEvents[mockTime]).toEqual(updatedEvent);
+
+    const stored = JSON.parse(store[weekKey]);
+    expect(stored[mockTime]).toEqual(updatedEvent);
+  });
+
+  test("remove an existing event in redux and storage", () => {
+    const initialEvent: StoredEvent = {
+      id: mockTime,
+      title: "Initial event",
+      startDate: "2025-08-30",
+      startTime: "15:00",
+      endTime: "17:00",
+      endDate: "2025-08-30",
+      eventKey: "6_13",
+    };
+    store[weekKey] = JSON.stringify({ [mockTime]: initialEvent });
+
+    const stateBefore = {
+      isDisplayed: false,
+      actualEvents: { [mockTime]: initialEvent },
+    };
+
+    const state = reducer(stateBefore, removeEvent(initialEvent));
+
+    expect(state.actualEvents[mockTime]).toBeUndefined();
+    const stored = JSON.parse(store[weekKey]);
+    expect(stored[mockTime]).toBeUndefined();
   });
 });
