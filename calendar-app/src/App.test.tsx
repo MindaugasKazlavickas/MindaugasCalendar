@@ -14,9 +14,6 @@ import reducer, {
   removeEvent,
   setEvents,
 } from "./features/eventDisplay";
-jest.mock("./pages/calendar/MainContent/TimeframeToday", () => ({
-  getWeekKey: jest.fn().mockReturnValue("events_2025_week34"),
-}));
 
 describe("AppHeader", () => {
   it("renders the app, checks header text", () => {
@@ -130,11 +127,6 @@ describe("EventCreationForm", () => {
     expect(descriptionInput).toHaveValue("Discuss project updates");
   });
 
-  (apiRequest as jest.Mock).mockResolvedValue({
-    status: 200,
-    data: {},
-    error: undefined,
-  });
   test.skip("saves form and confirms redux state", async () => {
     const mockDate = new Date("August 30, 2025, 12:00:00");
 
@@ -292,26 +284,30 @@ describe("CheckElementDisplay", () => {
 });
 
 describe("SyncReduxAndStorage", () => {
+  jest.mock("./pages/calendar/MainContent/TimeframeToday", () => ({
+    getWeekKey: jest.fn().mockReturnValue("events_2025_week34"),
+  }));
+
   let store: Record<string, string>;
 
   jest.spyOn(global.Date, "now").mockReturnValue(1756197020781);
   beforeEach(() => {
     store = {};
-    jest
-      .spyOn(window.sessionStorage.__proto__, "getItem")
-      .mockImplementation((key: string) => {
-        return store[key] ?? null;
-      });
-    jest
-      .spyOn(window.sessionStorage.__proto__, "setItem")
-      .mockImplementation((key: string, value: string) => {
-        store[key] = value;
-      });
-    jest
-      .spyOn(window.sessionStorage.__proto__, "removeItem")
-      .mockImplementation((key: string) => {
-        delete store[key];
-      });
+    (
+      jest.spyOn(window.sessionStorage.__proto__, "getItem") as jest.Mock
+    ).mockImplementation((key: string) => {
+      return store[key] ?? null;
+    });
+    (
+      jest.spyOn(window.sessionStorage.__proto__, "setItem") as jest.Mock
+    ).mockImplementation((key: string, value: string) => {
+      store[key] = value;
+    });
+    (
+      jest.spyOn(window.sessionStorage.__proto__, "removeItem") as jest.Mock
+    ).mockImplementation((key: string) => {
+      delete store[key];
+    });
   });
 
   afterEach(() => {
