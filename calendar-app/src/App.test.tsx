@@ -1,3 +1,7 @@
+jest.mock("./pages/calendar/MainContent/TimeframeToday", () => ({
+  getWeekKey: jest.fn().mockReturnValue("events_2025_week34"),
+}));
+
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import App from "./pages/App";
 import { EventProvider } from "./utils/EventContext";
@@ -9,18 +13,14 @@ import { StoredEvent } from "./utils/types";
 import apiRequest from "./api/sendAPIRequest";
 import Event from "./pages/calendar/Event";
 
-beforeEach(() => {
-  jest.restoreAllMocks();
-  jest.clearAllMocks();
-  sessionStorage.clear();
-});
-
 describe("AppHeader", () => {
   it("renders the app, checks header text", () => {
     render(
-      <EventProvider>
-        <App />
-      </EventProvider>
+      <Provider store={store}>
+        <EventProvider>
+          <App />
+        </EventProvider>
+      </Provider>
     );
     const calendar = screen.getAllByText("Calendar");
     expect(calendar[0]).toBeInTheDocument();
@@ -281,10 +281,6 @@ describe("CheckElementDisplay", () => {
   });
 });
 
-jest.mock("./pages/calendar/MainContent/TimeframeToday", () => ({
-  getWeekKey: jest.fn().mockReturnValue("events_2025_week34"),
-}));
-
 import reducer, {
   addEvent,
   updateEvent,
@@ -315,11 +311,12 @@ describe("SyncReduxAndStorage", () => {
     });
   });
 
-  beforeEach(() => {
+  afterEach(() => {
     jest.restoreAllMocks();
     jest.clearAllMocks();
     sessionStorage.clear();
   });
+
   test("add new event to redux and storage", () => {
     const weekKey = "events_2025_week34";
     store[weekKey] = JSON.stringify({});
