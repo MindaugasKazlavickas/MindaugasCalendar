@@ -35,7 +35,11 @@ function RightSidePanel({
         </button>
       </div>
       {rightSidePanelState && (
-        <aside id="rightSidePanel" className="rightSideMenu">
+        <aside
+          id="rightSidePanel"
+          className="rightSideMenu"
+          data-testid="rightSidePanel"
+        >
           {[0, 1, 2, 3, 4, 5].map((i) => {
             return (
               <Fragment key={i + "RightSideButtonFragment"}>

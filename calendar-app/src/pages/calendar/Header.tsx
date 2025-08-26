@@ -131,6 +131,7 @@ function Header({
             <button
               id="timeframeSelectButton"
               className="roundedCornerButton dropdownButton"
+              data-testid="timeframeSelectDropdownTrigger"
             >
               <span>Week</span>
               <img
@@ -143,6 +144,7 @@ function Header({
               id="dropdownContent"
               tabIndex={-1}
               className="dropdownContent notDisplayed"
+              data-testid="dropdownContent"
             >
               <div className="dropdownItem">
                 <p>Day</p>

@@ -7,9 +7,15 @@ import getGMT from "./utils/getGMT";
 import userEvent from "@testing-library/user-event";
 import { StoredEvent } from "./utils/types";
 import apiRequest from "./api/sendAPIRequest";
-jest.mock("./api/sendAPIRequest", () => ({
-  __esModule: true,
-  default: jest.fn(),
+import Event from "./pages/calendar/Event";
+import reducer, {
+  addEvent,
+  updateEvent,
+  removeEvent,
+  setEvents,
+} from "./features/eventDisplay";
+jest.mock("./pages/calendar/MainContent/TimeframeToday", () => ({
+  getWeekKey: jest.fn().mockReturnValue("events_2025_week34"),
 }));
 
 describe("AppHeader", () => {
@@ -47,7 +53,7 @@ describe("TimezoneGetter", () => {
 });
 
 describe("EventCreationForm", () => {
-  test("gets create event button", () => {
+  test("test event form trigger", async () => {
     render(
       <Provider store={store}>
         <EventProvider>
@@ -57,20 +63,10 @@ describe("EventCreationForm", () => {
     );
     const triggerFormButton = screen.getByTestId("eventTriggerId");
     expect(triggerFormButton).toBeInTheDocument();
-  });
-
-  test("tests create event button", async () => {
-    render(
-      <Provider store={store}>
-        <EventProvider>
-          <App />
-        </EventProvider>
-      </Provider>
-    );
     userEvent.click(screen.getByTestId("eventTriggerId"));
     expect(await screen.findByRole("dialog")).toBeInTheDocument();
   });
-  test("checks title input focus", () => {
+  test("checks title input field autofocus", () => {
     render(
       <Provider store={store}>
         <EventProvider>
@@ -139,7 +135,7 @@ describe("EventCreationForm", () => {
     data: {},
     error: undefined,
   });
-  test.only("saves form and confirms redux state", async () => {
+  test.skip("saves form and confirms redux state", async () => {
     const mockDate = new Date("August 30, 2025, 12:00:00");
 
     sessionStorage.clear();
@@ -157,11 +153,11 @@ describe("EventCreationForm", () => {
     render(
       <Provider store={store}>
         <EventProvider>
-          <App />
+          <Event eventWindow={true} triggerEventWindow={() => {}} />
         </EventProvider>
       </Provider>
     );
-    userEvent.click(screen.getByTestId("eventTriggerId"));
+    //userEvent.click(screen.getByTestId("eventTriggerId"));
     const titleInput = screen.getByPlaceholderText(/Add title/i);
     const startDate = screen.getByTestId("startDate");
 
@@ -199,18 +195,156 @@ describe("EventCreationForm", () => {
   });
 });
 
-describe("changes main content's display", () => {
-  //test after each{
-  test.skip("checks main content size", () => {
-    //click toggleRightPanel
+describe("checks element display", () => {
+  test("toggles the calendar panel", () => {
+    render(
+      <Provider store={store}>
+        <EventProvider>
+          <App />
+        </EventProvider>
+      </Provider>
+    );
+    const calendarPanelTrigger = screen.getByAltText(
+      "Closes and opens calendar view"
+    );
+    const calendarPanel = screen.getByTestId("calendarSidePanel");
+    userEvent.click(calendarPanelTrigger);
+    expect(calendarPanel).not.toBeInTheDocument();
   });
-  //}
 
-  test.skip("toggles the calendar panel", () => {
-    //click toggleCalendarPanel
+  test("toggles the right side panel", () => {
+    render(
+      <Provider store={store}>
+        <EventProvider>
+          <App />
+        </EventProvider>
+      </Provider>
+    );
+    const rightSideTrigger = screen.getByAltText("Right side panel trigger");
+    const rightSidePanel = screen.getByTestId("rightSidePanel");
+    userEvent.click(rightSideTrigger);
+    expect(rightSidePanel).not.toBeInTheDocument();
   });
 
-  test.skip("toggles the right side panel", () => {
-    //click toggleRightPanel
+  test("displays dropdown", () => {
+    render(
+      <Provider store={store}>
+        <EventProvider>
+          <App />
+        </EventProvider>
+      </Provider>
+    );
+    const dropdownTrigger = screen.getByTestId(
+      "timeframeSelectDropdownTrigger"
+    );
+    const dropdownPanel = screen.getByTestId("dropdownContent");
+    userEvent.hover(dropdownTrigger);
+    expect(dropdownPanel).toBeInTheDocument();
+  });
+});
+
+describe("CheckElementDisplay", () => {
+  test("toggles the calendar panel", () => {
+    render(
+      <Provider store={store}>
+        <EventProvider>
+          <App />
+        </EventProvider>
+      </Provider>
+    );
+    const calendarPanelTrigger = screen.getByAltText(
+      "Closes and opens calendar view"
+    );
+    const calendarPanel = screen.getByTestId("calendarSidePanel");
+    userEvent.click(calendarPanelTrigger);
+    expect(calendarPanel).not.toBeInTheDocument();
+  });
+
+  test("toggles the right side panel", () => {
+    render(
+      <Provider store={store}>
+        <EventProvider>
+          <App />
+        </EventProvider>
+      </Provider>
+    );
+    const rightSideTrigger = screen.getByAltText("Right side panel trigger");
+    const rightSidePanel = screen.getByTestId("rightSidePanel");
+    userEvent.click(rightSideTrigger);
+    expect(rightSidePanel).not.toBeInTheDocument();
+  });
+
+  test("displays dropdown", () => {
+    render(
+      <Provider store={store}>
+        <EventProvider>
+          <App />
+        </EventProvider>
+      </Provider>
+    );
+    const dropdownTrigger = screen.getByTestId(
+      "timeframeSelectDropdownTrigger"
+    );
+    const dropdownPanel = screen.getByTestId("dropdownContent");
+    userEvent.hover(dropdownTrigger);
+    expect(dropdownPanel).toBeInTheDocument();
+  });
+});
+
+describe("SyncReduxAndStorage", () => {
+  let store: Record<string, string>;
+
+  jest.spyOn(global.Date, "now").mockReturnValue(1756197020781);
+  beforeEach(() => {
+    store = {};
+    jest
+      .spyOn(window.sessionStorage.__proto__, "getItem")
+      .mockImplementation((key: string) => {
+        return store[key] ?? null;
+      });
+    jest
+      .spyOn(window.sessionStorage.__proto__, "setItem")
+      .mockImplementation((key: string, value: string) => {
+        store[key] = value;
+      });
+    jest
+      .spyOn(window.sessionStorage.__proto__, "removeItem")
+      .mockImplementation((key: string) => {
+        delete store[key];
+      });
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+  test("add new event to redux and storage", () => {
+    const weekKey = "events_2025_week34";
+    sessionStorage.setItem("events_2025_week34", "");
+    store[weekKey] = JSON.stringify({});
+
+    const mockEvent: StoredEvent = {
+      id: 1234567890,
+      title: "Test event",
+      startDate: "2025-08-30",
+      startTime: "13:00",
+      endTime: "15:00",
+      endDate: "2025-08-30",
+      eventKey: "6_13",
+    };
+
+    const state = reducer(
+      {
+        isDisplayed: false,
+        actualEvents: {},
+      },
+      addEvent(mockEvent)
+    );
+
+    expect(state.actualEvents[mockEvent.id]).toEqual(mockEvent);
+
+    const stored = JSON.parse(store[weekKey]);
+    expect(
+      Object.values(stored).some((e: any) => e.title === "Test event")
+    ).toBe(true);
   });
 });

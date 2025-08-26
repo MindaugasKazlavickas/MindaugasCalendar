@@ -25,7 +25,11 @@ function CalendarPanel({
   );
 
   return (
-    <aside id="calendarSideView" className="calendarSidePanel">
+    <aside
+      id="calendarSideView"
+      className="calendarSidePanel"
+      data-testid="calendarSidePanel"
+    >
       <button
         className="eventTrigger"
         id="eventWindowButton"
