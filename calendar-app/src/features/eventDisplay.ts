@@ -58,10 +58,10 @@ const eventDisplaySlice = createSlice({
     addEvent(state, action: PayloadAction<StoredEvent>) {
       const eventDate: Date = new Date(action.payload.startDate.toString());
       console.log(eventDate);
-      console.log(getWeekKey(eventDate));
+      console.log(getWeekKey(new Date()));
       const allEvents = Object.values(state.actualEvents);
       let eventWeekKey = getWeekKey(eventDate);
-      console.log(getWeekKey(eventDate));
+      console.log(getWeekKey(new Date(eventDate)));
       let thisWeekKey = allEvents[0]
         ? getWeekKey(new Date(allEvents[0].startDate))
         : eventWeekKey;

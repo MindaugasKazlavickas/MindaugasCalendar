@@ -11,7 +11,6 @@ export default function TimeframeToday() {
   );
   useEffect(() => {
     const currentDate = new Date(currentDateStr);
-
     const weekKey = getWeekKey(currentDate);
 
     const cached = sessionStorage.getItem(weekKey);

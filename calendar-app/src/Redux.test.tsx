@@ -1,15 +1,12 @@
 /* eslint-disable import/first */
-import { StoredEvent } from "./utils/types";
+
 jest.mock("./pages/calendar/MainContent/TimeframeToday", () => ({
   getWeekKey: jest.fn().mockReturnValue("events_2025_week34"),
 }));
 
+import { StoredEvent } from "./utils/types";
 import reducer, { addEvent } from "./features/eventDisplay";
-import { getWeekKey } from "./pages/calendar/MainContent/TimeframeToday";
 
-test("mock works", () => {
-  expect(getWeekKey(new Date())).toBe("events_2025_week34");
-});
 describe("SyncReduxAndStorage", () => {
   let store: Record<string, string>;
 
