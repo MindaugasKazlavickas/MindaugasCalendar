@@ -14,7 +14,7 @@ calendar-app/build
 calendar-app/package-lock.json
 calendar-server/node_modules
 calendar-server/package-lock.json
-
+calendar-server/db.json
 # misc
 .DS_Store
 calendar-app/.env.local
