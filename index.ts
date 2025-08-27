@@ -1,15 +1,14 @@
+const SERVER_URL = "http://localhost:3000/events";
+
 document.addEventListener("DOMContentLoaded", () => {
-  let currentDate: Date = new Date();
-  const dateInLogo = <HTMLElement>document.getElementById("logoText");
-  if (dateInLogo) {
-    dateInLogo.innerText = currentDate.getDate().toString();
+  let currentDate = new Date();
+  const headerIconDate = document.getElementById("logoText");
+  if (headerIconDate) {
+    headerIconDate.innerText = currentDate.getDate().toString();
   }
-
-  displayMonthName(currentDate);
-
-  const tableTimezone = <HTMLElement>document.getElementById("timezone");
-  if (tableTimezone) {
-    tableTimezone.innerText = getGMT();
+  const timeframeTimezone = document.getElementById("timezone");
+  if (timeframeTimezone) {
+    timeframeTimezone.innerText = getGMT();
   }
 
   setupPanelTriggers();
@@ -21,11 +20,10 @@ document.addEventListener("DOMContentLoaded", () => {
   renderCalendar();
 
   createTimeframeListeners(currentDate);
-  createCalendarListeners(currentDate);
-
   timeframeUpdate(currentDate, 0);
 
-  displayCalendarMonth(currentDate);
+  fillOutMonthDays(currentDate);
+  sideCalendarMonth(currentDate);
 });
 interface StoredEvent {
   id: number;
@@ -43,11 +41,14 @@ interface APIResponse<T> {
   data: T;
   error?: string;
 }
-function fillOutWeekDays(currentDate: Date, offset: number): void {
+function fillOutWeekDays(currentDate: Date, offset: number) {
   currentDate.setDate(currentDate.getDate() + offset);
-  let date: Date = new Date(currentDate);
+  let date = new Date(currentDate.toString());
   date.setDate(date.getDate() - date.getDay());
-
+  const markedWeekDays = document.querySelectorAll(".weekViewGridHeader");
+  markedWeekDays.forEach((classes) => {
+    classes.classList.remove("weekViewGridHeaderMarked");
+  });
   for (let i = 0; i < 7; i++) {
     let weekDate = <HTMLTableCellElement>(
       document.getElementById("weekDisplayDate" + i)
@@ -55,26 +56,23 @@ function fillOutWeekDays(currentDate: Date, offset: number): void {
     weekDate.innerText = date.getDate().toString();
 
     date.setDate(date.getDate() + 1);
+    if (
+      offset === 0 ||
+      (new Date().getDate() === date.getDate() &&
+        new Date().getMonth() === date.getMonth() &&
+        new Date().getFullYear() === date.getFullYear())
+    ) {
+      document
+        .getElementById("weekDisplayDate" + [currentDate.getDay()])
+        ?.parentElement?.classList.toggle("weekViewGridHeaderMarked");
+    } else {
+    }
   }
-
-  let todayDate: Date = new Date();
-  if (offset === 0) {
-    date = new Date(todayDate);
-    document
-      .getElementById("weekDisplayDate" + [todayDate.getDay()])
-      ?.parentElement?.classList.add("weekViewGridHeaderMarked");
-  } else {
-    document
-      .getElementById("weekDisplayDate" + [todayDate.getDay()])
-      ?.parentElement?.classList.remove("weekViewGridHeaderMarked");
-  }
-  console.log(currentDate);
 }
-function fillOutMonthDays(currentDate: Date): void {
-  const workingDate: Date = new Date(currentDate);
+function fillOutMonthDays(currentDate: Date) {
+  let workingDate = new Date(currentDate.toString());
   workingDate.setDate(1);
-  let startDate = workingDate.getDate() - workingDate.getDay();
-  workingDate.setDate(startDate);
+  workingDate.setDate(workingDate.getDate() - workingDate.getDay());
   const calendarTable = <HTMLTableElement>(
     document.getElementById("calendarTable")
   );
@@ -82,15 +80,14 @@ function fillOutMonthDays(currentDate: Date): void {
     calendarTable.getElementsByTagName("tbody")[0]
   );
   for (let i = 0; i < 6; i++) {
-    let calendarRow = <HTMLTableRowElement>(
+    const calendarRow = <HTMLTableRowElement>(
       calendarTBody.getElementsByClassName("calendarRow")[i]
     );
     for (let j = 0; j < 7; j++) {
-      let dayCell = <HTMLTableCellElement>(
+      const dayCell = <HTMLTableCellElement>(
         calendarRow.getElementsByClassName("calendarCell")[j]
       );
       dayCell.innerText = workingDate.getDate().toString();
-      dayCell.removeAttribute("id");
       dayCell.setAttribute("id", workingDate.toString());
       const isTodayDate = () => {
         return (
@@ -123,39 +120,57 @@ function fillOutMonthDays(currentDate: Date): void {
     }
   }
 }
-async function apiHelper<T>(url: string, payload: T): Promise<APIResponse<T>> {
+async function apiRequest<T>(
+  url: string,
+  method: string,
+  payload?: T,
+  id?: T
+): Promise<APIResponse<T>> {
   try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
+    let response;
+    if (payload) {
+      response = await fetch(url, {
+        method: method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+    } else {
+      response = await fetch(url, {
+        method: method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    }
 
     const data = await response.json();
 
-    if(!response.ok) {
-      return {
-        status: response.status,
-        data: data,
-        error: data?.error || "Failed to access API",
-      };
+    if (!response.ok) {
+      throw new Error(`Request failed with status ${response.status}`);
     }
     return {
       status: response.status,
       data,
     };
-  } catch(error) {
-    return {
-      status: 500,
-      data: payload,
-      error: error.message,
-    };
+  } catch (error) {
+    if (payload) {
+      return {
+        status: 500,
+        data: payload,
+        error: error.message,
+      };
+    } else {
+      return {
+        status: 500,
+        data: id,
+        error: error.message,
+      };
+    }
   }
 }
 async function saveEvent(currentDate: Date): Promise<void> {
-  let newEvent: StoredEvent;
   const inputStartDate = <HTMLInputElement>document.getElementById("startDate");
   const inputEndDate = <HTMLInputElement>document.getElementById("endDate");
   const inputStartTime = <HTMLInputElement>document.getElementById("startTime");
@@ -191,134 +206,197 @@ async function saveEvent(currentDate: Date): Promise<void> {
     alert("End time of event can not be before the start time.");
     return;
   }
-  newEvent = {
+  const newEvent: StoredEvent = {
     id: Date.now(),
     title,
-    startDate: startDate.toString(),
+    startDate: startDate.toISOString(),
     startTime,
-    endDate: endDate.toString(),
+    endDate: endDate.toISOString(),
     endTime,
 
     guests: inputGuests.value,
     location: inputLocation.value,
     description: inputDescription.value,
   };
+  const idImgHolder = document
+    .getElementById("event")
+    ?.getElementsByTagName("img")[0];
+  let result;
+  const existingEventId = idImgHolder?.getAttribute("id");
+  if (idImgHolder?.getAttribute("id")) {
+    result = await apiRequest<StoredEvent>(
+      `${SERVER_URL}/${existingEventId}`,
+      "PUT",
+      newEvent
+    );
+  } else {
+    result = await apiRequest<StoredEvent>(SERVER_URL, "POST", newEvent);
+  }
 
-  const result =await apiHelper<StoredEvent>("http://localhost:3000/events", newEvent);
-
-  if(result.error) {
+  if (result.error) {
     console.log("Error saving event: " + result.error);
     return;
+  } else {
+    console.log("Event saved with ID: ", newEvent.id);
+    console.log(result.data);
   }
-  console.log("Event saved with ID: ", newEvent.id);
-  console.log(result.data);
 
-  //clearEvents();
-  //displayEvents(currentDate);
   eventViewTrigger();
+  clearEvents();
+  displayEvents(currentDate);
 }
-function deleteEvent() {
-  console.log("Getting yeeted");
+async function deleteEvent(currentDate: Date): Promise<void> {
+  const imgWithId = document
+    .getElementById("event")
+    ?.getElementsByTagName("img")[0];
+  if (!imgWithId) {
+    return;
+  }
+  const idToDelete = imgWithId.getAttribute("id") as string;
+  const result = await apiRequest<string>(
+    `${SERVER_URL}/${idToDelete}`,
+    "DELETE",
+    "",
+    idToDelete
+  );
+
+  if (result.error) {
+    console.log("Error deleting event: " + result.error);
+    return;
+  }
+  console.log("Successfully deleted event with ID: ", idToDelete);
+  clearEvents();
+  displayEvents(currentDate);
 }
 /* TODO
     Event starts on day n and end on day n+1 but event time is <24h
-    Event lasts longer than 2 days
-    Atidaryti "event viewer" ir atnaujinti info
+    Event lasts longer than 24h
     On click on table -> open event window with pre-selected time
 */
-function displayEvents(currentDate: Date): void {
-  const keys: string[] = Object.keys(localStorage);
-  let startOfWeekTime: Date = new Date(currentDate);
+async function displayEvents(currentDate: Date) {
+  let startOfWeekTime: Date = new Date(currentDate.toString());
   startOfWeekTime.setDate(startOfWeekTime.getDate() - startOfWeekTime.getDay());
-  startOfWeekTime.setHours(0);
-  startOfWeekTime.setMinutes(0);
-  startOfWeekTime.setSeconds(0);
+  startOfWeekTime.setHours(0, 0, 0);
 
-  let endOfWeekTime: Date = new Date(startOfWeekTime);
-  endOfWeekTime.setDate(startOfWeekTime.getDate() + 6);
+  let endOfWeekTime: Date = new Date(startOfWeekTime.toString());
+  endOfWeekTime.setDate(startOfWeekTime.getDate() + 7);
 
-  for (let i = 0; i < keys.length; i++) {
-    let event: StoredEvent = JSON.parse(
-      localStorage.getItem(keys[i]) as string
-    );
-    let startDate = new Date(event.startDate);
-    let endDate = new Date(event.endDate);
-    let startTime = event.startTime;
-    let endTime = event.endTime;
-    let eventDuration: number;
-    let minToPxRatio: number = 1.25;
+  const thisWeekUrl = () => {
+    const startISO = startOfWeekTime.toISOString();
+    const endISO = endOfWeekTime.toISOString();
+    return `${SERVER_URL}?startDate_gte=${startISO}&endDate_lte=${endISO}`;
+  };
+
+  const response = await apiRequest<StoredEvent[]>(thisWeekUrl(), "GET");
+
+  if (response.error || !response.data) {
+    console.error("Error fetching events: ", response.error);
+    return;
+  }
+  const events = response.data;
+  let eventDuration: number[] = [];
+  for (let i = 0; i < events.length; i++) {
+    const event = events[i];
+    const startDate = new Date(event.startDate.toString());
+    const endDate = new Date(event.endDate.toString());
+    const startTime = event.startTime;
+    const endTime = event.endTime;
+
+    eventDuration[i] =
+      Math.abs(+endTime.substr(0, 2) - +startTime.substr(0, 2)) * 60 +
+      Math.abs(+endTime.substr(3, 2) - +startTime.substr(3, 2));
+    const minToPxRatio: number = 1.25;
     const isSameDayEvent = (): boolean => {
       return startDate.getDate() === endDate.getDate();
     };
     const isLessThan24Hours = (): boolean => {
+      const lastDayOfMonth = new Date(endDate.toString());
+      lastDayOfMonth.setDate(0);
       return (
-        endDate.getDate() > startDate.getDate() ||
-        (endDate.getDate() < startDate.getDate() &&
-          endDate.getMonth() > startDate.getMonth())
+        (endDate.getDate() === startDate.getDate() + 1 &&
+          endDate.getMonth() === startDate.getMonth()) ||
+        startDate.getDate() === lastDayOfMonth.getDate()
       );
     };
-    const isEventThisWeek = (): boolean => {
-      return (
-        startDate.getDate() >= startOfWeekTime.getDate() &&
-        endDate.getDate() < endOfWeekTime.getDate() &&
-        startDate.getMonth() == startOfWeekTime.getMonth()
-      );
-    };
-
-    if (isEventThisWeek()) {
-      eventDuration =
-        (+endTime.substr(0, 2) - +startTime.substr(0, 2)) * 60 +
-        (+endTime.substr(3, 2) - +startTime.substr(3, 2));
-      if (isSameDayEvent()) {
-        eventDuration = eventDuration / minToPxRatio;
-        sameDayEventRender(keys[i], eventDuration);
-      } else if (isLessThan24Hours()) {
-        eventDuration = (eventDuration + 24 * 60) / minToPxRatio;
-        // spanning two days but less than 24h event render func
-      }
-    } else {
-      // multiDayEventRender(keys[i], startDate, endDate);
-    }
-
-    checkOverlappingEvents();
-  }
-}
-function clearEvents(): void {
-  const keys: string[] = Object.keys(localStorage);
-  for (let i = 0; i < keys.length; i++) {
-    let displayedEvent = <HTMLDivElement>document.getElementById(keys[i]);
-    if (displayedEvent != null) {
-      displayedEvent.remove();
+    if (isSameDayEvent()) {
+      eventDuration[i] = eventDuration[i] / minToPxRatio;
+      sameDayEventRender(event, eventDuration[i]);
+    } else if (isLessThan24Hours()) {
+      eventDuration[i] = (24 * 60 - eventDuration[i]) / minToPxRatio;
+      lessThan24HoursEvent(event, eventDuration[i]);
     }
   }
+  checkOverlappingEvents(events, eventDuration);
 }
-function sameDayEventRender(identifier: string, eventDuration: number): void {
-  const event: StoredEvent = JSON.parse(
-    localStorage.getItem(identifier) as string
-  );
-  const startTime = event.startTime;
-  const endTime = event.endTime;
-  const startDate = new Date(event.startDate);
+function clearEvents() {
+  const displayedEvents = document.querySelectorAll<HTMLDivElement>(".meeting");
+  displayedEvents.forEach((event) => {
+    event.remove();
+  });
+}
+function sameDayEventRender(event: StoredEvent, eventDuration: number) {
   const item = <HTMLDivElement>createDOMElement("div", ["meeting"], "");
-  item.setAttribute("id", identifier);
-  item.innerText = startTime + "-" + endTime + " " + event.title;
+  item.setAttribute("id", event.id.toString());
+  item.innerText = event.startTime + "-" + event.endTime + " " + event.title;
   item.style.height = eventDuration + "px";
-  let timeCheck =
-    +startTime.substr(0, 2) > 9
-      ? startTime.substr(0, 2)
-      : startTime.substr(1, 1);
-  let target = <HTMLTableCellElement>(
-    document.getElementById(startDate.getDay() + "_" + timeCheck)
+  const marginFromTop = +event.startTime.substr(3, 2) / 1.25;
+  item.style.marginTop = marginFromTop + "px";
+  const target = <HTMLTableCellElement>(
+    document.getElementById(
+      new Date(event.startDate).getDay() +
+        "_" +
+        (+event.startTime.substr(0, 2) + 1)
+    )
   );
   target.style.overflow = "visible";
   target.style.position = "relative";
   target.appendChild(item);
 
   item.addEventListener("click", () => {
-    openEditEventWindow(event, identifier);
+    openEditEventWindow(event, event.id.toString());
   });
 }
-function openEditEventWindow(event: StoredEvent, identifier: string): void {
+function lessThan24HoursEvent(event: StoredEvent, eventDuration: number) {
+  const minToPxRatio = 1.25;
+  const eventText = event.startTime + "-" + event.endTime + " " + event.title;
+  eventDuration = eventDuration * minToPxRatio;
+  const duration = [
+    24 * 60 -
+      (+event.startTime.substr(0, 2) * 60 + +event.startTime.substr(3, 2)),
+    eventDuration -
+      (24 * 60 -
+        (+event.startTime.substr(0, 2) * 60 + +event.startTime.substr(3, 2))),
+  ];
+  console.log(eventDuration, duration[0], duration[1]);
+  for (let i = 0; i < 2; i++) {
+    const item = <HTMLDivElement>createDOMElement("div", ["meeting"], "");
+    item.setAttribute("id", event.id.toString());
+    item.innerText = eventText;
+    item.style.height = duration[i] / minToPxRatio + "px";
+
+    const target = <HTMLTableCellElement>(
+      document.getElementById(
+        i === 0
+          ? new Date(event.startDate).getDay() +
+              "_" +
+              (+event.startTime.substr(0, 2) + 1)
+          : new Date(event.endDate).getDay() + "_" + "1"
+      )
+    );
+
+    if (i === 0) {
+      const marginFromTop = +event.startTime.substr(3, 2) / 1.25;
+      item.style.marginTop = marginFromTop + "px";
+    }
+    target.style.overflow = "visible";
+    target.style.position = "relative";
+    target.appendChild(item);
+    item.addEventListener("click", () => {
+      openEditEventWindow(event, event.id.toString());
+    });
+  }
+}
+function openEditEventWindow(event: StoredEvent, id: string) {
   eventViewTrigger();
   for (let i = 0; i < formInputFieldList.length; i++) {
     if (event[formInputFieldList[i]]) {
@@ -326,8 +404,8 @@ function openEditEventWindow(event: StoredEvent, identifier: string): void {
         document.getElementById(formInputFieldList[i])
       );
       if (
-        formInputFieldList[i] == "startDate" ||
-        formInputFieldList[i] == "endDate"
+        formInputFieldList[i] === "startDate" ||
+        formInputFieldList[i] === "endDate"
       ) {
         inputField.value = event[formInputFieldList[i]].substr(0, 10);
       } else {
@@ -338,51 +416,40 @@ function openEditEventWindow(event: StoredEvent, identifier: string): void {
   const idImgHolder = document
     .getElementById("event")
     ?.getElementsByTagName("img")[0];
-  idImgHolder?.setAttribute("id", identifier);
+  idImgHolder?.setAttribute("id", id);
 }
-function checkOverlappingEvents(): void {
-  const keys: string[] = Object.keys(localStorage);
-  for (let i = 0; i < keys.length; i++) {
-    if (<HTMLDivElement>document.getElementById(keys[i])) {
-      let primaryRect = <DOMRect>(
-        document.getElementById(keys[i])?.getBoundingClientRect()
-      );
-      for (let j = 0; j < keys.length - 1; j++) {
-        if (keys[i] != keys[j] && document.getElementById(keys[j])) {
-          let secondaryRect = <DOMRect>(
-            document.getElementById(keys[j])?.getBoundingClientRect()
-          );
-          const isLonger = () => {
-            return (
-              primaryRect.bottom - primaryRect.top >
-              secondaryRect.bottom - secondaryRect.top
-            );
-          };
-          const isOverlapApplied = () => {
-            const event = <HTMLDivElement>document.getElementById(keys[j]);
-            return (
-              !event.classList.contains("overlappingShorterEvent") &&
-              !event.classList.contains("overlapped")
-            );
-          };
-          if (
-            primaryRect.top < secondaryRect.bottom &&
-            primaryRect.bottom > secondaryRect.top
-          ) {
-            if (isLonger() && isOverlapApplied()) {
-              document
-                .getElementById(keys[j])
-                ?.classList.add("overlappingShorterEvent");
-              document.getElementById(keys[i])?.classList.add("overlapped");
-            } else if (
-              primaryRect.bottom - primaryRect.top <
-              secondaryRect.bottom - secondaryRect.top
-            ) {
-              document
-                .getElementById(keys[i])
-                ?.classList.add("overlappingEvent");
-              document.getElementById(keys[j])?.classList.add("overlapped");
-            }
+function checkOverlappingEvents(
+  events: StoredEvent[],
+  eventDuration: number[]
+) {
+  let overlap: number = 0;
+  for (let i = 0; i < events.length - 1; i++) {
+    const firstEvent = document.getElementById(events[i].id.toString());
+    overlap = 0;
+    for (let j = 0; j < events.length; j++) {
+      if (
+        events[i].id.toString() != events[j].id.toString() &&
+        events[i].startDate === events[j].startDate
+      ) {
+        const secondEvent = document.getElementById(events[j].id.toString());
+        const isLonger = () => {
+          return eventDuration[i] > eventDuration[j];
+        };
+        if (
+          events[i].endTime >= events[j].startTime &&
+          secondEvent &&
+          firstEvent
+        ) {
+          overlap++;
+          if (isLonger()) {
+            secondEvent.style.width = `var(--event-layer-depth-${overlap})`;
+            secondEvent.style.backgroundColor = `var(--event-layer-color-${overlap})`;
+          } else {
+            firstEvent.style.width = `var(--event-layer-depth-${overlap})`;
+            firstEvent.style.backgroundColor = `var(--event-layer-color-${overlap})`;
+          }
+          if (firstEvent.style.width.slice(-2, -1)) {
+            overlap = +firstEvent.style.width.slice(-2, -1);
           }
         }
       }
@@ -417,7 +484,6 @@ enum monthsLong {
   "November",
   "December",
 }
-
 const formInputFieldList: string[] = [
   "title",
   "startTime",
@@ -428,19 +494,15 @@ const formInputFieldList: string[] = [
   "location",
   "description",
 ];
-const toggleChevron: string[] = [
-  "./media/chevron_right.svg",
-  "./media/chevron_left.svg",
-];
+const chevronLeftSrc = "./media/chevron_left.svg";
+const chevronRightSrc = "./media/chevron_right.svg";
 function createDOMElement(
   type: string,
-  classes?: string | string[],
+  classes?: string[],
   text?: string
 ): HTMLElement {
-  const newItem = <HTMLElement>document.createElement(type);
-  if (typeof classes === "string") {
-    newItem.classList.add(classes);
-  } else if (classes) {
+  const newItem = document.createElement(type);
+  if (classes) {
     classes.forEach((itemClass) => {
       newItem.classList.add(itemClass);
     });
@@ -450,7 +512,7 @@ function createDOMElement(
   }
   return newItem;
 }
-function renderCalendar(): void {
+function renderCalendar() {
   const table = <HTMLTableElement>document.getElementById("calendarTable");
   const tableBody = <HTMLTableSectionElement>table.createTBody();
 
@@ -469,7 +531,7 @@ function renderCalendar(): void {
     tableBody.appendChild(calendarRow);
   }
 }
-function renderTable(): void {
+function renderTable() {
   const table = <HTMLElement>document.getElementById("weekGrid");
   const tableBody = <HTMLTableSectionElement>(
     table.getElementsByTagName("tbody")[0]
@@ -502,10 +564,6 @@ function renderTable(): void {
     );
 
     tableRow.appendChild(dayTimeCell);
-    const gap = <HTMLTableCellElement>(
-      createDOMElement("td", ["weekViewGridBoxLeftMost"])
-    );
-    tableRow.appendChild(gap);
 
     for (let j = 0; j < 7; j++) {
       const tableCell = <HTMLTableCellElement>(
@@ -517,59 +575,57 @@ function renderTable(): void {
     tableBody.appendChild(tableRow);
   }
 }
-function getGMT(): string {
+function getGMT() {
   let timezone: number = new Date().getTimezoneOffset() / 60;
   const sign: string = timezone == 0 ? "" : timezone > 0 ? "-" : "+";
-  let addZero: string | undefined;
   timezone = Math.abs(timezone);
-  if (timezone < 10 && timezone > -10) {
-    addZero = "0" + timezone;
-  }
-  return `GMT ${sign}${addZero ? addZero : timezone}`;
+  return `GMT ${sign}${timezone < 10 ? "0" : ""}${timezone}`;
 }
-function setupPanelTriggers(): void {
-  const closeCalendarPanel = <HTMLElement>(
+function setupPanelTriggers() {
+  const sideCalendarPanelTrigger = <HTMLElement>(
     document.getElementById("closeSidePanel")
   );
   const calendarSidePanel = <HTMLElement>(
     document.getElementById("calendarSideView")
   );
-  const rightSidePanel = <HTMLElement>document.getElementById("rightSidePanel");
-  const rightPanelTrigger = <HTMLImageElement>(
+  const iconsSidePanel = <HTMLElement>document.getElementById("rightSidePanel");
+  const iconsPanelTrigger = <HTMLImageElement>(
     document.getElementById("rightPanelChevron")
   );
+  const calendarPanelWidth = "256px";
+  const iconsPanelWidth = "56px";
 
-  closeCalendarPanel.addEventListener("click", () => {
+  sideCalendarPanelTrigger.addEventListener("click", () => {
     calendarSidePanel.classList.toggle("notDisplayed");
-    adjustMainDisplay(calendarSidePanel, rightSidePanel);
+    adjustMainDisplay(calendarSidePanel, iconsSidePanel);
   });
 
-  rightPanelTrigger.addEventListener("click", () => {
-    rightSidePanel.classList.toggle("notDisplayed");
-    rightPanelTrigger.src = rightSidePanel.classList.contains("notDisplayed")
-      ? toggleChevron[1]
-      : toggleChevron[0];
-    adjustMainDisplay(calendarSidePanel, rightSidePanel);
+  iconsPanelTrigger.addEventListener("click", () => {
+    iconsSidePanel.classList.toggle("notDisplayed");
+    iconsPanelTrigger.src = iconsSidePanel.classList.contains("notDisplayed")
+      ? chevronLeftSrc
+      : chevronRightSrc;
+    adjustMainDisplay(calendarSidePanel, iconsSidePanel);
   });
 
   const adjustMainDisplay = (
     calendarPanel: HTMLElement,
     rightPanel: HTMLElement
   ): void => {
-    let calendarSideWidth: string = calendarPanel.classList.contains(
+    const calendarSideWidth: string = calendarPanel.classList.contains(
       "notDisplayed"
     )
       ? ""
-      : "256px";
-    let rightSideWidth: string = rightPanel.classList.contains("notDisplayed")
+      : calendarPanelWidth;
+    const rightSideWidth: string = rightPanel.classList.contains("notDisplayed")
       ? ""
-      : "56px";
+      : iconsPanelWidth;
     const contentGrid = <HTMLElement>document.getElementById("content");
     contentGrid.style.gridTemplateColumns =
       calendarSideWidth + " 1fr " + rightSideWidth;
   };
 }
-function createEventListeners(currentDate: Date): void {
+function createEventListeners(currentDate: Date) {
   const eventWindowButton = <HTMLButtonElement>(
     document.getElementById("eventWindowButton")
   );
@@ -607,19 +663,17 @@ function createEventListeners(currentDate: Date): void {
     document.getElementById("dialogCloseButton")
   );
   dialogCloseButton.addEventListener("click", () => {
-    resetEventCreationForm();
     eventViewTrigger();
   });
   const deleteEventButton = <HTMLButtonElement>(
     document.getElementById("deleteEventButton")
   );
   deleteEventButton.addEventListener("click", () => {
-    deleteEvent();
-    resetEventCreationForm();
+    deleteEvent(currentDate);
     eventViewTrigger();
   });
 }
-function createTimeframeListeners(currentDate: Date): void {
+function createTimeframeListeners(currentDate: Date) {
   const nextTimeframe = <HTMLButtonElement>(
     document.getElementById("nextTimeframe")
   );
@@ -638,44 +692,20 @@ function createTimeframeListeners(currentDate: Date): void {
   headerTodayButton.addEventListener("click", () => {
     timeframeUpdate((currentDate = new Date()), 0);
   });
-}
-function timeframeUpdate(currentDate: Date, offset: number): void {
-  let checkNewMonth = new Date(currentDate);
-
-  const isNewMonth = (): boolean => {
-    return (
-      currentDate.getMonth() !=
-      checkNewMonth.setDate(currentDate.getDate() + offset)
-    );
-  };
-
-  fillOutWeekDays(currentDate, offset);
-  //clearEvents();
-  //displayEvents(currentDate);
-  displayMonthName(currentDate);
-
-  if (isNewMonth()) {
-    fillOutMonthDays(currentDate);
-    displayCalendarMonth(currentDate);
-  }
-}
-function createCalendarListeners(currentDate: Date): void {
   const previousMonth = <HTMLButtonElement>(
     document.getElementById("previousMonth")
   );
   const nextMonth = <HTMLButtonElement>document.getElementById("nextMonth");
-
   previousMonth.addEventListener("click", () => {
     currentDate.setMonth(currentDate.getMonth() - 1);
     fillOutMonthDays(currentDate);
-    displayCalendarMonth(currentDate);
+    sideCalendarMonth(currentDate);
   });
   nextMonth.addEventListener("click", () => {
     currentDate.setMonth(currentDate.getMonth() + 1);
     fillOutMonthDays(currentDate);
-    displayCalendarMonth(currentDate);
+    sideCalendarMonth(currentDate);
   });
-
   const calendarTable = <HTMLElement>document.getElementById("calendarTable");
   const calendarTBody = <HTMLTableSectionElement>(
     calendarTable.getElementsByTagName("tbody")[0]
@@ -685,75 +715,83 @@ function createCalendarListeners(currentDate: Date): void {
     const targetDate = <HTMLElement>cell.target;
     if (targetDate.closest("td")) {
       let dateId = targetDate.closest("td")?.getAttribute("id");
-      let setWeek: Date = new Date(Date.parse(dateId as string));
-      fillOutWeekDays(setWeek, 0);
+      currentDate = new Date(Date.parse(dateId as string));
+      timeframeUpdate(currentDate, 0);
       targetDate.classList.add("calendarCellHighlighted");
     }
   });
 }
-// Currently de-scoped
-function selection(): void {
-  const settingsView = <HTMLElement>document.getElementById("settingsView");
-  settingsView.classList.toggle("notDisplayed");
-  settingsView.focus();
-  document.getElementById("settingField")?.addEventListener("click", () => {
-    displayDropdown("dropdownWeekDays");
-  });
-  document
-    .getElementById("dropdownWeekDays")
-    ?.addEventListener("click", (weekDay) => {});
-  document.getElementById("closeSettings")?.addEventListener("click", () => {
-    settingsView.classList.toggle("notDisplayed");
-    document
-      .getElementById("dropdownSettings")
-      ?.classList.toggle("notDisplayed");
-  });
+function timeframeUpdate(currentDate: Date, offset: number) {
+  const isNewMonth = (): boolean => {
+    let newMonth: Date = new Date(currentDate.toString());
+    return (
+      currentDate.getMonth() ===
+      new Date(newMonth.setDate(newMonth.getDate() + offset)).getMonth()
+    );
+  };
+  fillOutWeekDays(currentDate, offset);
+  clearEvents();
+  displayEvents(currentDate);
+  headerTimeframeDate(currentDate);
+  if (isNewMonth()) {
+    fillOutMonthDays(currentDate);
+    sideCalendarMonth(currentDate);
+  }
 }
-function eventViewTrigger(): void {
+function eventViewTrigger() {
   resetEventCreationForm();
   const eventView = <HTMLDialogElement>document.getElementById("event");
   eventView.classList.toggle("notDisplayed");
   const eventInputTitle = <HTMLInputElement>document.getElementById("title");
   eventInputTitle.focus();
 }
-function displayMonthName(currentDate: Date): void {
-  const isPassingWeek = (): boolean => {
-    const weekStartDate: Date = new Date(currentDate);
-    const weekEndDate: Date = new Date(currentDate);
-
-    weekStartDate.setDate(weekStartDate.getDate() - weekStartDate.getDay());
-    weekEndDate.setDate(weekEndDate.getDate() - weekEndDate.getDay() + 6);
-    return weekStartDate.getDate() > weekEndDate.getDate();
+function headerTimeframeDate(currentDate: Date) {
+  const getWeekStartDate = (): Date => {
+    return new Date(
+      new Date(currentDate.toString()).setDate(
+        currentDate.getDate() - currentDate.getDay()
+      )
+    );
   };
 
-  let headerDateDisplay: string = `${
-    isPassingWeek()
-      ? monthsShort[currentDate.getMonth()] +
-        " - " +
-        monthsShort[currentDate.getMonth() + 1]
-      : monthsLong[currentDate.getMonth()]
-  }, ${currentDate.getFullYear()}`;
+  const getMonthNames = () => {
+    let weekStartDate = getWeekStartDate();
+    let weekEndDate = new Date(
+      getWeekStartDate().setDate(
+        weekStartDate.getDate() - weekStartDate.getDay() + 6
+      )
+    );
 
-  const monthDisplay = <HTMLElement>document.getElementById("monthDisplay");
-  if (monthDisplay.innerText) {
-    monthDisplay.innerText = headerDateDisplay;
+    return weekStartDate.getDate() > weekEndDate.getDate()
+      ? monthsShort[weekStartDate.getMonth()] +
+          " - " +
+          monthsShort[weekStartDate.getMonth() + 1]
+      : monthsLong[currentDate.getMonth()];
+  };
+  let headerDateDisplay = `${
+    getMonthNames() + ", " + currentDate.getFullYear()
+  }`;
+
+  const headerDate = <HTMLElement>document.getElementById("monthDisplay");
+  if (headerDate) {
+    headerDate.innerText = headerDateDisplay;
   }
 }
-function displayCalendarMonth(currentDate: Date): void {
+function sideCalendarMonth(currentDate: Date) {
   const calendarMonthDisplay = <HTMLElement>(
     document.getElementById("calendarMonthDisplay")
   );
   calendarMonthDisplay.innerText =
     monthsLong[currentDate.getMonth()] + ", " + currentDate.getFullYear();
 }
-function displayDropdown(dropdown: string): void {
+function displayDropdown(dropdown: string) {
   const dropdownField = <HTMLElement>document.getElementById(dropdown);
   if (dropdownField) {
     dropdownField.classList.toggle("notDisplayed");
     dropdownField.focus();
   }
 }
-function resetEventCreationForm(): void {
+function resetEventCreationForm() {
   formInputFieldList.forEach((elem: string) => {
     let inputField = <HTMLInputElement>document.getElementById(elem);
     inputField.value = "";
@@ -763,11 +801,3 @@ function resetEventCreationForm(): void {
   );
   imgWithId.removeAttribute("id");
 }
-/* TYPESCRIPT TODO:
-
-1.  TRANSPILE AS IS
-2.  TYPES FOR PRIMITIVES
-3.  CUSTOM TYPES
-4.  ENUMS
-5.  JSON SERVER
-*/
