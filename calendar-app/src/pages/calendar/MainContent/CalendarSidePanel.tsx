@@ -12,11 +12,11 @@ function CalendarPanel({
   eventWindow: boolean;
   triggerEventWindow: (value: boolean) => void;
 }) {
-  const { setEventWindow, setSelectedEvent } = useEventContext();
+  const { setEventWindowOpen, setSelectedEvent } = useEventContext();
 
   const openNewEventForm = () => {
     setSelectedEvent(null);
-    setEventWindow(true);
+    setEventWindowOpen(true);
   };
 
   const dispatch = useDispatch<AppDispatch>();
@@ -51,9 +51,9 @@ function CalendarPanel({
 
       <div className="calendarHeader">
         <p id="calendarMonthDisplay" className="calendarMonth">
-          {monthsLong[new Date(monthViewDateStr).getMonth()] +
-            ", " +
-            new Date(monthViewDateStr).getFullYear()}
+          {`${monthsLong[new Date(monthViewDateStr).getMonth()]}, ${new Date(
+            monthViewDateStr
+          ).getFullYear()}`}
         </p>
         <div className="calendarSideViewButtons">
           <button

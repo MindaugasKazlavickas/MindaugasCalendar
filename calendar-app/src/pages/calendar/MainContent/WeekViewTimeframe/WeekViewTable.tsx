@@ -32,27 +32,27 @@ function WeekviewTable({ isToday }: { isToday: boolean }) {
   return (
     <table className="weekViewGrid" id="weekGrid">
       <tbody>
-        {tableRows.map((i) => (
-          <tr className="weekViewGridRow" key={i}>
+        {tableRows.map((hour) => (
+          <tr className="weekViewGridRow" key={hour}>
             <td className="weekViewGridBox timeColumn">
-              {getDateTimeText(i + 1)}
+              {getDateTimeText(hour + 1)}
             </td>
-            {WeekDays.map((weekDay, j) => (
+            {WeekDays.map((weekDay, weekDayIndex) => (
               <td
                 className="weekViewGridBox"
-                id={j + "_" + (+i + +1)}
-                key={i + weekDay}
+                id={weekDayIndex + "_" + (+hour + +1)}
+                key={hour + weekDay}
                 style={{
                   position: "relative",
                 }}
               >
-                {isToday && today.getDay() === j && today.getHours() === i && (
-                  <TimeframeMarker />
-                )}
+                {isToday &&
+                  today.getDay() === weekDayIndex &&
+                  today.getHours() === hour && <TimeframeMarker />}
                 {BuiltEventCell && (
                   <BuiltEventCell
-                    day={j}
-                    hour={i}
+                    day={weekDayIndex}
+                    hour={hour}
                     events={preprocessedEvents}
                   />
                 )}

@@ -142,11 +142,11 @@ const EventCell: React.FC<EventCellProps> = ({
   backgroundColor = "var(--primary-event)",
   startMin = 0,
 }) => {
-  const { setEventWindow, setSelectedEvent } = useEventContext();
+  const { setEventWindowOpen, setSelectedEvent } = useEventContext();
 
   const handleClick = () => {
     setSelectedEvent(event);
-    setEventWindow(true);
+    setEventWindowOpen(true);
   };
 
   return (

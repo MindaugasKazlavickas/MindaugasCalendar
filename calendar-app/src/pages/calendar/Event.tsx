@@ -20,11 +20,11 @@ export class Form implements StoredEvent {
 }
 
 function Event({
-  eventWindow,
+  isEventWindowOpen,
   triggerEventWindow,
   initialEvent,
 }: {
-  eventWindow: boolean;
+  isEventWindowOpen: boolean;
   triggerEventWindow: (value: boolean) => void;
   initialEvent?: StoredEvent | null;
 }) {
@@ -90,7 +90,7 @@ function Event({
               const result = await deleteEvent(initialEvent, initialEvent.id);
               if (result.success) {
                 dispatch(removeEvent(initialEvent));
-                triggerEventWindow(!eventWindow);
+                triggerEventWindow(!isEventWindowOpen);
               } else {
                 console.error(result.error);
               }
@@ -102,7 +102,7 @@ function Event({
         <button
           id="dialogCloseButton"
           className="iconButton"
-          onClick={() => triggerEventWindow(!eventWindow)}
+          onClick={() => triggerEventWindow(!isEventWindowOpen)}
         >
           <img src="./media/close.svg" alt="Close the event creation menu" />
         </button>

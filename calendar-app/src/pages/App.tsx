@@ -5,27 +5,27 @@ import { useState } from "react";
 import { useEventContext } from "../utils/EventContext";
 import React from "react";
 function App() {
-  const [isCalendarPanel, setCalendarPanel] = React.useState(true);
+  const [isCalendarPanelOpen, setCalendarPanelOpen] = React.useState(true);
   const [isRightSidePanel, setRightSidePanel] = useState(true);
-  const { isEventWindow, setEventWindow } = useEventContext();
-  const { selectedEvent } = useEventContext();
+  const { isEventWindowOpen, setEventWindowOpen, selectedEvent } =
+    useEventContext();
   return (
     <div className="App">
       <Header
-        calendarPanelState={isCalendarPanel}
-        setCalendarPanelDisplay={setCalendarPanel}
+        calendarPanelState={isCalendarPanelOpen}
+        setCalendarPanelDisplay={setCalendarPanelOpen}
       />
       <Content
-        calendarPanelState={isCalendarPanel}
+        calendarPanelState={isCalendarPanelOpen}
         rightSidePanelState={isRightSidePanel}
         setRightSidePanelDisplay={setRightSidePanel}
-        eventWindow={isEventWindow}
-        triggerEventWindow={setEventWindow}
+        isEventWindowOpen={isEventWindowOpen}
+        triggerEventWindow={setEventWindowOpen}
       />
-      {isEventWindow && (
+      {isEventWindowOpen && (
         <Event
-          eventWindow={isEventWindow}
-          triggerEventWindow={setEventWindow}
+          isEventWindowOpen={isEventWindowOpen}
+          triggerEventWindow={setEventWindowOpen}
           initialEvent={selectedEvent}
         />
       )}

@@ -4,12 +4,17 @@ import { EventContextType, StoredEvent } from "./types";
 const EventContext = createContext<EventContextType | undefined>(undefined);
 
 export const EventProvider = ({ children }: { children: React.ReactNode }) => {
-  const [isEventWindow, setEventWindow] = useState(false);
+  const [isEventWindowOpen, setEventWindowOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<StoredEvent | null>(null);
 
   return (
     <EventContext.Provider
-      value={{ isEventWindow, setEventWindow, selectedEvent, setSelectedEvent }}
+      value={{
+        isEventWindowOpen,
+        setEventWindowOpen,
+        selectedEvent,
+        setSelectedEvent,
+      }}
     >
       {children}
     </EventContext.Provider>

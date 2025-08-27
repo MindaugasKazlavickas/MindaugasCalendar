@@ -1,7 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { EventDisplayState } from "../utils/types";
 import { StoredEvent } from "../utils/types";
 import { getWeekKey } from "../pages/calendar/MainContent/TimeframeToday";
+
+interface EventDisplayState {
+  isDisplayed: boolean;
+  actualEvents: Record<string, StoredEvent>;
+}
 
 export const initialState: EventDisplayState = {
   isDisplayed: false,

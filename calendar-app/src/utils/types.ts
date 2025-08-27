@@ -10,19 +10,6 @@ export interface StoredEvent {
   description?: string;
   eventKey: string;
 }
-export interface APIResponse<T> {
-  status: number;
-  data: T | undefined;
-  error?: string;
-}
-export interface CurrentDateState {
-  currentDate: string;
-  monthViewDate: string;
-}
-export interface EventDisplayState {
-  isDisplayed: boolean;
-  actualEvents: Record<string, StoredEvent>;
-}
 
 export interface PreprocessedEvent {
   event: StoredEvent;
@@ -54,8 +41,8 @@ export type StyledEvent = PreprocessedEvent & {
 };
 
 export type EventContextType = {
-  isEventWindow: boolean;
-  setEventWindow: (value: boolean) => void;
+  isEventWindowOpen: boolean;
+  setEventWindowOpen: (value: boolean) => void;
   selectedEvent: StoredEvent | null;
   setSelectedEvent: (event: StoredEvent | null) => void;
 };
@@ -63,3 +50,9 @@ export type EventContextType = {
 export type RequestResult =
   | { success: true; event: StoredEvent }
   | { success: false; error: string };
+
+export interface APIResponse<T> {
+  status: number;
+  data: T | undefined;
+  error?: string;
+}

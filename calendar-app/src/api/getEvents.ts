@@ -5,11 +5,11 @@ import { StoredEvent } from "../utils/types";
 export async function retrieveEventsFromServer(
   reduxDate: Date
 ): Promise<StoredEvent[]> {
-  const startOfWeekTime: Date = new Date(reduxDate.toString());
+  const startOfWeekTime = new Date(reduxDate.toString());
   startOfWeekTime.setDate(startOfWeekTime.getDate() - startOfWeekTime.getDay());
   startOfWeekTime.setHours(0, 0, 0);
 
-  const endOfWeekTime: Date = new Date(startOfWeekTime.toString());
+  const endOfWeekTime = new Date(startOfWeekTime.toString());
   endOfWeekTime.setDate(startOfWeekTime.getDate() + 7);
 
   const thisWeekUrl = () => {

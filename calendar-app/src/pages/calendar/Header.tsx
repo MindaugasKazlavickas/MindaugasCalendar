@@ -41,7 +41,11 @@ function Header({
             src="./media/logo.png"
             alt="Google Calendar's Icon"
           />
-          <p id="logoText" className="headerLeftLogoText">
+          <p
+            id="logoText"
+            className="headerLeftLogoText"
+            data-testid="headerIconDate"
+          >
             {new Date().getDate().toString()}
           </p>
         </span>
@@ -197,9 +201,9 @@ function getHeaderTimeframeDate(currentDate: Date): string {
     );
 
     return weekStartDate.getDate() > weekEndDate.getDate()
-      ? monthsShort[weekStartDate.getMonth()] +
-          " - " +
-          monthsShort[weekStartDate.getMonth() + 1]
+      ? `${monthsShort[weekStartDate.getMonth()]} - ${
+          monthsShort[weekEndDate.getMonth()]
+        }`
       : monthsLong[currentDate.getMonth()];
   };
   let headerDateDisplay = `${

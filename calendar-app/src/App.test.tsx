@@ -8,20 +8,6 @@ import userEvent from "@testing-library/user-event";
 import { StoredEvent } from "./utils/types";
 import Event from "./pages/calendar/Event";
 
-describe("AppHeader", () => {
-  it("renders the app, checks header text", () => {
-    render(
-      <Provider store={store}>
-        <EventProvider>
-          <App />
-        </EventProvider>
-      </Provider>
-    );
-    const calendar = screen.getAllByText("Calendar");
-    expect(calendar[0]).toBeInTheDocument();
-  });
-});
-
 describe("TimezoneGetter", () => {
   afterEach(() => {
     jest.restoreAllMocks();
@@ -43,6 +29,18 @@ describe("TimezoneGetter", () => {
 });
 
 describe("checks element display", () => {
+  test("header icon date displays today's date", () => {
+    render(
+      <Provider store={store}>
+        <EventProvider>
+          <App />
+        </EventProvider>
+      </Provider>
+    );
+    const headerIconDate = screen.getByTestId("headerIconDate");
+    expect(headerIconDate.textContent).toBe(new Date().getDate().toString());
+  });
+
   test("toggles the calendar panel", () => {
     render(
       <Provider store={store}>

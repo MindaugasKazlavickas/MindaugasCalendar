@@ -8,7 +8,7 @@ async function saveEvent(
   form: StoredEvent,
   id?: number
 ): Promise<RequestResult> {
-  const isTitleEntered = !form.title || form.title.trim() === "";
+  const isTitleEntered = !!form.title?.trim();
 
   const areDatesEntered = !form.startDate || !form.startTime || !form.endTime;
 
@@ -16,7 +16,7 @@ async function saveEvent(
     form.startDate > form.endDate ||
     !(form.startDate === form.endDate && form.startTime > form.endTime);
 
-  if (isTitleEntered) {
+  if (!isTitleEntered) {
     alert("Title is mandatory.");
     return { success: false, error: "Title is mandatory." };
   } else if (areDatesEntered) {
