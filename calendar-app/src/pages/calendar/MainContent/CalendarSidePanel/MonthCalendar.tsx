@@ -1,11 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
-<<<<<<<< HEAD:calendar-app/pages/calendar/MainContent/CalendarSidePanel/MonthCalendar.tsx
-import { RootState } from "../../../../src/store";
-import { jumpToDate } from "../../../../src/features/currentDate";
-========
 import { RootState } from "../../../../store";
 import { jumpToDate } from "../../../../features/currentDate";
->>>>>>>> origin/react-dom-improved:calendar-app/src/pages/calendar/MainContent/CalendarSidePanel/MonthCalendar.tsx
 
 function MonthCalendar() {
   const dispatch = useDispatch();

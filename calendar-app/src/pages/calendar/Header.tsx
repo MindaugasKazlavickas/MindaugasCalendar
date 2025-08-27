@@ -1,20 +1,9 @@
-<<<<<<<< HEAD:calendar-app/pages/calendar/Header.tsx
-import adjustMainDisplay from "./MainContent/setupPanelTriggers";
-import displayDropdown from "../../src/utils/displayDropdown";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../src/store";
-========
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
->>>>>>>> origin/react-dom-improved:calendar-app/src/pages/calendar/Header.tsx
 import {
   resetToToday,
   shiftMonthView,
   shiftWeek,
-<<<<<<<< HEAD:calendar-app/pages/calendar/Header.tsx
-} from "../../src/features/currentDate";
-function Header() {
-========
 } from "../../features/currentDate";
 import { monthsLong, monthsShort } from "./MainContent/consts";
 function Header({
@@ -26,17 +15,13 @@ function Header({
     value: boolean | ((prevVar: boolean) => boolean)
   ) => void;
 }) {
->>>>>>>> origin/react-dom-improved:calendar-app/src/pages/calendar/Header.tsx
   const dispatch = useDispatch<AppDispatch>();
 
   const currentDateStr = useSelector(
     (state: RootState) => state.currentDate.currentDate
   );
-<<<<<<<< HEAD:calendar-app/pages/calendar/Header.tsx
-========
   const currentDate = new Date(currentDateStr);
   let headerTimeframeDate = getHeaderTimeframeDate(currentDate);
->>>>>>>> origin/react-dom-improved:calendar-app/src/pages/calendar/Header.tsx
   return (
     <header className="header">
       <div className="headerLeft">
@@ -125,15 +110,7 @@ function Header({
             />
           </button>
           <div className="settingsDropdown">
-<<<<<<<< HEAD:calendar-app/pages/calendar/Header.tsx
-            <button
-              className="iconButton"
-              id="settings"
-              onMouseOver={() => displayDropdown("dropdownSettings")}
-            >
-========
             <button className="iconButton" id="settings">
->>>>>>>> origin/react-dom-improved:calendar-app/src/pages/calendar/Header.tsx
               <img
                 src="./media/settings.svg"
                 alt="Button to open settings menu"

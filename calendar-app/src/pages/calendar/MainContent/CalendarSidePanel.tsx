@@ -1,14 +1,4 @@
 import { WeekDays } from "./consts";
-<<<<<<<< HEAD:calendar-app/pages/calendar/MainContent/CalendarSidePanel.tsx
-import { useEffect } from "react";
-import { eventViewTrigger } from "../../../src/utils/handleEventForm";
-import { sideCalendarMonth } from "../../../src/utils/displayTimeframeDate";
-import { useDispatch, useSelector } from "react-redux";
-import { shiftMonthView } from "../../../src/features/currentDate";
-import { AppDispatch, RootState } from "../../../src/store";
-import MonthCalendar from "./CalendarSidePanel/MonthCalendar";
-function CalendarPanel() {
-========
 import { monthsLong } from "./consts";
 import { useDispatch, useSelector } from "react-redux";
 import { shiftMonthView } from "../../../features/currentDate";
@@ -28,7 +18,6 @@ function CalendarPanel({
     setSelectedEvent(null);
     setEventWindow(true);
   };
->>>>>>>> origin/react-dom-improved:calendar-app/src/pages/calendar/MainContent/CalendarSidePanel.tsx
   const dispatch = useDispatch<AppDispatch>();
   const monthViewDateStr = useSelector(
     (state: RootState) => state.currentDate.monthViewDate

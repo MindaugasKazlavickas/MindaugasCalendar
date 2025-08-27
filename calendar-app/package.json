@@ -48,27 +48,3 @@
     "@types/react-redux": "^7.1.34"
   }
 }
-
-{
-  "name": "googlecalendar",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/MindaugasKazlavickas/calendarProgress.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/MindaugasKazlavickas/calendarProgress/issues"
-  },
-  "homepage": "https://github.com/MindaugasKazlavickas/calendarProgress#readme",
-  "dependencies": {
-    "@types/es6-promise": "^0.0.33",
-    "typescript": "^5.9.2"
-  }
-}
