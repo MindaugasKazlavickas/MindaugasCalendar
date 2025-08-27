@@ -33,3 +33,10 @@
     "src/index.tsx"
   ]
 }
+
+{
+  "compilerOptions": {
+    "lib": ["es6", "dom"]
+  },
+  "include": ["**.ts"]
+}
