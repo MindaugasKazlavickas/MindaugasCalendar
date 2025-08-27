@@ -1,7 +1,27 @@
-.vscode
-data/node_modules
-data/package-lock.json
-index.js
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+calendar-app/node_modules
+calendar-app/.pnp
+calendar-app/.pnp.js
+
+# testing
+calendar-app/coverage
+
+# production
+calendar-app/build
+
+calendar-app/package-lock.json
+calendar-server/node_modules
+calendar-server/package-lock.json
+calendar-server/db.json
+# misc
 .DS_Store
-node_modules/
-package-lock.json
+calendar-app/.env.local
+calendar-app/.env.development.local
+calendar-app/.env.test.local
+calendar-app/.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

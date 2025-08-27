@@ -1,25 +1,17 @@
-import { useEffect } from "react";
-import adjustMainDisplay from "./renderers/setupPanelTriggers";
-import displayDropdown from "../utils/displayDropdown";
+import adjustMainDisplay from "./MainContent/setupPanelTriggers";
+import displayDropdown from "../../src/utils/displayDropdown";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../store";
+import { AppDispatch, RootState } from "../../src/store";
 import {
   resetToToday,
   shiftMonthView,
   shiftWeek,
-} from "../reduxDateManagement";
+} from "../../src/features/currentDate";
 function Header() {
   const dispatch = useDispatch<AppDispatch>();
   const currentDateStr = useSelector(
     (state: RootState) => state.currentDate.currentDate
   );
-  useEffect(() => {
-    const logoDate = new Date();
-    const headerDateIcon = document.getElementById("logoText");
-    if (headerDateIcon) {
-      headerDateIcon.innerText = logoDate.getDate().toString();
-    }
-  });
   return (
     <header className="header">
       <div className="headerLeft">
@@ -42,7 +34,7 @@ function Header() {
             alt="Google Calendar's Icon"
           />
           <p id="logoText" className="headerLeftLogoText">
-            31
+            {new Date().getDate().toString()}
           </p>
         </span>
         <p className="headerLeftHeading">Calendar</p>
@@ -114,7 +106,7 @@ function Header() {
             <button
               className="iconButton"
               id="settings"
-              onClick={() => displayDropdown("dropdownSettings")}
+              onMouseOver={() => displayDropdown("dropdownSettings")}
             >
               <img
                 src="./media/settings.svg"

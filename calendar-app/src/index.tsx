@@ -1,9 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./styling/index.css";
-import "./styling/reset.css";
-import "./styling/style.css";
-import App from "./App";
+import "./index.css";
+import App from "../pages/App";
 import reportWebVitals from "./reportWebVitals";
 import { Provider } from "react-redux";
 import { store } from "./store";

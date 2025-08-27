@@ -1,11 +1,11 @@
-import WeekViewTable from "./WeekViewTimeframe";
-import CalendarPanel from "./CalendarSidePanel";
-import TimeframeToday from "./TimeframeToday";
+import WeekViewTable from "./MainContent/WeekViewTimeframe";
+import CalendarPanel from "./MainContent/CalendarSidePanel";
+import TimeframeToday from "./MainContent/TimeframeToday";
 import {
   rightSideButtonAlt,
   rightSideButtonHref,
   rightSideButtonSrc,
-} from "../consts/consts";
+} from "./MainContent/consts";
 import { Fragment } from "react/jsx-runtime";
 function Content() {
   return (

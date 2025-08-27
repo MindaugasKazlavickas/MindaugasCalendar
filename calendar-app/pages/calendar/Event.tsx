@@ -1,8 +1,8 @@
-import { eventViewTrigger } from "../utils/handleEventForm";
-import saveEvent from "../api/saveEvent";
-import deleteEvent from "../api/deleteEvent";
+import { eventViewTrigger } from "../../src/utils/handleEventForm";
+import saveEvent from "../../api/saveEvent";
+import deleteEvent from "../../api/deleteEvent";
 import { useSelector } from "react-redux";
-import { RootState } from "../store";
+import { RootState } from "../../src/store";
 
 function Event() {
   const currentDateStr = useSelector(
