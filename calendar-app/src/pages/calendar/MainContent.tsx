@@ -9,16 +9,12 @@ function Content({
   calendarPanelState,
   rightSidePanelState,
   setRightSidePanelDisplay,
-  isEventWindowOpen,
-  triggerEventWindow,
 }: {
   calendarPanelState: boolean;
   rightSidePanelState: boolean;
   setRightSidePanelDisplay: (
     value: boolean | ((prevVar: boolean) => boolean)
   ) => void;
-  isEventWindowOpen: boolean;
-  triggerEventWindow: (value: boolean) => void;
 }) {
   return (
     <>
@@ -35,12 +31,7 @@ function Content({
           } as React.CSSProperties
         }
       >
-        {calendarPanelState && (
-          <CalendarPanel
-            eventWindow={isEventWindowOpen}
-            triggerEventWindow={triggerEventWindow}
-          />
-        )}
+        {calendarPanelState && <CalendarPanel />}
         <WeekViewTable />
         <RightSidePanel
           rightSidePanelState={rightSidePanelState}

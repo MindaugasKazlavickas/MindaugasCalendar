@@ -5,6 +5,23 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../../store";
 import BuiltEventCell from "./WeekviewEvent";
 import { preprocessEvents } from "./WeekviewEvent";
+
+function TimeframeMarker() {
+  const halfHeightOffset = 6;
+  const offsetTop = new Date().getMinutes() / minToPxRatio - halfHeightOffset;
+
+  return (
+    <div
+      className="timeframeMarker"
+      id="timeframeMarker"
+      style={{ top: `${offsetTop}px` }}
+    >
+      <span className="redDot"></span>
+      <hr className="redLine" />
+    </div>
+  );
+}
+
 function WeekviewTable({ isToday }: { isToday: boolean }) {
   const tableRows = useMemo(() => Array.from({ length: 24 }, (_, i) => i), []);
   const today = new Date();
@@ -65,19 +82,3 @@ function WeekviewTable({ isToday }: { isToday: boolean }) {
   );
 }
 export default WeekviewTable;
-
-function TimeframeMarker() {
-  const halfHeightOffset = 6;
-  const offsetTop = new Date().getMinutes() / minToPxRatio - halfHeightOffset;
-
-  return (
-    <div
-      className="timeframeMarker"
-      id="timeframeMarker"
-      style={{ top: `${offsetTop}px` }}
-    >
-      <span className="redDot"></span>
-      <hr className="redLine" />
-    </div>
-  );
-}

@@ -6,6 +6,34 @@ import {
   shiftWeek,
 } from "../../features/currentDate";
 import { monthsLong, monthsShort } from "./MainContent/consts";
+
+function getHeaderTimeframeDate(currentDate: Date): string {
+  const getWeekStartDate = (): Date => {
+    return new Date(
+      new Date(currentDate.toString()).setDate(
+        currentDate.getDate() - currentDate.getDay()
+      )
+    );
+  };
+
+  const getMonthNames = () => {
+    let weekStartDate = getWeekStartDate();
+    let weekEndDate = new Date(
+      getWeekStartDate().setDate(weekStartDate.getDate() + 6)
+    );
+
+    return weekStartDate.getDate() > weekEndDate.getDate()
+      ? `${monthsShort[weekStartDate.getMonth()]} - ${
+          monthsShort[weekEndDate.getMonth()]
+        }`
+      : monthsLong[currentDate.getMonth()];
+  };
+  let headerDateDisplay = `${
+    getMonthNames() + ", " + currentDate.getFullYear()
+  }`;
+  return headerDateDisplay;
+}
+
 function Header({
   calendarPanelState,
   setCalendarPanelDisplay,
@@ -184,30 +212,3 @@ function Header({
   );
 }
 export default Header;
-
-function getHeaderTimeframeDate(currentDate: Date): string {
-  const getWeekStartDate = (): Date => {
-    return new Date(
-      new Date(currentDate.toString()).setDate(
-        currentDate.getDate() - currentDate.getDay()
-      )
-    );
-  };
-
-  const getMonthNames = () => {
-    let weekStartDate = getWeekStartDate();
-    let weekEndDate = new Date(
-      getWeekStartDate().setDate(weekStartDate.getDate() + 6)
-    );
-
-    return weekStartDate.getDate() > weekEndDate.getDate()
-      ? `${monthsShort[weekStartDate.getMonth()]} - ${
-          monthsShort[weekEndDate.getMonth()]
-        }`
-      : monthsLong[currentDate.getMonth()];
-  };
-  let headerDateDisplay = `${
-    getMonthNames() + ", " + currentDate.getFullYear()
-  }`;
-  return headerDateDisplay;
-}

@@ -1,9 +1,11 @@
 import saveEvent from "../../api/saveAndEditEvent";
 import deleteEvent from "../../api/deleteEvent";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { ChangeEvent, useEffect, useState } from "react";
 import { StoredEvent } from "../../utils/types";
 import { removeEvent } from "../../features/eventDisplay";
+import { useEventContext } from "../../utils/EventContext";
+import { RootState } from "../../store";
 
 export class Form implements StoredEvent {
   id = 0;
@@ -19,15 +21,9 @@ export class Form implements StoredEvent {
   eventKey = "";
 }
 
-function Event({
-  isEventWindowOpen,
-  triggerEventWindow,
-  initialEvent,
-}: {
-  isEventWindowOpen: boolean;
-  triggerEventWindow: (value: boolean) => void;
-  initialEvent?: StoredEvent | null;
-}) {
+function Event({ initialEvent }: { initialEvent?: StoredEvent | null }) {
+  const { selectedEventId, setSelectedEventId } = useEventContext();
+  const isEventWindowOpen = selectedEventId !== null;
   const dispatch = useDispatch();
   const [form, setForm] = useState<Form>(new Form());
 
@@ -90,7 +86,7 @@ function Event({
               const result = await deleteEvent(initialEvent, initialEvent.id);
               if (result.success) {
                 dispatch(removeEvent(initialEvent));
-                triggerEventWindow(!isEventWindowOpen);
+                setSelectedEventId(null);
               } else {
                 console.error(result.error);
               }
@@ -102,7 +98,7 @@ function Event({
         <button
           id="dialogCloseButton"
           className="iconButton"
-          onClick={() => triggerEventWindow(!isEventWindowOpen)}
+          onClick={() => setSelectedEventId(null)}
         >
           <img src="./media/close.svg" alt="Close the event creation menu" />
         </button>
@@ -210,7 +206,7 @@ function Event({
         onClick={async () => {
           const result = await saveEvent(form, form.id);
           if (result.success) {
-            triggerEventWindow(false);
+            setSelectedEventId(null);
           }
         }}
       >

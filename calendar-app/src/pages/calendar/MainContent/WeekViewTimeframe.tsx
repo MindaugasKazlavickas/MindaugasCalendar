@@ -13,7 +13,7 @@ function WeekViewTable() {
 
   const today = new Date();
   const currentDate = new Date(currentDateStr);
-  const [markedAsToday, setMarkedAsToday] = useState(7); //0-6 are weekday indexes, 7 is 'today is not this week'
+  const [markedAsToday, setMarkedAsToday] = useState<number | null>(null); //0-6 are weekday indexes, null is 'today is not this week'
   const weekStartDate = new Date(currentDate);
   weekStartDate.setDate(weekStartDate.getDate() - weekStartDate.getDay() - 1);
 
@@ -37,7 +37,7 @@ function WeekViewTable() {
         }
       }
     } else {
-      setMarkedAsToday(7);
+      setMarkedAsToday(null);
     }
   }, [currentDate, today, weekStartDate]);
   return (
@@ -81,7 +81,7 @@ function WeekViewTable() {
         </tbody>
       </table>
 
-      {markedAsToday < 7 ? (markerIsShown = true) : (markerIsShown = false)}
+      {markedAsToday ? (markerIsShown = true) : (markerIsShown = false)}
       <WeekviewTable isToday={markerIsShown} />
     </main>
   );

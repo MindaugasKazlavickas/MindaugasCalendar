@@ -1,19 +1,20 @@
 import { createContext, useContext, useState } from "react";
-import { EventContextType, StoredEvent } from "./types";
+import { StoredEvent } from "./types";
 
+type EventContextType = {
+  selectedEventId: number | null;
+  setSelectedEventId: (id: number | null) => void;
+};
 const EventContext = createContext<EventContextType | undefined>(undefined);
 
 export const EventProvider = ({ children }: { children: React.ReactNode }) => {
-  const [isEventWindowOpen, setEventWindowOpen] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState<StoredEvent | null>(null);
+  const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
 
   return (
     <EventContext.Provider
       value={{
-        isEventWindowOpen,
-        setEventWindowOpen,
-        selectedEvent,
-        setSelectedEvent,
+        selectedEventId,
+        setSelectedEventId,
       }}
     >
       {children}
