@@ -66,7 +66,10 @@ function WeekviewTable({ isToday }: { isToday: boolean }) {
                 {isToday &&
                   today.getDay() === weekDayIndex &&
                   today.getHours() === hour && <TimeframeMarker />}
-                {BuiltEventCell && (
+                {preprocessedEvents.some(
+                  (event) =>
+                    event.day === weekDayIndex && event.startHour === hour
+                ) && (
                   <BuiltEventCell
                     day={weekDayIndex}
                     hour={hour}
