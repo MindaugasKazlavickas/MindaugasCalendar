@@ -1,0 +1,229 @@
+<<<<<<<< HEAD:calendar-app/pages/calendar/Header.tsx
+import adjustMainDisplay from "./MainContent/setupPanelTriggers";
+import displayDropdown from "../../src/utils/displayDropdown";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../src/store";
+========
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../store";
+>>>>>>>> origin/react-dom-improved:calendar-app/src/pages/calendar/Header.tsx
+import {
+  resetToToday,
+  shiftMonthView,
+  shiftWeek,
+<<<<<<<< HEAD:calendar-app/pages/calendar/Header.tsx
+} from "../../src/features/currentDate";
+function Header() {
+========
+} from "../../features/currentDate";
+import { monthsLong, monthsShort } from "./MainContent/consts";
+function Header({
+  calendarPanelState,
+  setCalendarPanelDisplay,
+}: {
+  calendarPanelState: boolean;
+  setCalendarPanelDisplay: (
+    value: boolean | ((prevVar: boolean) => boolean)
+  ) => void;
+}) {
+>>>>>>>> origin/react-dom-improved:calendar-app/src/pages/calendar/Header.tsx
+  const dispatch = useDispatch<AppDispatch>();
+
+  const currentDateStr = useSelector(
+    (state: RootState) => state.currentDate.currentDate
+  );
+<<<<<<<< HEAD:calendar-app/pages/calendar/Header.tsx
+========
+  const currentDate = new Date(currentDateStr);
+  let headerTimeframeDate = getHeaderTimeframeDate(currentDate);
+>>>>>>>> origin/react-dom-improved:calendar-app/src/pages/calendar/Header.tsx
+  return (
+    <header className="header">
+      <div className="headerLeft">
+        <button
+          className="iconButton headerLeftCollapse"
+          id="closeSidePanel"
+          onClick={() => {
+            setCalendarPanelDisplay(!calendarPanelState);
+          }}
+        >
+          <img src="./media/burger.svg" alt="Closes and opens calendar view" />
+        </button>
+        <span className="headerLeftLogo">
+          <img
+            className="headerLeftLogoImg"
+            src="./media/logo.png"
+            alt="Google Calendar's Icon"
+          />
+          <p id="logoText" className="headerLeftLogoText">
+            {new Date().getDate().toString()}
+          </p>
+        </span>
+        <p className="headerLeftHeading">Calendar</p>
+      </div>
+
+      <div className="headerCenter">
+        <div className="headerCenterLeft">
+          <button
+            id="headerTodayButton"
+            className="roundedCornerButton"
+            onClick={() => {
+              dispatch(resetToToday());
+            }}
+          >
+            Today
+          </button>
+          <button
+            id="previousTimeframe"
+            className="iconButton"
+            onClick={() => {
+              dispatch(shiftWeek(-7));
+              const currentMonth = new Date(currentDateStr);
+              if (
+                currentMonth.getMonth() >
+                new Date(
+                  currentMonth.setDate(currentMonth.getDate() - 7)
+                ).getMonth()
+              ) {
+                dispatch(shiftMonthView(-1));
+              }
+            }}
+          >
+            <img src="./media/chevron_left.svg" alt="Go back a month" />
+          </button>
+          <button
+            id="nextTimeframe"
+            className="iconButton"
+            onClick={() => {
+              dispatch(shiftWeek(7));
+              const currentMonth = new Date(currentDateStr);
+              if (
+                currentMonth.getMonth() <
+                new Date(
+                  currentMonth.setDate(currentMonth.getDate() + 7)
+                ).getMonth()
+              ) {
+                dispatch(shiftMonthView(1));
+              }
+            }}
+          >
+            <img src="./media/chevron_right.svg" alt="Go forward a month" />
+          </button>
+          <p className="headerCenterLeftHeading" id="monthDisplay">
+            {headerTimeframeDate}
+          </p>
+        </div>
+
+        <div className="headerCenterRight">
+          <button className="iconButton" id="search">
+            <img src="./media/search.svg" alt="Button for event search" />
+          </button>
+          <button className="iconButton" id="support">
+            <img
+              src="./media/help.svg"
+              alt="Button for getting help with the calendar"
+            />
+          </button>
+          <div className="settingsDropdown">
+<<<<<<<< HEAD:calendar-app/pages/calendar/Header.tsx
+            <button
+              className="iconButton"
+              id="settings"
+              onMouseOver={() => displayDropdown("dropdownSettings")}
+            >
+========
+            <button className="iconButton" id="settings">
+>>>>>>>> origin/react-dom-improved:calendar-app/src/pages/calendar/Header.tsx
+              <img
+                src="./media/settings.svg"
+                alt="Button to open settings menu"
+              />
+            </button>
+            <div
+              id="dropdownSettings"
+              className="dropdownSettings notDisplayed"
+              tabIndex={-1}
+            >
+              <button id="settingsButton" className="basicButton">
+                Settings
+              </button>
+            </div>
+          </div>
+
+          <div className="timeframeSelect" id="timeframeSelect">
+            <button
+              id="timeframeSelectButton"
+              className="roundedCornerButton dropdownButton"
+            >
+              <span>Week</span>
+              <img
+                className="dropdownIcon"
+                src="./media/arrow_down.svg"
+                alt="Timeframe type selection button"
+              />
+            </button>
+            <div
+              id="dropdownContent"
+              tabIndex={-1}
+              className="dropdownContent notDisplayed"
+            >
+              <div className="dropdownItem">
+                <p>Day</p>
+                <p>D</p>
+              </div>
+              <div className="dropdownItem">
+                <p>Week</p>
+                <p>W</p>
+              </div>
+              <div className="dropdownItem">
+                <p>Month</p>
+                <p>M</p>
+              </div>
+              <div className="dropdownItem">
+                <p>Year</p>
+                <p>Y</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="headerRight">
+        <button className="iconButton" id="apps">
+          <img src="./media/apps.svg" alt="Other apps selection button." />
+        </button>
+        <button className="roundedCornerButton" id="account">
+          Account
+        </button>
+      </div>
+    </header>
+  );
+}
+export default Header;
+
+function getHeaderTimeframeDate(currentDate: Date): string {
+  const getWeekStartDate = (): Date => {
+    return new Date(
+      new Date(currentDate.toString()).setDate(
+        currentDate.getDate() - currentDate.getDay()
+      )
+    );
+  };
+
+  const getMonthNames = () => {
+    let weekStartDate = getWeekStartDate();
+    let weekEndDate = new Date(
+      getWeekStartDate().setDate(weekStartDate.getDate() + 6)
+    );
+
+    return weekStartDate.getDate() > weekEndDate.getDate()
+      ? monthsShort[weekStartDate.getMonth()] +
+          " - " +
+          monthsShort[weekStartDate.getMonth() + 1]
+      : monthsLong[currentDate.getMonth()];
+  };
+  let headerDateDisplay = `${
+    getMonthNames() + ", " + currentDate.getFullYear()
+  }`;
+  return headerDateDisplay;
+}
