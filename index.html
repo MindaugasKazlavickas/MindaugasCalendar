@@ -14,6 +14,20 @@
     />
     <script src="index.js" defer></script>
   </head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calendar</title>
+    <link rel="stylesheet" href="./reset.css" />
+    <link rel="stylesheet" href="./style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap"
+      rel="stylesheet"
+    />
+    <script src="index.js" defer></script>
+  </head>
 
   <body>
     <header class="header">
@@ -281,6 +295,69 @@
         />
       </div>
 
+      <!-- Event type row -->
+      <div class="gap"></div>
+      <div class="eventTypeLine">
+        <p class="eventTypeBoxSelected">Event</p>
+        <p class="eventTypeBox">Task</p>
+        <p class="eventTypeBox">Out of office</p>
+        <p class="eventTypeBox">Focus time</p>
+        <p class="eventTypeBox">Working location</p>
+        <p class="eventTypeBox">Appointment schedule</p>
+      </div>
+
+      <!-- Datepicker row -->
+      <img class="icon" src="./media/schedule_watch.svg" alt="Watch icon" />
+      <div class="eventTimePickerContainer">
+        <input type="date" id="startDate" />
+        <input type="time" id="startTime" />
+        <input type="time" id="endTime" />
+        <input type="date" id="endDate" />
+      </div>
+
+      <!-- Guests row -->
+      <img class="icon" src="./media/contacts.svg" alt="Add guests" />
+      <input
+        id="guests"
+        type="text"
+        class="eventOtherInput"
+        placeholder="Add guests"
+      />
+
+      <!-- Location row -->
+      <img class="icon" src="./media/location.svg" alt="Add a location" />
+      <input
+        id="location"
+        type="text"
+        class="eventOtherInput"
+        placeholder="Add location"
+      />
+
+      <!-- Description row -->
+      <img class="icon" src="./media/notes.svg" alt="Add a description" />
+      <input
+        id="description"
+        type="text"
+        class="eventOtherInput"
+        placeholder="Add description"
+      />
+
+      <div class="gap"></div>
+      <button id="eventSaveButton" type="text" class="eventSaveButton">
+        Save
+      </button>
+    </div>
+
+    <div class="settingsView notDisplayed" tabindex="-1" id="settingsView">
+      <div class="settingsMenuColumn">
+        <div class="settingsHeader">
+          <button class="iconButton" id="closeSettings">
+            <img src="./media/chevron_left.svg" />
+          </button>
+          <span class="settingsHeading">Settings</span>
+        </div>
+        <hr class="separator" />
+      </div>
       <!-- Event type row -->
       <div class="gap"></div>
       <div class="eventTypeLine">
