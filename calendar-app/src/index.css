@@ -154,8 +154,8 @@ code {
   --primary-background: #f8fafd;
   --secondary-highlight: #ebecef;
   --primary-black: #4d4d4d;
-  --primary-gray: #afafaf;
-  --primary-light-gray: #dddddd;
+  --primary-gray: #959595;
+  --primary-light-gray: #cdcdcd;
   font-size: default;
   background-color: var(--primary-background);
   color: black;
@@ -165,7 +165,16 @@ code {
   --tableTop: 1;
   --dropdown: 2;
   --above-all: 3;
-  --marker-width: 100%;
+  --event-layer-depth-0: 95%;
+  --event-layer-depth-1: 75%;
+  --event-layer-depth-2: 55%;
+  --event-layer-depth-3: 35%;
+  --event-layer-depth-4: 15%;
+  --event-layer-color-0: #159ae3;
+  --event-layer-color-1: #107db7;
+  --event-layer-color-2: #0e6594;
+  --event-layer-color-3: #0c5a84;
+  --event-layer-color-4: #0b405c;
 }
 
 .header {
@@ -179,13 +188,14 @@ code {
 }
 
 .iconButton {
+  text-align: center;
   margin: auto;
   background-color: inherit;
   border: none;
   width: 32px;
   height: 32px;
-  align-content: center;
-  justify-self: center;
+  padding: 4px;
+  padding-inline: 0;
 }
 
 .iconButton:hover,
@@ -371,7 +381,6 @@ code {
 
 .content {
   display: grid;
-  grid-template-columns: 256px 1fr 56px;
 }
 
 .rightSideMenu {
@@ -477,19 +486,6 @@ td.timeColumn {
   border: none;
   width: 80px;
 }
-
-.weekViewGrid .timeColumn::after {
-  content: "";
-  width: 8px;
-  box-sizing: border-box;
-  border-top: 1px solid var(--primary-light-gray);
-  border-right: 1px solid var(--primary-light-gray);
-  display: inline-block;
-  height: 48px;
-  margin-top: -36px;
-  margin-left: 8px;
-}
-
 .weekViewGridBoxDivider.timeColumn {
   transform: translateY(20px);
 }
@@ -504,6 +500,7 @@ td.timeColumn {
 }
 
 .weekViewGridRow {
+  overflow: none;
   margin-top: 128px;
 }
 
@@ -577,6 +574,9 @@ td.timeColumn {
   transform: translateY(60px);
 }
 
+.gapRow {
+  display: none;
+}
 .weekViewGrid:last-child tr {
   border-right: 0;
 }
@@ -594,6 +594,21 @@ td.timeColumn {
 .weekViewGridBox {
   max-height: 48px;
   height: 48px;
+}
+.weekViewGrid .timeColumn::after {
+  content: "";
+  width: 8px;
+  box-sizing: border-box;
+  border-top: 1px solid var(--primary-light-gray);
+  border-right: 1px solid var(--primary-light-gray);
+  display: inline-block;
+  height: 48px;
+  margin-top: -36px;
+  margin-left: 8px;
+}
+
+.topWeekViewGrid .timeColumn {
+  width: 80px;
 }
 
 .weekViewGridBoxDivider {
@@ -644,11 +659,11 @@ td.timeColumn {
 .calendarCell {
   width: 20px;
   height: 20px;
-  padding: 6px 0;
-  align-content: center;
+  padding: 4px;
 }
 
 .meeting {
+  width: var(--event-layer-depth-0);
   border: 1px solid white;
   background-color: var(--primary-event);
   color: white;
@@ -660,6 +675,9 @@ td.timeColumn {
   position: absolute;
 }
 
+.meeting:hover {
+  cursor: pointer;
+}
 .overlappingShorterEvent {
   border: 1px solid white;
   text-align: right;
@@ -722,17 +740,14 @@ td.timeColumn {
   padding: 12px 12px;
   border-bottom: 3px solid transparent;
 }
-
-.eventOtherInput::placeholder,
-.datepickerInput::placeholder {
+.eventOtherInput::placeholder {
   color: var(--primary-black);
 }
 
-.eventOtherInput:focus,
-.datepickerInput:focus {
+.eventOtherInput:focus {
   background-color: var(--primary-light-gray);
-  border-bottom: 3px solid var(--primary-blue);
-  border-radius: 4px;
+  border-bottom: 3px solid var(--primary-black);
+  border-radius: 8px;
 }
 
 .eventButton,
@@ -752,13 +767,50 @@ td.timeColumn {
   margin: auto;
   padding-block: 12px;
   line-height: 24px;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
 }
 
 .dropdownIcon {
   margin: auto;
 }
-.dropdownContent {
+.timeframeSelect:hover .dropdownContent {
+  display: flex;
+  position: absolute;
+  background-color: var(--primary-background);
+  min-width: 200px;
+  box-shadow: var(--box-shadow);
+  text-align: left;
+  flex-direction: column;
+  right: 120px;
+  z-index: var(--dropdown);
+}
+
+.settingsDropdown:hover .dropdownSettings {
+  display: flex;
+  position: absolute;
+  background-color: var(--primary-background);
+  min-width: 200px;
+  box-shadow: var(--box-shadow);
+  text-align: left;
+  flex-direction: column;
+  z-index: var(--dropdown);
+  padding: 0;
+}
+.settingsDropdown {
+  margin: auto;
+}
+
+.basicButton:hover,
+.dropdownContent:hover {
+  cursor: pointer;
+}
+.basicButton {
+  border: none;
+  background-color: inherit;
+  width: 100%;
+  height: 100%;
+  text-align: left;
+  padding: 16px 8px;
   display: flex;
   position: absolute;
   background-color: var(--primary-background);
@@ -797,6 +849,7 @@ td.timeColumn {
   display: inline-flex;
   justify-content: space-between;
   padding: 16px 8px;
+  font-size: 0.8rem;
 }
 
 .dropdownItem:hover,
@@ -817,7 +870,6 @@ td.timeColumn {
 .eventButton .dropdownContent {
   left: 0;
 }
-
 .eventSaveButton {
   font-size: 0.8rem;
   height: 36px;
@@ -851,7 +903,6 @@ td.timeColumn {
 .notDisplayed {
   display: none;
 }
-
 .eventTimePickerContainer {
   text-align: left;
 }
@@ -877,10 +928,12 @@ td.timeColumn {
 
 .timeframeMarker {
   position: absolute;
-  z-index: var(--tableTop);
-  display: none;
+  z-index: var(--dropdown);
+  display: flex;
   align-items: center;
   height: 12px;
+  width: 100%;
+  left: 0;
 }
 .redDot {
   border-radius: 50%;

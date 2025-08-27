@@ -1,3 +1,151 @@
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+  box-sizing: border-box;
+}
+/* HTML5 display-role reset for older browsers */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+}
+body {
+  line-height: 1;
+}
+ol,
+ul {
+  list-style: none;
+}
+blockquote,
+q {
+  quotes: none;
+}
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: "";
+  content: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/*  index.css   */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+/*    App.css   */
+
 :root {
   --primary-highlight: #c3e7fe;
   --primary-blue: #1255cd;
@@ -233,7 +381,6 @@
 
 .content {
   display: grid;
-  grid-template-columns: 256px 1fr 56px;
 }
 
 .rightSideMenu {
@@ -353,6 +500,7 @@ td.timeColumn {
 }
 
 .weekViewGridRow {
+  overflow: none;
   margin-top: 128px;
 }
 
@@ -526,6 +674,10 @@ td.timeColumn {
   position: absolute;
 }
 
+.meeting:hover {
+  cursor: pointer;
+}
+
 .overlappingShorterEvent {
   border: 1px solid white;
   text-align: right;
@@ -616,14 +768,18 @@ td.timeColumn {
   margin: auto;
   padding-block: 12px;
   line-height: 24px;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
 }
 
 .dropdownIcon {
   margin: auto;
 }
+<<<<<<<< HEAD:style.css
 
 .dropdownContent {
+========
+.timeframeSelect:hover .dropdownContent {
+>>>>>>>> origin/react-dom-improved:calendar-app/src/index.css
   display: flex;
   position: absolute;
   background-color: var(--primary-background);
@@ -635,7 +791,7 @@ td.timeColumn {
   z-index: var(--dropdown);
 }
 
-.dropdownSettings {
+.settingsDropdown:hover .dropdownSettings {
   display: flex;
   position: absolute;
   background-color: var(--primary-background);
@@ -649,6 +805,11 @@ td.timeColumn {
 .settingsDropdown {
   margin: auto;
 }
+
+.basicButton:hover,
+.dropdownContent:hover {
+  cursor: pointer;
+}
 .basicButton {
   border: none;
   background-color: inherit;
@@ -656,6 +817,7 @@ td.timeColumn {
   height: 100%;
   text-align: left;
   padding: 16px 8px;
+<<<<<<<< HEAD:style.css
   font-size: 1rem;
   display: flex;
   position: absolute;
@@ -690,11 +852,15 @@ td.timeColumn {
   text-align: left;
   padding: 16px 8px;
   font-size: 1rem;
+========
+  font-size: 0.8rem;
+>>>>>>>> origin/react-dom-improved:calendar-app/src/index.css
 }
 .dropdownItem {
   display: inline-flex;
   justify-content: space-between;
   padding: 16px 8px;
+  font-size: 0.8rem;
 }
 
 .dropdownItem:hover,
@@ -769,3 +935,52 @@ td.timeColumn {
   display: none;
 }
 
+<<<<<<<< HEAD:style.css
+========
+.eventTimePickerContainer {
+  text-align: left;
+}
+.datepickerDash {
+  display: inline;
+}
+
+.datepickerInput {
+  line-height: 1rem;
+  font-size: 0.8rem;
+  background-color: var(--primary-light-gray);
+  border-radius: 4px;
+  color: var(--primary-black);
+  border: none;
+  outline: none;
+  padding: 12px 12px;
+  border-bottom: 3px solid transparent;
+  margin: 0 4px;
+}
+.datepickerInput:first-child {
+  margin-left: 0;
+}
+
+.timeframeMarker {
+  position: absolute;
+  z-index: var(--dropdown);
+  display: flex;
+  align-items: center;
+  height: 12px;
+  width: 100%;
+  left: 0;
+}
+.redDot {
+  border-radius: 50%;
+  background-color: red;
+  border: none;
+  height: 12px;
+  width: 12px;
+}
+.redLine {
+  height: 2px;
+  width: 100%;
+  background-color: red;
+  border: none;
+  margin: 0;
+}
+>>>>>>>> origin/react-dom-improved:calendar-app/src/index.css
