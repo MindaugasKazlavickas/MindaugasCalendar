@@ -5,18 +5,11 @@ import { shiftMonthView } from "../../../features/currentDate";
 import { AppDispatch, RootState } from "../../../store";
 import MonthCalendar from "./CalendarSidePanel/MonthCalendar";
 import { useEventContext } from "../../../utils/EventContext";
-function CalendarPanel({
-  eventWindow,
-  triggerEventWindow,
-}: {
-  eventWindow: boolean;
-  triggerEventWindow: (value: boolean) => void;
-}) {
-  const { setEventWindowOpen, setSelectedEvent } = useEventContext();
+function CalendarPanel() {
+  const { setSelectedEventId } = useEventContext();
 
   const openNewEventForm = () => {
-    setSelectedEvent(null);
-    setEventWindowOpen(true);
+    setSelectedEventId(1); // open a new event window with a truthy number
   };
 
   const dispatch = useDispatch<AppDispatch>();

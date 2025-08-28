@@ -40,13 +40,6 @@ export type StyledEvent = PreprocessedEvent & {
   backgroundColor: string;
 };
 
-export type EventContextType = {
-  isEventWindowOpen: boolean;
-  setEventWindowOpen: (value: boolean) => void;
-  selectedEvent: StoredEvent | null;
-  setSelectedEvent: (event: StoredEvent | null) => void;
-};
-
 export type RequestResult =
   | { success: true; event: StoredEvent }
   | { success: false; error: string };
