@@ -10,12 +10,24 @@ jest.mock("../pages/calendar/MainContent/TimeframeToday", () => {
   };
 });
 
+import { getWeekKey } from "../pages/calendar/MainContent/TimeframeToday";
 import { StoredEvent } from "../utils/types";
 import reducer, { addEvent, removeEvent, updateEvent } from "./eventDisplay";
 
-describe("SyncReduxAndStorage", () => {
+describe("eventDisplay reducer with sessionStorage sync", () => {
   let store: Record<string, string>;
   const mockTime = 1756197020781;
+
+  const makeEvent = (overrides: Partial<StoredEvent> = {}): StoredEvent => ({
+    id: mockTime,
+    title: "Initial event",
+    startDate: "2025-08-30",
+    startTime: "15:00",
+    endTime: "17:00",
+    endDate: "2025-08-30",
+    eventKey: "6_13",
+    ...overrides,
+  });
 
   beforeAll(() => {
     jest.useFakeTimers();
@@ -42,19 +54,11 @@ describe("SyncReduxAndStorage", () => {
       writable: true,
     });
   });
-  const weekKey = "events_2025_week34";
-  test("add new event to redux and storage", () => {
-    store[weekKey] = JSON.stringify({});
 
-    const mockEvent: StoredEvent = {
-      id: mockTime,
-      title: "Test event",
-      startDate: "2025-08-30",
-      startTime: "13:00",
-      endTime: "15:00",
-      endDate: "2025-08-30",
-      eventKey: "6_13",
-    };
+  test("adds a new event to redux state and session storage", () => {
+    const mockEvent = makeEvent({ title: "Test event" });
+    const weekKey = getWeekKey(new Date(mockEvent.startDate));
+    store[weekKey] = JSON.stringify({});
 
     const state = reducer(
       {
@@ -69,26 +73,19 @@ describe("SyncReduxAndStorage", () => {
     expect(stored[mockTime]).toEqual({ ...mockEvent, id: mockTime });
   });
 
-  test("update an existing event in redux and storage", () => {
-    const initialEvent: StoredEvent = {
-      id: mockTime,
-      title: "Initial event",
-      startDate: "2025-08-30",
-      startTime: "15:00",
-      endTime: "17:00",
-      endDate: "2025-08-30",
-      eventKey: "6_13",
-    };
-    store[weekKey] = JSON.stringify({ [mockTime]: initialEvent });
+  test("updates an existing event in redux state and session storage", () => {
+    const mockEvent = makeEvent({ title: "Test event" });
+    const weekKey = getWeekKey(new Date(mockEvent.startDate));
+    store[weekKey] = JSON.stringify({ [mockTime]: mockEvent });
 
     const updatedEvent: StoredEvent = {
-      ...initialEvent,
+      ...mockEvent,
       title: "Updated Event",
     };
     const state = reducer(
       {
         isDisplayed: false,
-        actualEvents: { [mockTime]: initialEvent },
+        actualEvents: { [mockTime]: mockEvent },
       },
       updateEvent(updatedEvent)
     );
@@ -98,24 +95,17 @@ describe("SyncReduxAndStorage", () => {
     expect(stored[mockTime]).toEqual(updatedEvent);
   });
 
-  test("remove an existing event in redux and storage", () => {
-    const initialEvent: StoredEvent = {
-      id: mockTime,
-      title: "Initial event",
-      startDate: "2025-08-30",
-      startTime: "15:00",
-      endTime: "17:00",
-      endDate: "2025-08-30",
-      eventKey: "6_13",
-    };
-    store[weekKey] = JSON.stringify({ [mockTime]: initialEvent });
+  test("removes an existing event in redux state and session storage", () => {
+    const mockEvent = makeEvent({ title: "Test event" });
+    const weekKey = getWeekKey(new Date(mockEvent.startDate));
+    store[weekKey] = JSON.stringify({ [mockTime]: mockEvent });
 
     const stateBefore = {
       isDisplayed: false,
-      actualEvents: { [mockTime]: initialEvent },
+      actualEvents: { [mockTime]: mockEvent },
     };
 
-    const state = reducer(stateBefore, removeEvent(initialEvent));
+    const state = reducer(stateBefore, removeEvent(mockEvent));
 
     expect(state.actualEvents[mockTime]).toBeUndefined();
     const stored = JSON.parse(store[weekKey]);

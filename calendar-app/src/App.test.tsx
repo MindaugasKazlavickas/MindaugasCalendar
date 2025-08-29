@@ -12,24 +12,24 @@ describe("TimezoneGetter", () => {
   afterEach(() => {
     jest.restoreAllMocks();
   });
-  test("gets Vilnius, Lithuania (local) timezone", () => {
+  test("returns GMT +03 for Vilnius timezone offset", () => {
     jest.spyOn(Date.prototype, "getTimezoneOffset").mockReturnValue(-180);
     expect(getGMT()).toBe("GMT +03");
   });
 
-  test("gets UTC timezone", () => {
+  test("returns GMT 00 for UTC timezone offset", () => {
     jest.spyOn(Date.prototype, "getTimezoneOffset").mockReturnValue(0);
     expect(getGMT()).toBe("GMT 00");
   });
 
-  test("gets New York timezone", () => {
+  test("returns GMT -04 for UTC -4 timezone offset", () => {
     jest.spyOn(Date.prototype, "getTimezoneOffset").mockReturnValue(240);
     expect(getGMT()).toBe("GMT -04");
   });
 });
 
-describe("checks element display", () => {
-  test("header icon date displays today's date", () => {
+describe("UI interactions", () => {
+  const renderApp = () =>
     render(
       <Provider store={store}>
         <EventProvider>
@@ -37,18 +37,15 @@ describe("checks element display", () => {
         </EventProvider>
       </Provider>
     );
+
+  test("header icon date displays today's date", () => {
+    renderApp();
     const headerIconDate = screen.getByTestId("headerIconDate");
     expect(headerIconDate.textContent).toBe(new Date().getDate().toString());
   });
 
   test("toggles the calendar panel", () => {
-    render(
-      <Provider store={store}>
-        <EventProvider>
-          <App />
-        </EventProvider>
-      </Provider>
-    );
+    renderApp();
     const calendarPanelTrigger = screen.getByAltText(
       "Closes and opens calendar view"
     );
@@ -58,13 +55,7 @@ describe("checks element display", () => {
   });
 
   test("toggles the right side panel", () => {
-    render(
-      <Provider store={store}>
-        <EventProvider>
-          <App />
-        </EventProvider>
-      </Provider>
-    );
+    renderApp();
     const rightSideTrigger = screen.getByAltText("Right side panel trigger");
     const rightSidePanel = screen.getByTestId("rightSidePanel");
     userEvent.click(rightSideTrigger);
@@ -72,16 +63,8 @@ describe("checks element display", () => {
   });
 
   test("displays dropdown", () => {
-    render(
-      <Provider store={store}>
-        <EventProvider>
-          <App />
-        </EventProvider>
-      </Provider>
-    );
-    const dropdownTrigger = screen.getByTestId(
-      "timeframeSelectDropdownTrigger"
-    );
+    renderApp();
+    const dropdownTrigger = screen.getByRole("button", { name: /Week/i });
     const dropdownPanel = screen.getByTestId("dropdownContent");
     userEvent.hover(dropdownTrigger);
     expect(dropdownPanel).toBeInTheDocument();
