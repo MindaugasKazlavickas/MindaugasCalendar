@@ -1,24 +1,20 @@
 import WeekViewTable from "./MainContent/WeekViewTimeframe";
 import CalendarPanel from "./MainContent/CalendarSidePanel";
 import TimeframeToday from "./MainContent/TimeframeToday";
-import RightSidePanel from "./RightSidePanel";
+import RightSidePanel from "./MainContent/RightSidePanel";
 
-const calendarPanelWidth = "256px";
-const rightSidePanelWidth = "56px";
+const CALENDAR_PANEL_WIDTH = "256px";
+const RIGHT_SIDE_PANEL_WIDTH = "56px";
 function Content({
   calendarPanelState,
   rightSidePanelState,
   setRightSidePanelDisplay,
-  eventWindow,
-  triggerEventWindow,
 }: {
   calendarPanelState: boolean;
   rightSidePanelState: boolean;
   setRightSidePanelDisplay: (
     value: boolean | ((prevVar: boolean) => boolean)
   ) => void;
-  eventWindow: boolean;
-  triggerEventWindow: (value: boolean) => void;
 }) {
   return (
     <>
@@ -26,20 +22,16 @@ function Content({
       <div
         className="content"
         id="content"
+        data-testid="weekView"
         style={
           {
             gridTemplateColumns: `${
-              calendarPanelState ? calendarPanelWidth : ""
-            } 1fr ${rightSidePanelState ? rightSidePanelWidth : ""}`,
+              calendarPanelState ? CALENDAR_PANEL_WIDTH : ""
+            } 1fr ${rightSidePanelState ? RIGHT_SIDE_PANEL_WIDTH : ""}`,
           } as React.CSSProperties
         }
       >
-        {calendarPanelState && (
-          <CalendarPanel
-            eventWindow={eventWindow}
-            triggerEventWindow={triggerEventWindow}
-          />
-        )}
+        {calendarPanelState && <CalendarPanel />}
         <WeekViewTable />
         <RightSidePanel
           rightSidePanelState={rightSidePanelState}

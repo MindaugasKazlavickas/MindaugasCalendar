@@ -8,30 +8,6 @@ import {
 } from "../../../../utils/types";
 import { useEventContext } from "../../../../utils/EventContext";
 
-function BuiltEventCell({ day, hour, events }: BuiltEventCellProps) {
-  const dayEvents = events.filter((e) => e.day === day);
-  const styledEvents = setupOverlaps(dayEvents);
-
-  const cellEvents = styledEvents.filter((e) => e.startHour === hour);
-
-  return (
-    <>
-      {cellEvents.map((e) => (
-        <EventCell
-          key={e.event.id + "_" + e.day + "_" + e.startHour}
-          event={e.event}
-          durationInMinutes={e.durationInMinutes}
-          startMin={+e.startMin}
-          width={e.width}
-          leftOffset={e.leftOffset}
-          backgroundColor={e.backgroundColor}
-        />
-      ))}
-    </>
-  );
-}
-export default BuiltEventCell;
-
 export function preprocessEvents(events: StoredEvent[]): PreprocessedEvent[] {
   const setupEvent: PreprocessedEvent[] = [];
   events.forEach((event) => {
@@ -142,11 +118,10 @@ const EventCell: React.FC<EventCellProps> = ({
   backgroundColor = "var(--primary-event)",
   startMin = 0,
 }) => {
-  const { setEventWindow, setSelectedEvent } = useEventContext();
+  const { setSelectedEventId } = useEventContext();
 
   const handleClick = () => {
-    setSelectedEvent(event);
-    setEventWindow(true);
+    setSelectedEventId(event.id);
   };
 
   return (
@@ -166,3 +141,27 @@ const EventCell: React.FC<EventCellProps> = ({
     </div>
   );
 };
+
+function BuiltEventCell({ day, hour, events }: BuiltEventCellProps) {
+  const dayEvents = events.filter((e) => e.day === day);
+  const styledEvents = setupOverlaps(dayEvents);
+
+  const cellEvents = styledEvents.filter((e) => e.startHour === hour);
+
+  return (
+    <>
+      {cellEvents.map((e) => (
+        <EventCell
+          key={e.event.id + "_" + e.day + "_" + e.startHour}
+          event={e.event}
+          durationInMinutes={e.durationInMinutes}
+          startMin={+e.startMin}
+          width={e.width}
+          leftOffset={e.leftOffset}
+          backgroundColor={e.backgroundColor}
+        />
+      ))}
+    </>
+  );
+}
+export default BuiltEventCell;

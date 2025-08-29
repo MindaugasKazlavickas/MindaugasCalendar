@@ -17,19 +17,8 @@
     "jsx": "react-jsx",
     "paths": {
       "react": ["./node_modules/@types/react"]
-    }
+    },
+    "types": ["jest"]
   },
-  "include": [
-    "src",
-    "src/pages/calendar/Header.tsx",
-    "src/pages/calendar/Event.tsx",
-    "src/pages/calendar/MainContent.tsx",
-    "src/pages/calendar/MainContent/consts.ts",
-    "src/pages/calendar/MainContent/CalendarSidePanel/MonthCalendar.tsx",
-    "src/pages/calendar/MainContent/setupPanelTriggers.ts",
-    "src/pages/calendar/MainContent/WeekViewTimeframe.tsx",
-    "src/pages/calendar/RightSidePanel.tsx",
-    "src/pages/App.tsx",
-    "src/index.tsx"
-  ]
+  "include": ["src/**/*", "tests/**/*"]
 }

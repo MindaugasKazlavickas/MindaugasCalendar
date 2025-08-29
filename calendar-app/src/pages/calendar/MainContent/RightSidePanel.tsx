@@ -5,7 +5,7 @@ import {
   rightSideButtonAlt,
   rightSideButtonHref,
   rightSideButtonSrc,
-} from "./MainContent/consts";
+} from "./consts";
 function RightSidePanel({
   rightSidePanelState,
   setRightSidePanelDisplay,
@@ -26,6 +26,7 @@ function RightSidePanel({
           onClick={() => {
             setRightSidePanelDisplay(!rightSidePanelState);
           }}
+          data-testid="rightPanelTrigger"
         >
           <img
             id="rightPanelChevron"
@@ -35,7 +36,11 @@ function RightSidePanel({
         </button>
       </div>
       {rightSidePanelState && (
-        <aside id="rightSidePanel" className="rightSideMenu">
+        <aside
+          id="rightSidePanel"
+          className="rightSideMenu"
+          data-testid="rightSidePanel"
+        >
           {[0, 1, 2, 3, 4, 5].map((i) => {
             return (
               <Fragment key={i + "RightSideButtonFragment"}>

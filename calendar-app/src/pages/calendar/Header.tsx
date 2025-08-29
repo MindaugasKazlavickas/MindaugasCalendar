@@ -6,6 +6,34 @@ import {
   shiftWeek,
 } from "../../features/currentDate";
 import { monthsLong, monthsShort } from "./MainContent/consts";
+
+function getHeaderTimeframeDate(currentDate: Date): string {
+  const getWeekStartDate = (): Date => {
+    return new Date(
+      new Date(currentDate.toString()).setDate(
+        currentDate.getDate() - currentDate.getDay()
+      )
+    );
+  };
+
+  const getMonthNames = () => {
+    let weekStartDate = getWeekStartDate();
+    let weekEndDate = new Date(
+      getWeekStartDate().setDate(weekStartDate.getDate() + 6)
+    );
+
+    return weekStartDate.getDate() > weekEndDate.getDate()
+      ? `${monthsShort[weekStartDate.getMonth()]} - ${
+          monthsShort[weekEndDate.getMonth()]
+        }`
+      : monthsLong[currentDate.getMonth()];
+  };
+  let headerDateDisplay = `${
+    getMonthNames() + ", " + currentDate.getFullYear()
+  }`;
+  return headerDateDisplay;
+}
+
 function Header({
   calendarPanelState,
   setCalendarPanelDisplay,
@@ -31,6 +59,7 @@ function Header({
           onClick={() => {
             setCalendarPanelDisplay(!calendarPanelState);
           }}
+          data-testid="calendarPanelTrigger"
         >
           <img src="./media/burger.svg" alt="Closes and opens calendar view" />
         </button>
@@ -40,7 +69,11 @@ function Header({
             src="./media/logo.png"
             alt="Google Calendar's Icon"
           />
-          <p id="logoText" className="headerLeftLogoText">
+          <p
+            id="logoText"
+            className="headerLeftLogoText"
+            data-testid="headerIconDate"
+          >
             {new Date().getDate().toString()}
           </p>
         </span>
@@ -131,6 +164,7 @@ function Header({
             <button
               id="timeframeSelectButton"
               className="roundedCornerButton dropdownButton"
+              data-testid="timeframeSelectDropdownTrigger"
             >
               <span>Week</span>
               <img
@@ -143,6 +177,7 @@ function Header({
               id="dropdownContent"
               tabIndex={-1}
               className="dropdownContent notDisplayed"
+              data-testid="dropdownContent"
             >
               <div className="dropdownItem">
                 <p>Day</p>
@@ -177,30 +212,3 @@ function Header({
   );
 }
 export default Header;
-
-function getHeaderTimeframeDate(currentDate: Date): string {
-  const getWeekStartDate = (): Date => {
-    return new Date(
-      new Date(currentDate.toString()).setDate(
-        currentDate.getDate() - currentDate.getDay()
-      )
-    );
-  };
-
-  const getMonthNames = () => {
-    let weekStartDate = getWeekStartDate();
-    let weekEndDate = new Date(
-      getWeekStartDate().setDate(weekStartDate.getDate() + 6)
-    );
-
-    return weekStartDate.getDate() > weekEndDate.getDate()
-      ? monthsShort[weekStartDate.getMonth()] +
-          " - " +
-          monthsShort[weekStartDate.getMonth() + 1]
-      : monthsLong[currentDate.getMonth()];
-  };
-  let headerDateDisplay = `${
-    getMonthNames() + ", " + currentDate.getFullYear()
-  }`;
-  return headerDateDisplay;
-}

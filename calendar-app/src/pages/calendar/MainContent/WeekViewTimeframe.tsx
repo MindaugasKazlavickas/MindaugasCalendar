@@ -13,7 +13,7 @@ function WeekViewTable() {
 
   const today = new Date();
   const currentDate = new Date(currentDateStr);
-  const [isMarked, setMarked] = useState(8);
+  const [markedAsToday, setMarkedAsToday] = useState<number | null>(null); //0-6 are weekday indexes, null is 'today is not this week'
   const weekStartDate = new Date(currentDate);
   weekStartDate.setDate(weekStartDate.getDate() - weekStartDate.getDay() - 1);
 
@@ -33,11 +33,11 @@ function WeekViewTable() {
     if (todayIsThisWeek) {
       for (let i = 0; i < 7; i++) {
         if (todayIsToday(i)) {
-          setMarked(today.getDay());
+          setMarkedAsToday(today.getDay());
         }
       }
     } else {
-      setMarked(8);
+      setMarkedAsToday(null);
     }
   }, [currentDate, today, weekStartDate]);
   return (
@@ -48,13 +48,13 @@ function WeekViewTable() {
             <th className="weekViewGridHeader timeColumn" id="timezone">
               {getGMT()}
             </th>
-            {WeekDays.map((weekDay, i) => {
-              const paragraphClass = "weekDisplayDate" + i;
+            {WeekDays.map((weekDay, weekDayIndex) => {
+              const paragraphClass = "weekDisplayDate" + weekDayIndex;
               return (
                 <th
-                  key={i}
+                  key={weekDayIndex}
                   className={
-                    isMarked === i
+                    markedAsToday === weekDayIndex
                       ? "weekViewGridHeader weekViewGridHeaderMarked"
                       : "weekViewGridHeader"
                   }
@@ -72,14 +72,16 @@ function WeekViewTable() {
           </tr>
           <tr className="weekViewGridRow">
             <td className="weekViewGridBoxDivider timeColumn"></td>
-            {WeekDays.map((i) => {
-              return <td key={i} className="weekViewGridBoxDivider"></td>;
+            {WeekDays.map((weekDayIndex) => {
+              return (
+                <td key={weekDayIndex} className="weekViewGridBoxDivider"></td>
+              );
             })}
           </tr>
         </tbody>
       </table>
 
-      {isMarked < 8 ? (markerIsShown = true) : (markerIsShown = false)}
+      {markedAsToday ? (markerIsShown = true) : (markerIsShown = false)}
       <WeekviewTable isToday={markerIsShown} />
     </main>
   );

@@ -3,32 +3,31 @@ import Content from "./calendar/MainContent";
 import Event from "./calendar/Event";
 import { useState } from "react";
 import { useEventContext } from "../utils/EventContext";
+import React from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
 function App() {
-  const [isCalendarPanel, setCalendarPanel] = useState(true);
+  const [isCalendarPanelOpen, setCalendarPanelOpen] = React.useState(true);
   const [isRightSidePanel, setRightSidePanel] = useState(true);
-  //const [isEventWindow, setEventWindow] = useState(false);
-  const { isEventWindow, setEventWindow } = useEventContext();
-  const { selectedEvent } = useEventContext();
+  const { selectedEventId } = useEventContext();
+  const isEventWindowOpen = selectedEventId !== null;
+
+  const initialEvent = useSelector((state: RootState) => {
+    const eventsArray = Object.values(state.actualEvents.actualEvents);
+    return eventsArray.find((e) => e.id === selectedEventId) || null;
+  });
   return (
     <div className="App">
       <Header
-        calendarPanelState={isCalendarPanel}
-        setCalendarPanelDisplay={setCalendarPanel}
+        calendarPanelState={isCalendarPanelOpen}
+        setCalendarPanelDisplay={setCalendarPanelOpen}
       />
       <Content
-        calendarPanelState={isCalendarPanel}
+        calendarPanelState={isCalendarPanelOpen}
         rightSidePanelState={isRightSidePanel}
         setRightSidePanelDisplay={setRightSidePanel}
-        eventWindow={isEventWindow}
-        triggerEventWindow={setEventWindow}
       />
-      {isEventWindow && (
-        <Event
-          eventWindow={isEventWindow}
-          triggerEventWindow={setEventWindow}
-          initialEvent={selectedEvent}
-        />
-      )}
+      {isEventWindowOpen && <Event initialEvent={initialEvent} />}
     </div>
   );
 }

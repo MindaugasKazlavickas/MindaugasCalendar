@@ -5,6 +5,23 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../../store";
 import BuiltEventCell from "./WeekviewEvent";
 import { preprocessEvents } from "./WeekviewEvent";
+
+function TimeframeMarker() {
+  const halfHeightOffset = 6;
+  const offsetTop = new Date().getMinutes() / minToPxRatio - halfHeightOffset;
+
+  return (
+    <div
+      className="timeframeMarker"
+      id="timeframeMarker"
+      style={{ top: `${offsetTop}px` }}
+    >
+      <span className="redDot"></span>
+      <hr className="redLine" />
+    </div>
+  );
+}
+
 function WeekviewTable({ isToday }: { isToday: boolean }) {
   const tableRows = useMemo(() => Array.from({ length: 24 }, (_, i) => i), []);
   const today = new Date();
@@ -32,27 +49,30 @@ function WeekviewTable({ isToday }: { isToday: boolean }) {
   return (
     <table className="weekViewGrid" id="weekGrid">
       <tbody>
-        {tableRows.map((i) => (
-          <tr className="weekViewGridRow" key={i}>
+        {tableRows.map((hour) => (
+          <tr className="weekViewGridRow" key={hour}>
             <td className="weekViewGridBox timeColumn">
-              {getDateTimeText(i + 1)}
+              {getDateTimeText(hour + 1)}
             </td>
-            {WeekDays.map((weekDay, j) => (
+            {WeekDays.map((weekDay, weekDayIndex) => (
               <td
                 className="weekViewGridBox"
-                id={j + "_" + (+i + +1)}
-                key={i + weekDay}
+                id={weekDayIndex + "_" + (+hour + +1)}
+                key={hour + weekDay}
                 style={{
                   position: "relative",
                 }}
               >
-                {isToday && today.getDay() === j && today.getHours() === i && (
-                  <TimeframeMarker />
-                )}
-                {BuiltEventCell && (
+                {isToday &&
+                  today.getDay() === weekDayIndex &&
+                  today.getHours() === hour && <TimeframeMarker />}
+                {preprocessedEvents.some(
+                  (event) =>
+                    event.day === weekDayIndex && event.startHour === hour
+                ) && (
                   <BuiltEventCell
-                    day={j}
-                    hour={i}
+                    day={weekDayIndex}
+                    hour={hour}
                     events={preprocessedEvents}
                   />
                 )}
@@ -65,19 +85,3 @@ function WeekviewTable({ isToday }: { isToday: boolean }) {
   );
 }
 export default WeekviewTable;
-
-function TimeframeMarker() {
-  const halfHeightOffset = 6;
-  const offsetTop = new Date().getMinutes() / minToPxRatio - halfHeightOffset;
-
-  return (
-    <div
-      className="timeframeMarker"
-      id="timeframeMarker"
-      style={{ top: `${offsetTop}px` }}
-    >
-      <span className="redDot"></span>
-      <hr className="redLine" />
-    </div>
-  );
-}

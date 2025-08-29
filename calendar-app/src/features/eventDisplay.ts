@@ -1,7 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { EventDisplayState } from "../utils/types";
 import { StoredEvent } from "../utils/types";
 import { getWeekKey } from "../pages/calendar/MainContent/TimeframeToday";
+
+interface EventDisplayState {
+  isDisplayed: boolean;
+  actualEvents: Record<string, StoredEvent>;
+}
+
 export const initialState: EventDisplayState = {
   isDisplayed: false,
   actualEvents: {},
@@ -21,9 +26,9 @@ const updateSessionStorage = (
 const saveToSessionStorage = (newEvent: StoredEvent, weekKey: string) => {
   const data = getSessionData(weekKey);
   if (!data) return;
-  const newId = +new Date();
-  newEvent.id = newId;
-  data[newId] = newEvent;
+  const newId = Date.now();
+  const savedEvent = { ...newEvent, id: +new Date() };
+  data[savedEvent.id] = savedEvent;
   sessionStorage.setItem(weekKey, JSON.stringify(data));
 };
 const removeFromSessionStorage = (newEvent: StoredEvent, weekKey: string) => {
@@ -55,12 +60,11 @@ const eventDisplaySlice = createSlice({
     addEvent(state, action: PayloadAction<StoredEvent>) {
       const eventDate: Date = new Date(action.payload.startDate.toString());
       const allEvents = Object.values(state.actualEvents);
-      const eventWeekKey = getWeekKey(eventDate);
-      const thisWeekKey = getWeekKey(new Date(allEvents[0]?.startDate));
+      let eventWeekKey = getWeekKey(eventDate);
+      let thisWeekKey = allEvents[0]
+        ? getWeekKey(new Date(allEvents[0].startDate))
+        : eventWeekKey;
       saveToSessionStorage(action.payload, eventWeekKey);
-      getWeekKey(eventDate);
-
-      console.log(state.actualEvents.startDate);
       switch (eventWeekKey === thisWeekKey) {
         case true: {
           return {
@@ -78,11 +82,6 @@ const eventDisplaySlice = createSlice({
     },
     updateEvent(state, action: PayloadAction<StoredEvent>) {
       const eventDate: Date = new Date(action.payload.startDate.toString());
-      console.log(
-        getWeekKey(eventDate),
-        "also date",
-        new Date(action.payload.startDate.toString())
-      );
 
       updateSessionStorage(
         action.payload,

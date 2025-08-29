@@ -5,29 +5,29 @@ import { shiftMonthView } from "../../../features/currentDate";
 import { AppDispatch, RootState } from "../../../store";
 import MonthCalendar from "./CalendarSidePanel/MonthCalendar";
 import { useEventContext } from "../../../utils/EventContext";
-function CalendarPanel({
-  eventWindow,
-  triggerEventWindow,
-}: {
-  eventWindow: boolean;
-  triggerEventWindow: (value: boolean) => void;
-}) {
-  const { setEventWindow, setSelectedEvent } = useEventContext();
+function CalendarPanel() {
+  const { setSelectedEventId } = useEventContext();
 
   const openNewEventForm = () => {
-    setSelectedEvent(null);
-    setEventWindow(true);
+    setSelectedEventId(1); // open a new event window with a truthy number
   };
+
   const dispatch = useDispatch<AppDispatch>();
   const monthViewDateStr = useSelector(
     (state: RootState) => state.currentDate.monthViewDate
   );
+
   return (
-    <aside id="calendarSideView" className="calendarSidePanel">
+    <aside
+      id="calendarSideView"
+      className="calendarSidePanel"
+      data-testid="calendarSidePanel"
+    >
       <button
         className="eventTrigger"
         id="eventWindowButton"
         onClick={openNewEventForm}
+        data-testid="eventTriggerId"
       >
         <img
           className="icon"
@@ -44,9 +44,9 @@ function CalendarPanel({
 
       <div className="calendarHeader">
         <p id="calendarMonthDisplay" className="calendarMonth">
-          {monthsLong[new Date(monthViewDateStr).getMonth()] +
-            ", " +
-            new Date(monthViewDateStr).getFullYear()}
+          {`${monthsLong[new Date(monthViewDateStr).getMonth()]}, ${new Date(
+            monthViewDateStr
+          ).getFullYear()}`}
         </p>
         <div className="calendarSideViewButtons">
           <button

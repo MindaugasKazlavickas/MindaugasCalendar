@@ -1,0 +1,13 @@
+{
+  "name": "calendar-root",
+  "private": true,
+  "workspaces": [
+    "calendar-server",
+    "calendar-app"
+  ],
+  "scripts": {
+    "install:all": "npm install --workspaces",
+    "dev": "npm start --workspace calendar-app",
+    "server": "npm run start --workspace calendar-server"
+  }
+}

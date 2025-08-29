@@ -1,42 +1,37 @@
 import saveEvent from "../../api/saveAndEditEvent";
 import deleteEvent from "../../api/deleteEvent";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { ChangeEvent, useEffect, useState } from "react";
 import { StoredEvent } from "../../utils/types";
 import { removeEvent } from "../../features/eventDisplay";
+import { useEventContext } from "../../utils/EventContext";
+import { RootState } from "../../store";
 
-export class Form implements StoredEvent {
-  id = 0;
-  title = "";
-  startTime = "";
-  startDate = "";
-  endTime = "";
-  endDate = "";
-  guests? = "";
-  location? = "";
-  description? = "";
-  [key: string]: string | number | undefined;
-  eventKey = "";
-}
+const eventForm: StoredEvent = {
+  id: 0,
+  title: "",
+  startTime: "",
+  startDate: "",
+  endTime: "",
+  endDate: "",
+  guests: "",
+  location: "",
+  description: "",
+  eventKey: "",
+};
 
-function Event({
-  eventWindow,
-  triggerEventWindow,
-  initialEvent,
-}: {
-  eventWindow: boolean;
-  triggerEventWindow: (value: boolean) => void;
-  initialEvent?: StoredEvent | null;
-}) {
+function Event({ initialEvent }: { initialEvent?: StoredEvent | null }) {
+  const { selectedEventId, setSelectedEventId } = useEventContext();
+  const isEventWindowOpen = selectedEventId !== null;
   const dispatch = useDispatch();
-  const [form, setForm] = useState<Form>(new Form());
+  const [form, setForm] = useState<StoredEvent>(eventForm);
 
   useEffect(() => {
     if (initialEvent) {
       setEndDateField(true);
       setForm({ ...initialEvent });
     } else {
-      setForm(new Form());
+      setForm(eventForm);
     }
   }, [initialEvent]);
   const [isEndDateField, setEndDateField] = useState(false);
@@ -72,7 +67,7 @@ function Event({
     handleShowEndDate();
   }, [form.startTime, form.endTime]);
   return (
-    <div id="event" tabIndex={-1} className="eventContainer">
+    <div id="event" tabIndex={-1} className="eventContainer" role="dialog">
       {/*Header row*/}
       <img
         className="iconButton"
@@ -90,7 +85,7 @@ function Event({
               const result = await deleteEvent(initialEvent, initialEvent.id);
               if (result.success) {
                 dispatch(removeEvent(initialEvent));
-                triggerEventWindow(!eventWindow);
+                setSelectedEventId(null);
               } else {
                 console.error(result.error);
               }
@@ -102,7 +97,7 @@ function Event({
         <button
           id="dialogCloseButton"
           className="iconButton"
-          onClick={() => triggerEventWindow(!eventWindow)}
+          onClick={() => setSelectedEventId(null)}
         >
           <img src="./media/close.svg" alt="Close the event creation menu" />
         </button>
@@ -111,6 +106,7 @@ function Event({
       <div className="gap"></div>
       <div className="inputFieldDiv">
         <input
+          autoFocus
           id="title"
           type="text"
           className="eventNameInput"
@@ -135,6 +131,7 @@ function Event({
         <input
           className="datepickerInput"
           type="date"
+          data-testid="startDate"
           id="startDate"
           value={form.startDate}
           onChange={(event) => handleChange(event, "startDate")}
@@ -142,6 +139,7 @@ function Event({
         <input
           className="datepickerInput"
           type="time"
+          data-testid="startTime"
           id="startTime"
           value={form.startTime}
           onChange={(event) => handleChange(event, "startTime")}
@@ -150,6 +148,7 @@ function Event({
         <input
           className="datepickerInput"
           type="time"
+          data-testid="endTime"
           id="endTime"
           value={form.endTime}
           onChange={(event) => handleChange(event, "endTime")}
@@ -158,6 +157,7 @@ function Event({
           <input
             className="datepickerInput"
             type="date"
+            data-testid="endDate"
             id="endDate"
             value={!isEndDateField ? "" : form.endDate}
             onChange={(event) => handleChange(event, "endDate")}
@@ -169,6 +169,7 @@ function Event({
       <input
         id="guests"
         type="text"
+        data-testid="guestsField"
         className="eventOtherInput"
         placeholder="Add guests"
         value={form.guests}
@@ -179,6 +180,7 @@ function Event({
       <input
         id="location"
         type="text"
+        data-testid="locationField"
         className="eventOtherInput"
         placeholder="Add location"
         value={form.location}
@@ -189,6 +191,7 @@ function Event({
       <input
         id="description"
         type="text"
+        data-testid="descriptionField"
         className="eventOtherInput"
         placeholder="Add description"
         value={form.description}
@@ -198,12 +201,11 @@ function Event({
       <button
         id="eventSaveButton"
         className="eventSaveButton"
+        data-testid="eventSaveButton"
         onClick={async () => {
           const result = await saveEvent(form, form.id);
           if (result.success) {
-            triggerEventWindow(false);
-          } else {
-            console.error(result.error);
+            setSelectedEventId(null);
           }
         }}
       >
