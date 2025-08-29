@@ -49,3 +49,4 @@ export interface APIResponse<T> {
   data: T | undefined;
   error?: string;
 }
+

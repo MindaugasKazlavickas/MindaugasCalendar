@@ -7,32 +7,31 @@ import { removeEvent } from "../../features/eventDisplay";
 import { useEventContext } from "../../utils/EventContext";
 import { RootState } from "../../store";
 
-export class Form implements StoredEvent {
-  id = 0;
-  title = "";
-  startTime = "";
-  startDate = "";
-  endTime = "";
-  endDate = "";
-  guests? = "";
-  location? = "";
-  description? = "";
-  [key: string]: string | number | undefined;
-  eventKey = "";
-}
+const eventForm: StoredEvent = {
+  id: 0,
+  title: "",
+  startTime: "",
+  startDate: "",
+  endTime: "",
+  endDate: "",
+  guests: "",
+  location: "",
+  description: "",
+  eventKey: "",
+};
 
 function Event({ initialEvent }: { initialEvent?: StoredEvent | null }) {
   const { selectedEventId, setSelectedEventId } = useEventContext();
   const isEventWindowOpen = selectedEventId !== null;
   const dispatch = useDispatch();
-  const [form, setForm] = useState<Form>(new Form());
+  const [form, setForm] = useState<StoredEvent>(eventForm);
 
   useEffect(() => {
     if (initialEvent) {
       setEndDateField(true);
       setForm({ ...initialEvent });
     } else {
-      setForm(new Form());
+      setForm(eventForm);
     }
   }, [initialEvent]);
   const [isEndDateField, setEndDateField] = useState(false);
