@@ -30,7 +30,7 @@ test("saving, editing and deleting event user flow", async ({ page }) => {
 
   //open and fill out form
   await page.getByTestId("eventTriggerId").click();
-  await expect(screen.getByRole("dialog")).toBeVisible();
+  await expect(page.getByRole("dialog")).toBeVisible();
   await expect(page.getByRole("textbox", { name: "Add title" })).toBeFocused();
   await page.getByRole("textbox", { name: "Add title" }).fill("Team meeting");
   await page.getByTestId("startDate").fill("2025-08-30");
